@@ -16,6 +16,7 @@ ADDED from /Users/francescobruno/Politecnico/MobileAppDevelopment/FinalProject/c
 application
 ADDED from /Users/francescobruno/Politecnico/MobileAppDevelopment/FinalProject/countonme/app/src/main/AndroidManifest.xml:5:5-18:19
 MERGED from [com.android.support.constraint:constraint-layout:1.0.0-alpha4] /Users/francescobruno/.android/build-cache/7f36f84c2482c32e301fed70d56d808da3dd842c/output/AndroidManifest.xml:9:5-20
+MERGED from [com.android.support:support-compat:25.1.0] /Users/francescobruno/.android/build-cache/450003de12144946472d2c1f971e7d1577e36bc4/output/AndroidManifest.xml:25:5-20
 	android:label
 		ADDED from /Users/francescobruno/Politecnico/MobileAppDevelopment/FinalProject/countonme/app/src/main/AndroidManifest.xml:8:9-41
 	android:supportsRtl
@@ -43,6 +44,10 @@ ADDED from /Users/francescobruno/Politecnico/MobileAppDevelopment/FinalProject/c
 uses-sdk
 INJECTED from /Users/francescobruno/Politecnico/MobileAppDevelopment/FinalProject/countonme/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [com.android.support.constraint:constraint-layout:1.0.0-alpha4] /Users/francescobruno/.android/build-cache/7f36f84c2482c32e301fed70d56d808da3dd842c/output/AndroidManifest.xml:5:5-7:41
+MERGED from [com.jakewharton:butterknife:8.5.1] /Users/francescobruno/.android/build-cache/97b24f1803c316104ae1182960c577be74ac448e/output/AndroidManifest.xml:5:5-43
+MERGED from [com.android.support:support-compat:25.1.0] /Users/francescobruno/.android/build-cache/450003de12144946472d2c1f971e7d1577e36bc4/output/AndroidManifest.xml:21:5-23:58
+	tools:overrideLibrary
+		ADDED from [com.android.support:support-compat:25.1.0] /Users/francescobruno/.android/build-cache/450003de12144946472d2c1f971e7d1577e36bc4/output/AndroidManifest.xml:23:9-55
 	android:targetSdkVersion
 		INJECTED from /Users/francescobruno/Politecnico/MobileAppDevelopment/FinalProject/countonme/app/src/main/AndroidManifest.xml
 		INJECTED from /Users/francescobruno/Politecnico/MobileAppDevelopment/FinalProject/countonme/app/src/main/AndroidManifest.xml
