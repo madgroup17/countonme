@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "868904336265",
+    "firebase_url": "https://countonme-80940.firebaseio.com",
+    "project_id": "countonme-80940",
+    "storage_bucket": "countonme-80940.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868904336265:android:59f4d33fc42c2b9c",
+        "android_client_info": {
+          "package_name": "it.polito.mad.countonme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868904336265-k30dba42apv1jilod2e0k6d8b07443n5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSFsEedfgI62Wpe9J0ttPML6dBVdY7Ky8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
