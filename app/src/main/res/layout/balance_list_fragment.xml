@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     android:background="@color/cardview_light_background">
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/BalanceList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>
 
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/Debtlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>
