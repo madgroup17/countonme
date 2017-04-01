@@ -5,5 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="it.polito.mad.countonme.ExpenseListActivity">
+    tools:context="it.polito.mad.countonme.SharingActivity">
+    <String android:name="fb_appid">fb717215405070309</String>
+
 </LinearLayout>
