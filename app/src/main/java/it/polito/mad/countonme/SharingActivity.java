@@ -1,20 +1,22 @@
 package it.polito.mad.countonme;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
-public class SharingActivity extends Activity {
+public class SharingActivity extends AppCompatActivity {
     private static final String TAG = SharingActivity.class.getName();
-    private static final int NUM_OF_FRAGM = 1;
+    private static final int NUM_OF_FRAGM = 2;
 
-    private static enum AppFragment {
+    public static enum AppFragment {
         SHARING_ACTIVITIES,
+        DETAIL,
         EXPENSES,
         SHARING_DETAILS,
         EXPENSE_DETAILS
@@ -24,12 +26,12 @@ public class SharingActivity extends Activity {
     private Fragment[] mFragmentsList = new Fragment[ NUM_OF_FRAGM ];
     private int[] mTitlesResIds = new int[ NUM_OF_FRAGM ];
     private FragmentManager mFragmentManager;
-
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sharing);
-        mFragmentManager = getFragmentManager();
+
+        mFragmentManager = getSupportFragmentManager();
         loadBarTitles();
         loadAppFragments();
         showAppFragment( AppFragment.SHARING_ACTIVITIES );
@@ -38,18 +40,21 @@ public class SharingActivity extends Activity {
     public void showAppFragment( AppFragment fragment ) {
         if( fragment == mCurrentFragment ) return; // there is no need to change in this case
         mCurrentFragment = fragment;
-        getActionBar().setTitle( mTitlesResIds[ mCurrentFragment.ordinal() ] );
+        getSupportActionBar().setTitle( mTitlesResIds[ mCurrentFragment.ordinal() ] );
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
+
         transaction.replace( android.R.id.content, mFragmentsList[ mCurrentFragment.ordinal() ] ).commit();
     }
 
     private void loadAppFragments() {
-        mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingsListFragment() ;
+        mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingListFragment() ;
+        mFragmentsList[ AppFragment.DETAIL.ordinal() ] = new DetailFragment() ;
         // load of other fragments here
     }
 
     private void loadBarTitles() {
         mTitlesResIds[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = R.string.sharing_activities_title;
+        mTitlesResIds[ AppFragment.DETAIL.ordinal() ] = R.string.detail;
         // add other titles here
     }
 

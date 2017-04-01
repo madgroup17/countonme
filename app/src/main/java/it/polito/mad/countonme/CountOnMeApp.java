@@ -1,5 +1,6 @@
 package it.polito.mad.countonme;
 
+import android.app.Activity;
 import android.app.Application;
 
 /**
@@ -8,5 +9,9 @@ import android.app.Application;
  */
 
 public class CountOnMeApp extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
 }
