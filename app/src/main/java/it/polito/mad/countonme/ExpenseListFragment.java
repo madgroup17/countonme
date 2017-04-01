@@ -6,12 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class SharingsListFragment extends ListFragment {
+/**
+ * Created by LinaMaria on 31/03/2017.
+ */
+
+public class ExpenseListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sharing_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.expense_list_fragment, container, false);
         return view;
     }
 }
-
