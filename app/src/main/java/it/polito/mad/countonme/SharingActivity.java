@@ -1,15 +1,17 @@
 package it.polito.mad.countonme;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.exceptions.InvalidDataException;
 
-public class SharingActivity extends Activity {
+public class SharingActivity extends AppCompatActivity {
     private static final String TAG = SharingActivity.class.getName();
     private static final int NUM_OF_FRAGM = 1;
 
@@ -29,6 +31,7 @@ public class SharingActivity extends Activity {
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sharing);
+
         mFragmentManager = getFragmentManager();
         loadBarTitles();
         loadAppFragments();
@@ -38,9 +41,20 @@ public class SharingActivity extends Activity {
     public void showAppFragment( AppFragment fragment ) {
         if( fragment == mCurrentFragment ) return; // there is no need to change in this case
         mCurrentFragment = fragment;
-        getActionBar().setTitle( mTitlesResIds[ mCurrentFragment.ordinal() ] );
+        getSupportActionBar().setTitle( mTitlesResIds[ mCurrentFragment.ordinal() ] );
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace( android.R.id.content, mFragmentsList[ mCurrentFragment.ordinal() ] ).commit();
+    }
+
+    public void addNewSharingActivity( View view ) {
+        it.polito.mad.countonme.models.SharingActivity prova = new it.polito.mad.countonme.models.SharingActivity(
+                "My sharing activity", "This is a simple sharing activity used to test the code plm", "", "euro"
+        );
+        try {
+            DataManager.getsInstance().addNewSharingActivity(prova, null);
+        } catch (InvalidDataException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadAppFragments() {
