@@ -1,7 +1,5 @@
 package it.polito.mad.countonme.database;
 
-import android.util.Log;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -16,8 +14,8 @@ import it.polito.mad.countonme.models.SharingActivity;
  */
 
 public class DataManager {
-    private static final String CHILD_SHARING_ACTIVITY = "shareacts";
-    private static final String CHILD_EXPENSE = "expenses";
+    private static final String CHILD_SHARING_ACTIVITIES = "shareacts";
+    private static final String CHILD_EXPENSES = "expenses";
     private static final String CHILD_USERS = "users";
 
 
@@ -34,11 +32,33 @@ public class DataManager {
     }
 
 
+    // References getter
+    public DatabaseReference getDbReference() {
+        return mDatabase.getReference();
+    }
+
+    public DatabaseReference getSharingActivitiesReference() {
+        return mDatabase.getReference( CHILD_SHARING_ACTIVITIES );
+    }
+
+    public DatabaseReference getSharingActivityReference( String activityKey ) {
+        return mDatabase.getReference( CHILD_SHARING_ACTIVITIES + "/" + activityKey );
+    }
+
+    public DatabaseReference getExpensesReference() {
+        return mDatabase.getReference( CHILD_EXPENSES );
+    }
+
+    public DatabaseReference getExpenseReference( String expenseKey) {
+        return mDatabase.getReference( CHILD_EXPENSES + "/" + expenseKey );
+    }
+
+
     // Sharing activities management
 
     public void addNewSharingActivity(SharingActivity activity, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
         try {
-            addNewData(activity, CHILD_SHARING_ACTIVITY, completionListener);
+            addNewData(activity, CHILD_SHARING_ACTIVITIES, completionListener);
         } catch( InvalidDataException ex ) {
             throw new InvalidDataException("Invalid Sharing Activity has been provided" );
         }
@@ -49,7 +69,7 @@ public class DataManager {
 
     public void addNewExpense(Expense expense, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
         try {
-            addNewData( expense, CHILD_EXPENSE, completionListener );
+            addNewData( expense, CHILD_EXPENSES, completionListener );
         } catch( InvalidDataException ex ) {
             throw new InvalidDataException("Invalid Expense has been provided" );
         }

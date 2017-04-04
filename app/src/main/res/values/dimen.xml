@@ -4,4 +4,10 @@
 
 
     <dimen name="empty_list_text_size">18sp</dimen>
+
+
+    <dimen name="list_item_margin">10dp</dimen>
+    <dimen name="list_item_view_spacing">10dp</dimen>
+    <dimen name="list_item_main_text_size">12sp</dimen>
+    <dimen name="list_item_height">60dp</dimen>
 </resources>
