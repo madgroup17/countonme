@@ -3,6 +3,8 @@ package it.polito.mad.countonme;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -36,6 +38,7 @@ public class SharingActivity extends AppCompatActivity {
         loadBarTitles();
         loadAppFragments();
         showAppFragment( AppFragment.SHARING_ACTIVITIES );
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable( Color.rgb( 102, 187, 106 )) );
     }
 
     public void showAppFragment( AppFragment fragment ) {
