@@ -2,4 +2,5 @@
 <resources>
     <string name="sharing_activities_title">Gruppi di condivisione</string>
     <string name="empty_sharing_list_lbl">Non hai ancora nessun gruppo di condivisione</string>
+    <string name="total_balance_lbl">Bilancio totale:</string>
 </resources>

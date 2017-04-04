@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="currency_dollar_lbl">Dollari</string>
+    <string name="currency_euro_lbl">Euro</string>
+    <string name="currency_pesetas_lbl">Peseta</string>
+    <string name="lbl_amount">Ammontare</string>
+    <string name="lbl_currency">Valuta</string>
+    <string name="lbl_date">Data</string>
+    <string name="lbl_description">Descrizione</string>
+    <string name="lbl_name">Nome</string>
+</resources>

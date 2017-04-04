@@ -1,8 +1,32 @@
 <resources>
-    <string name="fb_appid">fb717215405070309</string>
+    <string name="fb_appid" translatable="false">fb717215405070309</string>
 
 
-    <string name="app_name">CountOnMe</string>
+    <string name="app_name" translatable="false">CountOnMe</string>
     <string name="sharing_activities_title">Sharing activities</string>
+    <string name="expenses_title">Expenses</string>
+    <string name="sharing_activity_details_title">Sharing activity details</string>
+    <string name="expense_details_title">Expense details</string>
+
     <string name="empty_sharing_list_lbl">You do not have sharing activities yet</string>
+    <string name="total_balance_lbl">Total balance:</string>
+
+    <string name="lbl_description">Description</string>
+    <string name="lbl_name">Name</string>
+    <string name="lbl_amount">Amount</string>
+    <string name="lbl_currency">Currency</string>
+    <string name="lbl_date">Date</string>
+
+    <!-- Currencies -->
+    <string name="currency_euro_lbl">Euro</string>
+    <string name="currency_dollar_lbl">U.S. Dollar</string>
+    <string name="currency_pesetas_lbl">Pesetas</string>
+
+
+    <string-array name="currencies_array">
+        <item>@string/currency_dollar_lbl</item>
+        <item>@string/currency_euro_lbl</item>
+        <item>@string/currency_pesetas_lbl</item>
+    </string-array>
+
 </resources>

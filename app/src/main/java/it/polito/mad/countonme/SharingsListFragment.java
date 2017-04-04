@@ -36,6 +36,7 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
         mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activity_list );
         mSharActsList = new ArrayList<SharingActivity>();
         mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList );
+        mSharActsRv.setAdapter( mSharActsAdapter );
         return view;
     }
 

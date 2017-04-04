@@ -10,4 +10,6 @@
     <dimen name="list_item_view_spacing">10dp</dimen>
     <dimen name="list_item_main_text_size">12sp</dimen>
     <dimen name="list_item_height">60dp</dimen>
+    <dimen name="fragment_view_padding">10dp</dimen>
+    <dimen name="label_padding_10">10dp</dimen>
 </resources>

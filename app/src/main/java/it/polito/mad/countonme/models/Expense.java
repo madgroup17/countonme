@@ -1,5 +1,7 @@
 package it.polito.mad.countonme.models;
 
+import java.util.Date;
+
 /**
  * The expense data model
  * Created by francescobruno on 03/04/17.
@@ -15,14 +17,15 @@ public class Expense {
     private String mImageUrl;
     private String mParentSharingActivityId;
     private Boolean mIsSurvey;
+    private Date mDate;
 
     public Expense() {
-        this( null, null, null, null, 0.0, 0.0, null, null, false );
+        this( null, null, null, null, 0.0, 0.0, null, null, null, false );
     }
 
 
     public Expense(String mName, String mDescription, String mSharingActivityCurrency, String mExpenseCurrenty,
-                   Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Boolean mIsSurvey) {
+                   Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Date date, Boolean mIsSurvey) {
         this.mName = mName;
         this.mDescription = mDescription;
         this.mSharingActivityCurrency = mSharingActivityCurrency;
@@ -31,7 +34,7 @@ public class Expense {
         this.mConvertedAmount = mConvertedAmount;
         this.mImageUrl = mImageUrl;
         this.mParentSharingActivityId = mParentSharingActivityId;
-
+        this.mDate = date;
         this.mIsSurvey = mIsSurvey;
     }
 
@@ -90,6 +93,10 @@ public class Expense {
     public void setImageUrl(String mImageUrl) {
         this.mImageUrl = mImageUrl;
     }
+
+    public Date getDate() { return mDate; }
+
+    public void setDate( Date date ) { mDate = date; }
 
     public Boolean getIsSurvey() {
         return mIsSurvey;

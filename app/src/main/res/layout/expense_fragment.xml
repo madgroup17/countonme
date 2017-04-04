@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:padding="@dimen/fragment_view_padding"
+        android:id="@+id/linearLayout">
+
+        <ImageView
+            android:id="@+id/expense_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:cropToPadding="false"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/img_sharing_default" />
+
+        <EditText
+            android:id="@+id/expense_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/lbl_name"
+            android:inputType="textPersonName"
+            android:paddingLeft="@dimen/label_padding_10" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/expense_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearLayout"
+        android:ems="10"
+        android:hint="@string/lbl_description"
+        android:inputType="textShortMessage"
+        android:lines="4"
+        android:maxLines="4"
+        android:selectAllOnFocus="false" />
+
+    <EditText
+        android:id="@+id/expense_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/lbl_amount"
+        android:inputType="numberDecimal"
+        android:paddingLeft="@dimen/label_padding_10" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/label_padding_10"
+        android:paddingLeft="@dimen/label_padding_10"
+        android:text="@string/lbl_currency" />
+
+    <Spinner
+        android:id="@+id/currency_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/currencies_array"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/label_padding_10"
+        android:paddingLeft="@dimen/label_padding_10"
+        android:text="@string/lbl_date" />
+
+    <EditText
+        android:id="@+id/expense_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="date" />
+
+</LinearLayout>
