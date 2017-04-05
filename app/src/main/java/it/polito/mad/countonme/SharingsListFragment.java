@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,10 +20,11 @@ import java.util.Map;
 
 import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.interfaces.OnListItemClickListener;
 import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
 import it.polito.mad.countonme.models.SharingActivity;
 
-public class SharingsListFragment extends Fragment implements ValueEventListener {
+public class SharingsListFragment extends Fragment implements ValueEventListener, OnListItemClickListener {
     private RecyclerView mSharActsRv;
     private SharingActivitiesAdapter mSharActsAdapter;
     private List<SharingActivity> mSharActsList;
@@ -38,12 +40,13 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
         View view = inflater.inflate(R.layout.sharing_list_fragment, container, false);
         mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activity_list );
         mSharActsList = new ArrayList<SharingActivity>();
-        mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList );
+        mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList, this );
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mSharActsRv.setLayoutManager( layoutManager );
         mSharActsRv.setAdapter( mSharActsAdapter );
         mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
+
         return view;
     }
 
@@ -73,6 +76,13 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
+
+    }
+
+    @Override
+    public void onItemClick( Object clickedItem ) {
+        SharingActivity activity = (SharingActivity) clickedItem;
+        Toast.makeText( getActivity(), "ho selezionato " + activity.getName(), Toast.LENGTH_LONG ).show();
 
     }
 }
