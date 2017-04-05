@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
+ * Fragment for expenses list visualization
  * Created by francescobruno on 04/04/17.
  */
 
@@ -24,5 +25,9 @@ public class ExpensesListFragment extends Fragment {
                               ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expenses_list_fragment, container, false);
         return view;
+    }
+
+    public void setSharingActivityKey( String shActKey ) {
+        // do your stuff here buddy
     }
 }

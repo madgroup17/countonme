@@ -29,4 +29,7 @@
         <item>@string/currency_pesetas_lbl</item>
     </string-array>
 
+
+    <string name="temp_not_implemeted_lbl">Not implememted yet</string>
+
 </resources>

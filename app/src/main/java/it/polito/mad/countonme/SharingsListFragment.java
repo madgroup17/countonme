@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
 import it.polito.mad.countonme.models.SharingActivity;
@@ -42,6 +43,7 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mSharActsRv.setLayoutManager( layoutManager );
         mSharActsRv.setAdapter( mSharActsAdapter );
+        mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
         return view;
     }
 

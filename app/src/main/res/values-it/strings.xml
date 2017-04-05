@@ -8,4 +8,11 @@
     <string name="lbl_date">Data</string>
     <string name="lbl_description">Descrizione</string>
     <string name="lbl_name">Nome</string>
+    <string name="empty_sharing_list_lbl">Non hai ancora spese condivise</string>
+    <string name="expense_details_title">Dettali spesa</string>
+    <string name="expenses_title">Spese</string>
+    <string name="sharing_activities_title">Attività di condivisione</string>
+    <string name="sharing_activity_details_title">Dettagli condivisione</string>
+    <string name="total_balance_lbl">Bilancio Totale</string>
+    <string name="temp_not_implemeted_lbl">Funzionalità non disponibile</string>
 </resources>
