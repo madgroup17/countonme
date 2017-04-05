@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingLeft="@dimen/list_item_view_spacing"
+        android:textSize="@dimen/interface_text_size"
         android:textColor="@android:color/black"/>
 
 </LinearLayout>

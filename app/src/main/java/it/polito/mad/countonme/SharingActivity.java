@@ -9,7 +9,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import java.util.Date;
+
+import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
+import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 
 public class SharingActivity extends AppCompatActivity implements IActionReportBack {
@@ -37,8 +41,8 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         setContentView(R.layout.activity_sharing);
         mFragmentManager = getFragmentManager();
         loadAppFragments();
-        showAppFragment( AppFragment.SHARING_ACTIVITIES, false );
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable( Color.rgb( 102, 187, 106 )) );
+        showAppFragment(AppFragment.SHARING_ACTIVITIES, false);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
     }
 
     public void showAppFragment( AppFragment fragment, boolean addToBackStack ) {
