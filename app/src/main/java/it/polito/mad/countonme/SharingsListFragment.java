@@ -3,6 +3,7 @@ package it.polito.mad.countonme;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,10 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
         View view = inflater.inflate(R.layout.sharing_list_fragment, container, false);
         mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activity_list );
         mSharActsList = new ArrayList<SharingActivity>();
-        mSharActsList.add( new SharingActivity( "Activity name", "A short description",  null, "euro"));
         mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList );
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mSharActsRv.setLayoutManager( layoutManager );
         mSharActsRv.setAdapter( mSharActsAdapter );
         return view;
     }
@@ -56,8 +59,13 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
 
     @Override
     public void onDataChange( DataSnapshot dataSnapshot ) {
-        //mSharActsList.clear();
-        mSharActsList.add( new SharingActivity( "Activity name", "A short description",  null, "euro"));
+        SharingActivity tmp;
+        mSharActsList.clear();
+        for ( DataSnapshot data : dataSnapshot.getChildren() ) {
+            tmp = (SharingActivity) data.getValue( SharingActivity.class );
+            tmp.setKey( (String) data.getKey() );
+            mSharActsList.add( tmp );
+        }
         mSharActsAdapter.notifyDataSetChanged();
     }
 
