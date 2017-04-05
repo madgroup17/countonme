@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +37,23 @@ public class ExpensesListFragment extends Fragment implements View.OnClickListen
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        adjustActionBar();
+    }
+
+    @Override
     public void onClick(View v) {
         // we just have the floating action button to manage here
         Activity parentActivity  = getActivity();
         if( parentActivity instanceof IActionReportBack) {
             ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, null) );
         }
+    }
+
+
+
+    private void adjustActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expenses_title );
     }
 }

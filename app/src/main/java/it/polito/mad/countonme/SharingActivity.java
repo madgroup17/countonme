@@ -38,9 +38,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sharing);
-
         mFragmentManager = getFragmentManager();
-        loadBarTitles();
         loadAppFragments();
         showAppFragment( AppFragment.SHARING_ACTIVITIES, false );
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable( Color.rgb( 102, 187, 106 )) );
@@ -49,13 +47,11 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     public void showAppFragment( AppFragment fragment, boolean addToBackStack ) {
         if( fragment == mCurrentFragment ) return; // there is no need to change in this case
         mCurrentFragment = fragment;
-        getSupportActionBar().setTitle( mTitlesResIds[ mCurrentFragment.ordinal() ] );
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace( android.R.id.content, mFragmentsList[ mCurrentFragment.ordinal() ] );
         if( addToBackStack == true ) transaction.addToBackStack( fragment.name() );
         transaction.commit();
     }
-
 
     /*public void addNewSharingActivity( View view ) {
         it.polito.mad.countonme.models.SharingActivity prova = new it.polito.mad.countonme.models.SharingActivity(
@@ -89,14 +85,6 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = null;
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ] = new ExpenseFragment();
         // load of other fragments here
-    }
-
-    private void loadBarTitles() {
-        mTitlesResIds[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = R.string.sharing_activities_title;
-        mTitlesResIds[ AppFragment.EXPENSES.ordinal() ] = R.string.expenses_title;
-        mTitlesResIds[ AppFragment.SHARING_DETAILS.ordinal() ] = R.string.sharing_activity_details_title;
-        mTitlesResIds[ AppFragment.EXPENSE_DETAILS.ordinal() ] = R.string.expense_details_title;
-        // add other titles here
     }
 
 

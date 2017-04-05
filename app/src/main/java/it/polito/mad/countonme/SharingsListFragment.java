@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -64,6 +65,7 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
     @Override
     public void onResume() {
         super.onResume();
+        adjustActionBar();
         DataManager.getsInstance().getSharingActivitiesReference().addValueEventListener( this );
     }
 
@@ -106,5 +108,9 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
         if( parentActivity instanceof IActionReportBack) {
             ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_SHARING_ACTIVITY, null) );
         }
+    }
+
+    private void adjustActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.sharing_activities_title );
     }
 }
