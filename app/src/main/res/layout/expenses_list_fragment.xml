@@ -4,11 +4,34 @@
     android:layout_height="match_parent"
     android:background="@color/windowBackground">
 
+    <LinearLayout
+        android:id="@+id/total_balance_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/label_padding_10">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/interface_text_size"
+            android:textColor="@color/textColor"
+            android:text="@string/total_balance_lbl"/>
+        <TextView
+            android:id="@+id/total_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/interface_text_size"
+            android:textColor="@color/textColor"/>
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sharing_activity_list"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/total_balance_container"/>
 
 
     <android.support.design.widget.FloatingActionButton
