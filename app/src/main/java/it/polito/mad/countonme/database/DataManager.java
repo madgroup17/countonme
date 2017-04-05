@@ -49,10 +49,13 @@ public class DataManager {
         return mDatabase.getReference( CHILD_EXPENSES );
     }
 
-    public DatabaseReference getExpenseReference( String expenseKey) {
-        return mDatabase.getReference( CHILD_EXPENSES + "/" + expenseKey );
+    public DatabaseReference getSharActExpensesReference( String shActKey ) {
+        return mDatabase.getReference( CHILD_EXPENSES + "/" + shActKey );
     }
 
+    public DatabaseReference getExpenseReference( String shActKey, String expKey ) {
+        return mDatabase.getReference( CHILD_EXPENSES + "/" + shActKey + "/" + expKey );
+    }
 
     // Sharing activities management
 
@@ -67,11 +70,12 @@ public class DataManager {
 
     // Expenses management
 
-    public void addNewExpense(Expense expense, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
+    public void addNewExpense(String parentKey, Expense expense, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
         try {
-            addNewData( expense, CHILD_EXPENSES, completionListener );
+            if( parentKey == null || parentKey.length() == 0) throw new InvalidDataException();
+            addNewData( expense, CHILD_EXPENSES + "/" + parentKey, completionListener );
         } catch( InvalidDataException ex ) {
-            throw new InvalidDataException("Invalid Expense has been provided" );
+            throw new InvalidDataException("addNewExpense: Invalid parameters has been provided" );
         }
     }
 
