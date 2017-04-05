@@ -10,6 +10,7 @@ public class SharingActivity {
     private String mDescription;
     private String mImageUrl;
     private String mCurrency;
+    private String mKey;
 
     public SharingActivity() {
         this( null, null, null, null );
@@ -48,6 +49,14 @@ public class SharingActivity {
 
     public String getCurrency() {
         return mCurrency;
+    }
+
+    public String getKey() {
+        return mKey;
+    }
+
+    public void setKey( String key ) {
+        mKey = key;
     }
 
 }

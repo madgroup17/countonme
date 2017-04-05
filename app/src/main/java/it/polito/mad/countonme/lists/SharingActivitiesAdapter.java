@@ -19,22 +19,22 @@ import it.polito.mad.countonme.models.SharingActivity;
  * Created by francescobruno on 03/04/17.
  */
 
-public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivitiesAdapter.ViewHolder> {
+public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivitiesAdapter.ShActViewHolder> {
 
     private List<SharingActivity> mSharingActivities;
     private LayoutInflater mInflater;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ShActViewHolder extends RecyclerView.ViewHolder {
         ImageView mImgView;
         TextView  mTextView;
 
-        ViewHolder(View itemView ) {
+        ShActViewHolder(View itemView ) {
             super( itemView );
             mImgView = (ImageView) itemView.findViewById(R.id.sharing_activity_img);
             mTextView = (TextView) itemView.findViewById( R.id.sharing_activity_name );
         }
 
-        public void setData( SharingActivity activity, int positon ) {
+        public void setData( SharingActivity activity) {
             String imgUrl = activity.getImageUrl();
 
             if( imgUrl != null && imgUrl.length() > 0 )
@@ -52,21 +52,18 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ShActViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.sharing_activity_item_list, parent, false);
-        ViewHolder holder = new ViewHolder( view );
-        return holder;
+        return new ShActViewHolder( view );
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.setData( mSharingActivities.get( position ), position );
+    public void onBindViewHolder(ShActViewHolder holder, int position) {
+        holder.setData( mSharingActivities.get( position )  );
     }
 
     @Override
     public int getItemCount() {
-        if( mSharingActivities == null )
-            return 0;
         return mSharingActivities.size();
     }
 }

@@ -62,6 +62,7 @@ public class SharingActivity extends AppCompatActivity {
 
     private void loadAppFragments() {
         mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingsListFragment();
+        mFragmentManager.beginTransaction().add( mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ], "primo" ).commit();
         mFragmentsList[ AppFragment.EXPENSES.ordinal() ]  = new ExpensesListFragment();
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = null;
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ] = new ExpenseFragment();

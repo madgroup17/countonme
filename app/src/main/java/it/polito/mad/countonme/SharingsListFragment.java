@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
@@ -35,6 +36,7 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
         View view = inflater.inflate(R.layout.sharing_list_fragment, container, false);
         mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activity_list );
         mSharActsList = new ArrayList<SharingActivity>();
+        mSharActsList.add( new SharingActivity( "Activity name", "A short description",  null, "euro"));
         mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList );
         mSharActsRv.setAdapter( mSharActsAdapter );
         return view;
@@ -54,7 +56,9 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
 
     @Override
     public void onDataChange( DataSnapshot dataSnapshot ) {
-        // create the data list here
+        //mSharActsList.clear();
+        mSharActsList.add( new SharingActivity( "Activity name", "A short description",  null, "euro"));
+        mSharActsAdapter.notifyDataSetChanged();
     }
 
     @Override
