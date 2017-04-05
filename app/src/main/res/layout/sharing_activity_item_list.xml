@@ -9,8 +9,7 @@
         android:id="@+id/sharing_activity_img"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/list_item_height"
-        android:scaleType="fitCenter"
-        android:src="@drawable/img_sharing_default"/>
+        android:scaleType="fitCenter"/>
 
     <TextView
         android:id="@+id/sharing_activity_name"
