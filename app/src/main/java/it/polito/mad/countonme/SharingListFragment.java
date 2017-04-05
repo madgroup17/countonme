@@ -28,6 +28,8 @@ public class SharingListFragment extends Fragment {
         list.add("Hello1");
         list.add("Hello1");
 
+
+
         sharingActivitiesRVAdapter = new SharingListAdapter(list,getActivity());
         layoutManager = new LinearLayoutManager(getActivity());
         sharingActivitiesRV.setLayoutManager(layoutManager);

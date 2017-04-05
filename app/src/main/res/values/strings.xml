@@ -3,10 +3,19 @@
 
 
     <string name="app_name">CountOnMe</string>
-    <string name="sharing_activities_title">Sharing activities</string>
+    <string name="sharing_activities_title">Sharing activity</string>
     <string name="detail">Detail</string>
     <string name="empty_sharing_list_lbl">You do not have sharing activities yet</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- DATA -->
+    <!-- DATA -->
+
+    <!-- DATA -->
+
+    <!-- DATA -->
+
+
 </resources>
