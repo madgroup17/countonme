@@ -4,6 +4,7 @@
 
 
     <dimen name="empty_list_text_size">18sp</dimen>
+    <dimen name="interface_text_size">20sp</dimen>
 
 
     <dimen name="list_item_margin">10dp</dimen>

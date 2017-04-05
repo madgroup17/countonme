@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/windowBackground">
+    android:background="@color/windowBackground"
+    android:weightSum="1">
 
 
     <LinearLayout
@@ -65,7 +66,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/label_padding_10"
         android:paddingLeft="@dimen/label_padding_10"
-        android:text="@string/lbl_currency" />
+        android:text="@string/lbl_currency"
+        android:textSize="@dimen/interface_text_size" />
 
     <Spinner
         android:id="@+id/currency_spinner"
@@ -78,13 +80,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/label_padding_10"
         android:paddingLeft="@dimen/label_padding_10"
-        android:text="@string/lbl_date" />
+        android:text="@string/lbl_date"
+        android:textSize="@dimen/interface_text_size" />
 
-    <EditText
-        android:id="@+id/expense_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="date" />
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:layout_weight="0.33" />
 
 </LinearLayout>
