@@ -32,6 +32,8 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     private int[] mTitlesResIds = new int[ AppFragment.NUM_OF_FRAGMENTS.ordinal() ];
     private FragmentManager mFragmentManager;
 
+    public String mCurrentShActKey;
+
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,9 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
             case ACTION_VIEW_EXPENSES_LIST:
                 handleActionViewExpensesList( action.getActionData() );
                 break;
+            case ACTION_ADD_NEW_EXPENSE:
+                handleActionAddNewExpense();
+                break;
             default:
                 Toast.makeText( this, getResources().getString( R.string.temp_not_implemeted_lbl), Toast.LENGTH_SHORT ).show();
                 break;
@@ -80,7 +85,6 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
 
     private void loadAppFragments() {
         mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingsListFragment();
-        mFragmentManager.beginTransaction().add( mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ], "primo" ).commit();
         mFragmentsList[ AppFragment.EXPENSES.ordinal() ]  = new ExpensesListFragment();
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = null;
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ] = new ExpenseFragment();
@@ -99,8 +103,12 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     // Action handlers
     private void handleActionViewExpensesList( Object data )
     {
-        String shActKey = (String) data;
+        mCurrentShActKey = (String) data;
         showAppFragment( AppFragment.EXPENSES, true );
+    }
+
+    private void handleActionAddNewExpense() {
+        showAppFragment( AppFragment.EXPENSE_DETAILS, true );
     }
 
 }

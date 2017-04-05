@@ -20,7 +20,7 @@ public class ReportBackAction {
     private ActionEnum mAction;
     private Object mActionData;
 
-    ReportBackAction( ActionEnum action, Object actionData )
+    public ReportBackAction( ActionEnum action, Object actionData )
     {
         mAction = action;
         mActionData = actionData;

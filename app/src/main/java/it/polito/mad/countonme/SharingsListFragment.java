@@ -1,8 +1,10 @@
 package it.polito.mad.countonme;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,14 +22,19 @@ import java.util.Map;
 
 import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.OnListItemClickListener;
 import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
+import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
 
-public class SharingsListFragment extends Fragment implements ValueEventListener, OnListItemClickListener {
+public class SharingsListFragment extends Fragment implements ValueEventListener, OnListItemClickListener, View.OnClickListener {
     private RecyclerView mSharActsRv;
     private SharingActivitiesAdapter mSharActsAdapter;
     private List<SharingActivity> mSharActsList;
+
+    private FloatingActionButton mActionButton;
+
 
     @Override
     public void onAttach(Context context) {
@@ -38,6 +45,10 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sharing_list_fragment, container, false);
+
+        mActionButton = ( FloatingActionButton ) view.findViewById( R.id.fab );
+        mActionButton.setOnClickListener( this );
+
         mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activity_list );
         mSharActsList = new ArrayList<SharingActivity>();
         mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList, this );
@@ -82,7 +93,18 @@ public class SharingsListFragment extends Fragment implements ValueEventListener
     @Override
     public void onItemClick( Object clickedItem ) {
         SharingActivity activity = (SharingActivity) clickedItem;
-        Toast.makeText( getActivity(), "ho selezionato " + activity.getName(), Toast.LENGTH_LONG ).show();
+        Activity parentActivity  = getActivity();
+        if( parentActivity instanceof IActionReportBack ) {
+            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSES_LIST, ((SharingActivity) clickedItem).getKey()));
+        }
+    }
 
+    @Override
+    public void onClick(View v) {
+        // we just have the floating action button to manage here
+        Activity parentActivity  = getActivity();
+        if( parentActivity instanceof IActionReportBack) {
+            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_SHARING_ACTIVITY, null) );
+        }
     }
 }
