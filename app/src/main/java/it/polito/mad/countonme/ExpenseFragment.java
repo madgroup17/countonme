@@ -31,6 +31,9 @@ public class ExpenseFragment extends BaseFragment {
     }
 
     private void adjustActionBar() {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
+        if( getData() instanceof String )
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_add_new_title );
+        else
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
     }
 }
