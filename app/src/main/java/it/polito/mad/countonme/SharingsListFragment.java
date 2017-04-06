@@ -1,7 +1,6 @@
 package it.polito.mad.countonme;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,7 +17,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.database.DataManager;
@@ -29,7 +26,7 @@ import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
 
-public class SharingsListFragment extends Fragment implements ValueEventListener, OnListItemClickListener, View.OnClickListener {
+public class SharingsListFragment extends BaseFragment implements ValueEventListener, OnListItemClickListener, View.OnClickListener {
     private RecyclerView mSharActsRv;
     private SharingActivitiesAdapter mSharActsAdapter;
     private List<SharingActivity> mSharActsList;

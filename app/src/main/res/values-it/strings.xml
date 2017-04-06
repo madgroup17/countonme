@@ -15,4 +15,5 @@
     <string name="sharing_activity_details_title">Dettagli condivisione</string>
     <string name="total_balance_lbl">Bilancio Totale</string>
     <string name="temp_not_implemeted_lbl">Funzionalità non disponibile</string>
+    <string name="expense_add_new_title">Nuova spesa</string>
 </resources>

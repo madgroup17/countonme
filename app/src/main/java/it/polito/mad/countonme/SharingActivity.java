@@ -1,6 +1,5 @@
 package it.polito.mad.countonme;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.graphics.Color;
@@ -9,11 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import java.util.Date;
-
-import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
-import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 
 public class SharingActivity extends AppCompatActivity implements IActionReportBack {
@@ -29,11 +24,9 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     };
 
     private AppFragment mCurrentFragment;
-    private Fragment[] mFragmentsList = new Fragment[ AppFragment.NUM_OF_FRAGMENTS.ordinal() ];
+    private BaseFragment[] mFragmentsList = new BaseFragment[AppFragment.NUM_OF_FRAGMENTS.ordinal() ];
     private int[] mTitlesResIds = new int[ AppFragment.NUM_OF_FRAGMENTS.ordinal() ];
     private FragmentManager mFragmentManager;
-
-    public String mCurrentShActKey;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -72,7 +65,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
                 handleActionViewExpensesList( action.getActionData() );
                 break;
             case ACTION_ADD_NEW_EXPENSE:
-                handleActionAddNewExpense();
+                handleActionAddNewExpense( action.getActionData() );
                 break;
             default:
                 Toast.makeText( this, getResources().getString( R.string.temp_not_implemeted_lbl), Toast.LENGTH_SHORT ).show();
@@ -92,11 +85,12 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     // Action handlers
     private void handleActionViewExpensesList( Object data )
     {
-        mCurrentShActKey = (String) data;
+        mFragmentsList[ AppFragment.EXPENSES.ordinal() ].setData( (String) data );
         showAppFragment( AppFragment.EXPENSES, true );
     }
 
-    private void handleActionAddNewExpense() {
+    private void handleActionAddNewExpense( Object data ) {
+        mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ].setData( (String) data );
         showAppFragment( AppFragment.EXPENSE_DETAILS, true );
     }
 

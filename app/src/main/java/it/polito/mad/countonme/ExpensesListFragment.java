@@ -1,7 +1,6 @@
 package it.polito.mad.countonme;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,15 +23,15 @@ import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.lists.ExpenseAdapter;
-import it.polito.mad.countonme.models.*;
-import it.polito.mad.countonme.models.SharingActivity;
+import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.ReportBackAction;
 
 /**
  * Fragment for expenses list visualization
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpensesListFragment extends Fragment implements  View.OnClickListener, ValueEventListener {
+public class ExpensesListFragment extends BaseFragment implements  View.OnClickListener, ValueEventListener {
     private FloatingActionButton mActionButton;
     private RecyclerView mExpensesRv;
     private ExpenseAdapter mExpensesAdapter;
@@ -68,13 +67,13 @@ public class ExpensesListFragment extends Fragment implements  View.OnClickListe
     public void onResume() {
         super.onResume();
         adjustActionBar();
-        DataManager.getsInstance().getSharActExpensesReference("-KgyKEU7hgUSKEKNiIpr").addValueEventListener( this );
+        DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).addValueEventListener( this );
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        DataManager.getsInstance().getSharActExpensesReference("-KgyKEU7hgUSKEKNiIpr").removeEventListener( this );
+        DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).removeEventListener( this );
     }
 
     @Override
@@ -96,7 +95,7 @@ public class ExpensesListFragment extends Fragment implements  View.OnClickListe
         // we just have the floating action button to manage here
         Activity parentActivity  = getActivity();
         if( parentActivity instanceof IActionReportBack) {
-            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, null) );
+            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, getData()) );
         }
     }
 

@@ -1,6 +1,5 @@
 package it.polito.mad.countonme;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +11,7 @@ import android.view.ViewGroup;
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpenseFragment extends Fragment {
+public class ExpenseFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

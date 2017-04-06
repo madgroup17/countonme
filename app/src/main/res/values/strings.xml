@@ -7,6 +7,7 @@
     <string name="expenses_title">Expenses</string>
     <string name="sharing_activity_details_title">Sharing activity details</string>
     <string name="expense_details_title">Expense details</string>
+    <string name="expense_add_new_title">New expense</string>
 
     <string name="empty_sharing_list_lbl">You do not have sharing activities yet</string>
     <string name="total_balance_lbl">Total balance:</string>
