@@ -38,7 +38,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
             showAppFragment(AppFragment.SHARING_ACTIVITIES, false);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
     }
-    
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

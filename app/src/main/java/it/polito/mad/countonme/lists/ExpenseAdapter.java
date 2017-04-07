@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 import it.polito.mad.countonme.R;
 import it.polito.mad.countonme.interfaces.OnListItemClickListener;
@@ -22,12 +25,16 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
     public static class ExpViewHolder extends RecyclerView.ViewHolder {
         ImageView mImgView;
-        TextView mTextView;
+        TextView mTvName;
+        TextView mTvAmount;
+
+        private static NumberFormat mFormatter = new DecimalFormat("#0.00");
 
         ExpViewHolder(View itemView ) {
             super( itemView );
             mImgView = (ImageView) itemView.findViewById(R.id.expense_img);
-            mTextView = (TextView) itemView.findViewById( R.id.expense_name );
+            mTvName = (TextView) itemView.findViewById( R.id.expense_name );
+            mTvAmount = (TextView) itemView.findViewById( R.id.expense_amount);
         }
 
         public void setData(final Expense expense, final OnListItemClickListener listener ) {
@@ -38,7 +45,8 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
             else
                 mImgView.setImageResource(R.drawable.img_sharing_default);
 
-            mTextView.setText( expense.getName() );
+            mTvName.setText( expense.getName() );
+            mTvAmount.setText( mFormatter.format( expense.getAmount() ) + "" );
 
             // attach the listener to the view
             itemView.setOnClickListener(new View.OnClickListener() {

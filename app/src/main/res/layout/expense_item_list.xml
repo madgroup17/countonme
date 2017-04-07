@@ -21,7 +21,6 @@
         android:layout_toRightOf="@+id/expense_img">
         <TextView
             android:id="@+id/expense_name"
-            android:text="kjhkashdggkjdsgjkads"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -32,14 +31,13 @@
 
         <TextView
             android:id="@+id/expense_amount"
-            android:text="adfsdfsdfsf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:paddingLeft="@dimen/list_item_view_spacing"
             android:textColor="@android:color/black"
             android:textSize="@dimen/interface_small_text_size"
-            android:layout_below="@+id/expense_name"
+            android:layout_below="@+id/expense_amount"
             />
     </LinearLayout>
 

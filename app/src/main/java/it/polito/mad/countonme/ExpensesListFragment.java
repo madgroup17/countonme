@@ -16,6 +16,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,8 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
     private ExpenseAdapter mExpensesAdapter;
     private List<Expense> mExpensesList;
     private TextView mTotalBalance;
+
+    private NumberFormat mFormatter = new DecimalFormat("#0.00");
 
 
 
@@ -87,7 +91,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
             mExpensesList.add( tmp );
         }
         mExpensesAdapter.notifyDataSetChanged();
-        mTotalBalance.setText(total.doubleValue()+"");
+        mTotalBalance.setText( mFormatter.format( total.doubleValue() ) + "");
     }
 
     @Override

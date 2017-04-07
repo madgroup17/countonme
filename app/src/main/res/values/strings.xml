@@ -18,6 +18,9 @@
     <string name="lbl_currency">Currency</string>
     <string name="lbl_date">Date</string>
 
+    <string name="lbl_saving_error">Saving error. Please try again</string>
+    <string name="lbl_expense_saved">New expense saved successfully</string>
+
     <!-- Currencies -->
     <string name="currency_euro_lbl">Euro</string>
     <string name="currency_dollar_lbl">U.S. Dollar</string>
