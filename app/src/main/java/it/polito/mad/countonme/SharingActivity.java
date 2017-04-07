@@ -34,29 +34,26 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         setContentView(R.layout.activity_sharing);
         mFragmentManager = getFragmentManager();
         loadAppFragments();
-        showAppFragment(AppFragment.SHARING_ACTIVITIES, false);
+        if( savedInstanceState == null )
+            showAppFragment(AppFragment.SHARING_ACTIVITIES, false);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
     }
+    
 
-    public void showAppFragment( AppFragment fragment, boolean addToBackStack ) {
-        if( fragment == mCurrentFragment ) return; // there is no need to change in this case
-        mCurrentFragment = fragment;
-        FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace( android.R.id.content, mFragmentsList[ mCurrentFragment.ordinal() ] );
-        if( addToBackStack == true ) transaction.addToBackStack( fragment.name() );
-        transaction.commit();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("SAVED", true);
     }
 
-    /*public void addNewSharingActivity( View view ) {
-        it.polito.mad.countonme.models.SharingActivity prova = new it.polito.mad.countonme.models.SharingActivity(
-                "My sharing activity", "This is a simple sharing activity used to test the code plm", "", "euro"
-        );
-        try {
-            DataManager.getsInstance().addNewSharingActivity(prova, null);
-        } catch (InvalidDataException e) {
-            e.printStackTrace();
-        }
-    } */
+    public void showAppFragment(AppFragment fragment, boolean addToBackStack ) {
+        if (fragment == mCurrentFragment) return; // there is no need to change in this case
+        mCurrentFragment = fragment;
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(android.R.id.content, mFragmentsList[mCurrentFragment.ordinal()]);
+        if (addToBackStack == true) transaction.addToBackStack(fragment.name());
+        transaction.commit();
+    }
 
     @Override
     public void onAction(ReportBackAction action) {
