@@ -52,7 +52,10 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick( expense );
+                    if (listener!=null){
+                        listener.onItemClick( expense );
+                    }
+
                 }
             });
         }

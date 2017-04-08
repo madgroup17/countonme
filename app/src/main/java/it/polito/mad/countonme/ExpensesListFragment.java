@@ -108,7 +108,6 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
 
     }
 
-
     private void adjustActionBar() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expenses_title );
     }

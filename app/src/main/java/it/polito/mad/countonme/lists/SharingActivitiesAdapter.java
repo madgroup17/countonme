@@ -54,7 +54,9 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick( activity );
+                    if (listener!=null){
+                        listener.onItemClick( activity );
+                    }
                 }
             });
         }

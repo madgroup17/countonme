@@ -18,4 +18,5 @@
     <string name="expense_add_new_title">Nuova spesa</string>
     <string name="lbl_expense_saved">Nuova voce di spesa salvata</string>
     <string name="lbl_saving_error">Errore in fase di salvataggio. Riprova</string>
+    <string name="example">esempio</string>
 </resources>

@@ -26,6 +26,7 @@
     <string name="currency_dollar_lbl">U.S. Dollar</string>
     <string name="currency_pesetas_lbl">Pesetas</string>
 
+    <string name="example">example</string>
 
     <string-array name="currencies_array">
         <item>@string/currency_dollar_lbl</item>
