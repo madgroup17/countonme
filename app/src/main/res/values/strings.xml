@@ -3,6 +3,7 @@
 
 
     <string name="app_name" translatable="false">CountOnMe</string>
+    <string name="login_title" translatable="false">Login</string>
     <string name="sharing_activities_title">Sharing activities</string>
     <string name="expenses_title">Expenses</string>
     <string name="sharing_activity_details_title">Sharing activity details</string>
