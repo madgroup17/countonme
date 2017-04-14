@@ -51,6 +51,94 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
         return view;
     }
 
+    /******************************************************************************************/
+
+    /******************************************************************************************/
+    // Methods
+
+    private void saveNewExpense()
+    {
+        if(IsValid())
+        {
+            Expense newExpense = new Expense();
+            newExpense.setName(mName.getText().toString());
+            newExpense.setDescription(mDescription.getText().toString());
+            newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
+            newExpense.setExpenseCurrenty(mCurrency.getSelectedItem().toString());
+            try {
+                DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);
+            } catch (InvalidDataException ex) {
+                Toast.makeText(getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private boolean IsValid()
+    {
+        if(mName.getText().toString().isEmpty())
+        {
+            Toast.makeText( getActivity(), getResources().getString( R.string.err_name), Toast.LENGTH_SHORT ).show();
+            return false;
+        }
+
+        if(mDescription.getText().toString().isEmpty())
+        {
+            Toast.makeText( getActivity(), getResources().getString( R.string.err_description), Toast.LENGTH_SHORT ).show();
+            return false;
+        }
+
+        if(mAmount.getText().toString().isEmpty())
+        {
+            Toast.makeText( getActivity(), getResources().getString( R.string.err_amount), Toast.LENGTH_SHORT ).show();
+            return false;
+        }
+        else
+        {
+            String strAmount = mAmount.getText().toString();
+            Double Amount = Double.parseDouble(strAmount);
+
+            if(Amount == 0)
+            {
+                Toast.makeText(getActivity(), getResources().getString(R.string.err_amount_range), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void ClearForm()
+    {
+        mName.setText("");
+        mDescription  .setText("");
+        mCurrency.setSelection(0);
+        mAmount.setText("");
+    }
+
+    /******************************************************************************************/
+
+    /******************************************************************************************/
+    //Events
+
+    @Override
+    public void onComplete( DatabaseError databaseError, DatabaseReference databaseReference) {
+        if( databaseError != null )
+        {
+            Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            ClearForm();
+            getFragmentManager().popBackStack();
+            Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /******************************************************************************************/
+
+    /******************************************************************************************/
+    //ActionBar
+
     @Override
     public void onResume() {
         super.onResume();
@@ -62,6 +150,20 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
         super.onStop();
         setHasOptionsMenu( false );
     }
+
+    private void adjustActionBar() {
+        if( getData() instanceof String )
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_add_new_title );
+        else
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
+        setHasOptionsMenu( true );
+    }
+
+
+    /******************************************************************************************/
+
+    /******************************************************************************************/
+    // create an action bar button
 
     @Override
     public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
@@ -79,35 +181,5 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
         }
     }
 
-
-    private void adjustActionBar() {
-        if( getData() instanceof String )
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_add_new_title );
-        else
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
-        setHasOptionsMenu( true );
-    }
-
-
-    private void saveNewExpense() {
-        Expense newExpense = new Expense();
-        newExpense.setName( mName.getText().toString() );
-        newExpense.setDescription( mDescription.getText().toString() );
-        newExpense.setAmount( Double.valueOf( mAmount.getText().toString() ) );
-        newExpense.setExpenseCurrenty( mCurrency.getSelectedItem().toString() );
-        try {
-            DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);
-        } catch ( InvalidDataException ex ) {
-            Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onComplete( DatabaseError databaseError, DatabaseReference databaseReference) {
-        if( databaseError != null )
-            Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
-        Toast.makeText( getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
-        getFragmentManager().popBackStack();
-    }
-
+    /******************************************************************************************/
 }

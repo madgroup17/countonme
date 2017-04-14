@@ -3,9 +3,13 @@
 
 
     <string name="app_name" translatable="false">CountOnMe</string>
+    <string name="login_title" translatable="false">Login</string>
+
     <string name="sharing_activities_title">Sharing activities</string>
-    <string name="expenses_title">Expenses</string>
+    <string name="sharing_activity_add_new_title">New Sharing activity</string>
     <string name="sharing_activity_details_title">Sharing activity details</string>
+
+    <string name="expenses_title">Expenses</string>
     <string name="expense_details_title">Expense details</string>
     <string name="expense_add_new_title">New expense</string>
 
@@ -34,6 +38,12 @@
         <item>@string/currency_pesetas_lbl</item>
     </string-array>
 
+    <string name="err_name">Enter Name</string>
+    <string name="err_description">Enter Description</string>
+    <string name="err_amount">Enter Amount</string>
+    <string name="err_amount_range">Amount should be grater than zero</string>
+
+    <string name="succ_save">Succesfuly Saved</string>
 
     <string name="temp_not_implemeted_lbl">Not implemented yet</string>
 
