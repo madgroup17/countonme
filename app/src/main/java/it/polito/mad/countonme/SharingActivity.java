@@ -89,7 +89,8 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
                 handleActionAddNewExpense( action.getActionData() );
                 break;
             default:
-                Toast.makeText( this, getResources().getString( R.string.temp_not_implemeted_lbl), Toast.LENGTH_SHORT ).show();
+                //Toast.makeText( this, getResources().getString( R.string.temp_not_implemeted_lbl), Toast.LENGTH_SHORT ).show();
+                handleActionAddNewSharingActivity(action.getActionData());
                 break;
         }
     }
@@ -111,7 +112,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         mFragmentsList[ AppFragment.LOGIN.ordinal() ] = new LoginFragment();
         mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingsListFragment();
         mFragmentsList[ AppFragment.EXPENSES.ordinal() ]  = new ExpensesListFragment();
-        mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = null;
+        mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = new SharingActivityFragment();
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ] = new ExpenseFragment();
     }
 
@@ -131,6 +132,11 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     private void handleActionAddNewExpense( Object data ) {
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ].setData( (String) data );
         showAppFragment( AppFragment.EXPENSE_DETAILS, true );
+    }
+
+    private void handleActionAddNewSharingActivity( Object data ) {
+        mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ].setData( (String) data );
+        showAppFragment( AppFragment.SHARING_DETAILS, true );
     }
 
 }
