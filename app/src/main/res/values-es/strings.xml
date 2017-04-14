@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="currency_dollar_lbl">Dolar</string>
+    <string name="currency_euro_lbl">Euro</string>
+    <string name="currency_pesetas_lbl">Peseta</string>
+    <string name="empty_sharing_list_lbl">No hay ninguna atividad todavia</string>
+    <string name="example">ejemplo</string>
+    <string name="expense_add_new_title">Nuevo gasto</string>
+    <string name="expense_details_title">Detalle del gasto</string>
+    <string name="expenses_title">Gastos</string>
+    <string name="lbl_amount">Cantidad</string>
+    <string name="lbl_currency">Moneda</string>
+    <string name="lbl_date">Fecha</string>
+    <string name="lbl_description">Descripción</string>
+    <string name="lbl_expense_saved">Nuego gasto se ha guardado exitosamente</string>
+    <string name="lbl_name">Nombre</string>
+    <string name="lbl_saving_error">Error en la fase de guardar. Intente de nuevo</string>
+    <string name="sharing_activities_title">Actividad a compartir</string>
+    <string name="sharing_activity_details_title">Detalles de la actividad a compartir</string>
+    <string name="temp_not_implemeted_lbl">Funcionalidad no implementada todavia</string>
+    <string name="total_balance_lbl">Balance total:</string>
+</resources>
