@@ -99,17 +99,17 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     // from FirebaseAuth.AuthStateListener interface
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        FirebaseUser user = firebaseAuth.getCurrentUser();
+        /*FirebaseUser user = firebaseAuth.getCurrentUser();
         if( user == null ) {
             getFragmentManager().popBackStack();
             showAppFragment(AppFragment.LOGIN, false);
-        }
+        }*/
     }
 
     /*    PRIVATE METHODS   */
 
     private void loadAppFragments() {
-        mFragmentsList[ AppFragment.LOGIN.ordinal() ] = new LoginFragment();
+        //mFragmentsList[ AppFragment.LOGIN.ordinal() ] = new LoginFragment();
         mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingsListFragment();
         mFragmentsList[ AppFragment.EXPENSES.ordinal() ]  = new ExpensesListFragment();
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = new SharingActivityFragment();
