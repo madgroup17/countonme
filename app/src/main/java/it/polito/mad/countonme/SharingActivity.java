@@ -50,7 +50,6 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     }
 
     public void showAppFragment( AppFragment fragment, boolean addToBackStack ) {
-        if (fragment == mCurrentFragment) return; // there is no need to change in this case
         mCurrentFragment = fragment;
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(android.R.id.content, mFragmentsList[mCurrentFragment.ordinal()]);
