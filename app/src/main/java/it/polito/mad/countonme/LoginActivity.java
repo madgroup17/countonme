@@ -20,12 +20,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.polito.mad.countonme.customviews.RequiredInputTextView;
 
 /**
  * Created by francescobruno on 17/04/17.
  */
 
 public class LoginActivity extends AppCompatActivity {
+
+    @BindView(R.id.rtv_email) RequiredInputTextView mRtvEmail;
+    @BindView(R.id.rtv_password) RequiredInputTextView mRtvPassword;
 
     @BindView(R.id.ed_email) EditText mEdEmail;
     @BindView(R.id.ed_password) EditText mEdPassword;
@@ -63,14 +67,8 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser() {
         String email = mEdEmail.getText().toString().trim();
         String password = mEdPassword.getText().toString().trim();
-        if( TextUtils.isEmpty( email) ) {
-            // change the state of the text view to show error
-            return;
-        }
-        if( TextUtils.isEmpty( password ) ) {
-            // change the state of the text view to show error
-            return;
-        }
+
+        if( checkData( email, password ) == false ) return;
 
         mProgressDialog.setTitle( R.string.lbl_logging_user );
         mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
@@ -91,6 +89,27 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+
+    private boolean checkData( String email, String password )
+    {
+        boolean dataProvided = true;
+
+        if( TextUtils.isEmpty( email) ) {
+            dataProvided = false;
+            mRtvEmail.showError();
+        } else {
+            mRtvEmail.cleanError();
+        }
+
+        if( TextUtils.isEmpty( password ) ) {
+            mRtvPassword.showError();
+        } else {
+            mRtvPassword.cleanError();
+        }
+
+        return dataProvided;
     }
 
     private void cleanLoginForm()

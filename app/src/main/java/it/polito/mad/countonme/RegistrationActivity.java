@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.models.User;
@@ -33,6 +34,10 @@ import it.polito.mad.countonme.models.User;
 public class RegistrationActivity extends AppCompatActivity
         implements DatabaseReference.CompletionListener{
 
+
+    @BindView(R.id.rtv_user_name) RequiredInputTextView mRtvUserName;
+    @BindView(R.id.rtv_email) RequiredInputTextView mRtvEmail;
+    @BindView(R.id.rtv_password) RequiredInputTextView mRtvPassword;
 
     @BindView(R.id.ed_user_name) EditText mEdUserName;
     @BindView(R.id.ed_email) EditText mEdEmail;
@@ -86,19 +91,8 @@ public class RegistrationActivity extends AppCompatActivity
         final String username = mEdUserName.getText().toString().trim();
         final String email = mEdEmail.getText().toString().trim();
         final String password = mEdPassword.getText().toString().trim();
-        if( TextUtils.isEmpty( username ) )
-        {
-            // change the state of the text view to show error
-            return;
-        }
-        if( TextUtils.isEmpty( email) ) {
-            // change the state of the text view to show error
-            return;
-        }
-        if( TextUtils.isEmpty( password ) ) {
-            // change the state of the text view to show error
-            return;
-        }
+
+        if( checkData( username, email, password ) == false ) return;
 
         mProgressDialog.setTitle( R.string.lbl_registering_user );
         mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
@@ -123,6 +117,34 @@ public class RegistrationActivity extends AppCompatActivity
             }
         });
 
+    }
+
+
+    private boolean checkData( String username, String email, String password )
+    {
+        boolean dataProvided = true;
+
+        if( TextUtils.isEmpty( username ) )  {
+            dataProvided = false;
+            mRtvUserName.showError();
+        } else {
+            mRtvUserName.cleanError();
+        }
+
+        if( TextUtils.isEmpty( email) ) {
+            dataProvided = false;
+            mRtvEmail.showError();
+        } else {
+            mRtvEmail.cleanError();
+        }
+
+        if( TextUtils.isEmpty( password ) ) {
+            mRtvPassword.showError();
+        } else {
+            mRtvPassword.cleanError();
+        }
+
+        return dataProvided;
     }
 
     private void cleanRegistrationForm()

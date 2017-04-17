@@ -13,4 +13,7 @@
 
 
     <color name="colorListItemDivider">#AAAAAA</color>
+
+    <color name="errorColor">#FF0000</color>
+
 </resources>

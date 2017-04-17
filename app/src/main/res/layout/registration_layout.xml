@@ -20,10 +20,14 @@
             android:text="@string/lbl_new_user"
             android:textSize="@dimen/title_text_size" />
         <!-- user name field -->
-        <TextView
+        <it.polito.mad.countonme.customviews.RequiredInputTextView
+            xmlns:CountOnMe="http://schemas.android.com/apk/res/it.polito.mad.countonme"
             android:layout_width="wrap_content"
+            android:id="@+id/rtv_user_name"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_user_name" />
+            android:text="@string/lbl_user_name"
+            CountOnMe:error_text="@string/lbl_required_field"
+            CountOnMe:error_color="@color/errorColor"/>
 
         <EditText
             android:id="@+id/ed_user_name"
@@ -32,10 +36,14 @@
             android:layout_margin="@dimen/ed_margin_10"
             android:hint="@string/lbl_user_name_hint" />
         <!-- email address field -->
-        <TextView
+        <it.polito.mad.countonme.customviews.RequiredInputTextView
+            xmlns:CountOnMe="http://schemas.android.com/apk/res/it.polito.mad.countonme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_email" />
+            android:id="@+id/rtv_email"
+            android:text="@string/lbl_email"
+            CountOnMe:error_text="@string/lbl_required_field"
+            CountOnMe:error_color="@color/errorColor"/>
 
         <EditText
             android:id="@+id/ed_email"
@@ -45,10 +53,14 @@
             android:hint="@string/lbl_email_hint"
             android:inputType="textEmailAddress" />
         <!-- password field -->
-        <TextView
+        <it.polito.mad.countonme.customviews.RequiredInputTextView
+            xmlns:CountOnMe="http://schemas.android.com/apk/res/it.polito.mad.countonme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lbl_password" />
+            android:id="@+id/rtv_password"
+            android:text="@string/lbl_password"
+            CountOnMe:error_text="@string/lbl_required_field"
+            CountOnMe:error_color="@color/errorColor"/>
 
         <EditText
             android:id="@+id/ed_password"
