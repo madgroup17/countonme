@@ -25,6 +25,34 @@
     <string name="lbl_saving_error">Saving error. Please try again</string>
     <string name="lbl_expense_saved">New expense saved successfully</string>
 
+    <!-- General strings -->
+    <string name="lbl_please_wait">Please wait...</string>
+
+
+    <!-- Login and new user registration -->
+    <string name="lbl_login">User login</string>
+    <string name="lbl_new_user">User registration</string>
+    <string name="lbl_login_btn">Login</string>
+
+    <string name="lbl_user_name">User name:</string>
+    <string name="lbl_email">Email address:</string>
+    <string name="lbl_password">Password:</string>
+    <string name="lbl_user_name_hint">Enter your user name</string>
+    <string name="lbl_email_hint">Enter your email</string>
+    <string name="lbl_password_hint">Enter your password</string>
+
+    <string name="lbl_registration_instr_1">Not have an account?&#032;</string>
+    <string name="lbl_registration_instr_2">Register here</string>
+
+    <string name="lbl_login_instr_1">Already Registered?&#032;</string>
+    <string name="lbl_login_instr_2">Sign in here</string>
+
+
+    <string name="lbl_register_user">Register user</string>
+
+    <string name="lbl_registering_user">Registering user</string>
+    <string name="lbl_logging_user">Logging in</string>
+
     <!-- Currencies -->
     <string name="currency_euro_lbl">Euro</string>
     <string name="currency_dollar_lbl">U.S. Dollar</string>
@@ -46,5 +74,13 @@
     <string name="succ_save">Succesfuly Saved</string>
 
     <string name="temp_not_implemeted_lbl">Not implemented yet</string>
+
+
+    <!-- Error -->
+
+    <string name="lbl_login_error">Could not log in. Please try again</string>
+    <string name="lbl_registration_error">Could not registered. Please try again</string>
+
+
 
 </resources>

@@ -15,11 +15,10 @@ import com.google.firebase.auth.FirebaseUser;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.models.ReportBackAction;
 
-public class SharingActivity extends AppCompatActivity implements IActionReportBack, FirebaseAuth.AuthStateListener {
+public class SharingActivity extends AppCompatActivity implements IActionReportBack {
     private static final String TAG = SharingActivity.class.getName();
 
     private static enum AppFragment {
-        LOGIN,
         SHARING_ACTIVITIES,
         EXPENSES,
         SHARING_DETAILS,
@@ -27,9 +26,6 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
 
         NUM_OF_FRAGMENTS
     };
-
-    // Authorization management
-    private FirebaseAuth mCountOnMeAuth;
 
     private AppFragment mCurrentFragment;
     private BaseFragment[] mFragmentsList = new BaseFragment[AppFragment.NUM_OF_FRAGMENTS.ordinal() ];
@@ -45,20 +41,6 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         if( savedInstanceState == null )
             showAppFragment(AppFragment.SHARING_ACTIVITIES, false);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
-        // get firebase authentication instance
-        mCountOnMeAuth = FirebaseAuth.getInstance();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mCountOnMeAuth.addAuthStateListener( this );
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mCountOnMeAuth.removeAuthStateListener( this );
     }
 
     @Override
@@ -95,21 +77,9 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         }
     }
 
-
-    // from FirebaseAuth.AuthStateListener interface
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        /*FirebaseUser user = firebaseAuth.getCurrentUser();
-        if( user == null ) {
-            getFragmentManager().popBackStack();
-            showAppFragment(AppFragment.LOGIN, false);
-        }*/
-    }
-
     /*    PRIVATE METHODS   */
 
     private void loadAppFragments() {
-        //mFragmentsList[ AppFragment.LOGIN.ordinal() ] = new LoginFragment();
         mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingsListFragment();
         mFragmentsList[ AppFragment.EXPENSES.ordinal() ]  = new ExpensesListFragment();
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = new SharingActivityFragment();
