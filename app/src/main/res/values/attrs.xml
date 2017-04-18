@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <declare-styleable name="RequiredInputTextView">
+        <attr name="error_text" format="reference"/>
+        <attr name="error_color" format="reference"/>
+    </declare-styleable>
+</resources>

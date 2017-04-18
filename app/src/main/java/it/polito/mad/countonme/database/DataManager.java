@@ -1,11 +1,14 @@
 package it.polito.mad.countonme.database;
 
+import android.net.UrlQuerySanitizer;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.SharingActivity;
+import it.polito.mad.countonme.models.User;
 
 
 /**
@@ -55,6 +58,21 @@ public class DataManager {
 
     public DatabaseReference getExpenseReference( String shActKey, String expKey ) {
         return mDatabase.getReference( CHILD_EXPENSES + "/" + shActKey + "/" + expKey );
+    }
+
+    public DatabaseReference getUserReference( String userKey ) {
+        return mDatabase.getReference( CHILD_USERS + "/" + userKey );
+    }
+
+
+    // Users management
+    public void addNewUser(User user, DatabaseReference.CompletionListener completionListener ) throws InvalidDataException
+    {
+        try {
+            addNewData( user, CHILD_USERS, completionListener );
+        } catch( InvalidDataException ex ) {
+            throw new InvalidDataException( "Invalid User has been provided" );
+        }
     }
 
     // Sharing activities management

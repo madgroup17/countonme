@@ -5,6 +5,7 @@
 
     <dimen name="empty_list_text_size">18sp</dimen>
     <dimen name="interface_text_size">20sp</dimen>
+    <dimen name="title_text_size">20sp</dimen>
     <dimen name="interface_small_text_size">18sp</dimen>
 
 
@@ -13,5 +14,27 @@
     <dimen name="list_item_main_text_size">12sp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="fragment_view_padding">10dp</dimen>
+    <dimen name="layout_padding">10dp</dimen>
     <dimen name="label_padding_10">10dp</dimen>
+
+    <!-- For Edit Text -->
+    <dimen name="ed_margin_10">10dp</dimen>
+    <dimen name="ed_padding_10">10dp</dimen>
+
+    <dimen name="ed_margin_15">15dp</dimen>
+    <dimen name="ed_padding_15">15dp</dimen>
+
+    <dimen name="ed_margin_20">20dp</dimen>
+    <dimen name="ed_padding_20">20dp</dimen>
+
+    <!-- For buttons -->
+    <dimen name="btn_margin_10">10dp</dimen>
+    <dimen name="btn_padding_10">10dp</dimen>
+
+    <dimen name="btn_margin_15">15dp</dimen>
+    <dimen name="btn_padding_15">15dp</dimen>
+
+    <dimen name="btn_margin_20">20dp</dimen>
+    <dimen name="btn_padding_20">20dp</dimen>
+
 </resources>

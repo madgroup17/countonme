@@ -77,7 +77,7 @@ public class SharingActivityFragment extends BaseFragment implements DatabaseRef
         it.polito.mad.countonme.models.SharingActivity model = new it.polito.mad.countonme.models.SharingActivity();
 
         model.setName(txtName.getText().toString());
-        model.setCurrency(txtDescription.getText().toString());
+        model.setDescription(txtDescription.getText().toString());
         model.setCurrency(spnCurrency.getSelectedItem().toString());
 
         return model;
