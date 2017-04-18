@@ -4,4 +4,10 @@
     <item android:id="@+id/save_sharing_activity"
         android:icon="@android:drawable/ic_menu_save"
         app:showAsAction="always"/>
+    <!--
+    <item android:id="@+id/share_sharing_activity"
+        android:icon="@android:drawable/ic_menu_share"
+        android:actionProviderClass="android.widget.ShareActionProvider"
+        app:showAsAction="always"/>
+     -->
 </menu>

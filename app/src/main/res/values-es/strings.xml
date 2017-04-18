@@ -2,7 +2,7 @@
 <resources>
     <string name="currency_dollar_lbl">Dolar</string>
     <string name="currency_euro_lbl">Euro</string>
-    <string name="currency_pesetas_lbl">Peseta</string>
+    <string name="currency_pesetas_lbl">Pesos</string>
     <string name="empty_sharing_list_lbl">No hay ninguna atividad todavia</string>
     <string name="example">ejemplo</string>
     <string name="expense_add_new_title">Nuevo gasto</string>
@@ -19,4 +19,13 @@
     <string name="sharing_activity_details_title">Detalles de la actividad a compartir</string>
     <string name="temp_not_implemeted_lbl">Funcionalidad no implementada todavia</string>
     <string name="total_balance_lbl">Balance total:</string>
+    <string name="err_amount">Ingrese el valor</string>
+    <string name="err_amount_range">El valor debe ser mayor a 0</string>
+    <string name="err_description">Ingrese la descripciòn</string>
+    <string name="err_name">Ingrese el nombre</string>
+    <string name="message_to_share">Hey mira mi  app aqui:</string>
+    <string name="sharing_activity_add_new_title">Nueva Actividad a compartir</string>
+    <string name="succ_save">Guardado satisfactoriamente</string>
+    <string name="lbl_error_sharing_link">Error al compartir el link</string>
+    <string name="select_app">Selecciona una aplicacion</string>
 </resources>

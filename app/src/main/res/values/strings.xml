@@ -28,7 +28,7 @@
     <!-- Currencies -->
     <string name="currency_euro_lbl">Euro</string>
     <string name="currency_dollar_lbl">U.S. Dollar</string>
-    <string name="currency_pesetas_lbl">Pesetas</string>
+    <string name="currency_pesetas_lbl">Pesos</string>
 
     <string name="example">example</string>
 
@@ -46,5 +46,9 @@
     <string name="succ_save">Succesfuly Saved</string>
 
     <string name="temp_not_implemeted_lbl">Not implemented yet</string>
+    <string name="message_to_share">Hey check out my app at:</string>
+    <string name="lbl_error_sharing_link">Error sharing link</string>
+    <string name="select_app">Select an application</string>
+
 
 </resources>
