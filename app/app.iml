@@ -107,7 +107,7 @@
     <orderEntry type="library" exported="" name="design-25.0.0" level="project" />
     <orderEntry type="library" exported="" name="firebase-core-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-auth-10.0.1" level="project" />
-    <orderEntry type="library" exported="" name="facebook-android-sdk-4.21.1" level="project" />
+    <orderEntry type="library" exported="" name="facebook-android-sdk-4.22.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-tasks-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="bolts-tasks-1.4.0" level="project" />
@@ -138,5 +138,6 @@
     <orderEntry type="library" exported="" name="butterknife-annotations-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="butterknife-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.0.0" level="project" />
+    <orderEntry type="library" exported="" name="android-android-23" level="project" />
   </component>
 </module>

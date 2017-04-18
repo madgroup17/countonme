@@ -14,7 +14,9 @@ public class ReportBackAction {
         ACTION_VIEW_EXPENSES_LIST,
         ACTION_VIEW_EXPENSE,
         ACTION_MODIFY_EXPENSE,
-        ACTION_DELETE_EXPENSE
+        ACTION_DELETE_EXPENSE,
+
+        ACTION_VIEW_BALANCE
     }
 
     private ActionEnum mAction;
