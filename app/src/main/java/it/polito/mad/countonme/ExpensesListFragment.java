@@ -55,6 +55,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
     @Override
     public View onCreateView(LayoutInflater inflater,
                               ViewGroup container, Bundle savedInstanceState) {
+        if( savedInstanceState != null ) setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
         View view = inflater.inflate(R.layout.expenses_list_fragment, container, false);
         mActionButton = ( FloatingActionButton ) view.findViewById( R.id.fabexp );
         mActionButton.setOnClickListener( this );
@@ -68,6 +69,12 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         mExpensesRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(AppConstants.SHARING_ACTIVITY_KEY, ( String ) getData() );
     }
 
     @Override
