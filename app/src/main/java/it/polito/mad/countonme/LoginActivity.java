@@ -12,9 +12,19 @@ import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
@@ -34,26 +44,50 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.ed_email) EditText mEdEmail;
     @BindView(R.id.ed_password) EditText mEdPassword;
 
+    @BindView(R.id.login_button) LoginButton mFbLoginButton;
+
     private ProgressDialog mProgressDialog;
     private FirebaseAuth mFirebaseAuth;
+
+    private CallbackManager mCallbackManager;
+    private AccessTokenTracker mAccessTokenTracker;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.login_layout );
         ButterKnife.bind( this );
-        mProgressDialog = new ProgressDialog( this );
         mFirebaseAuth = FirebaseAuth.getInstance();
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
         if( mFirebaseAuth.getInstance().getCurrentUser() != null ) {
             finish();
             // the user is logged in so we will show the first application screen
             startActivity( new Intent( this, SharingActivity.class ) );
+            return;
         }
+        mProgressDialog = new ProgressDialog( this );
+        mCallbackManager = CallbackManager.Factory.create();
+        mFbLoginButton.setReadPermissions( "email", "public_profile" );
+
+        mFbLoginButton.registerCallback( mCallbackManager, new FacebookCallback< LoginResult>()
+        {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+            }
+        });
     }
 
     @OnClick(R.id.btn_user_login)
-    public void registerNewUser() {
+    public void loginAppUser() {
         loginUser();
     }
 
@@ -79,17 +113,43 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         mProgressDialog.dismiss();
-                        if( task.isSuccessful() ) {
+                        if (task.isSuccessful()) {
                             finish();
                             cleanLoginForm();
-                            startActivity( new Intent( LoginActivity.this, SharingActivity.class ) ) ;
+                            startActivity(new Intent(LoginActivity.this, SharingActivity.class));
                         } else {
-                            Toast.makeText( LoginActivity.this, R.string.lbl_login_error, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, R.string.lbl_login_error, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
         );
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mFirebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            finish();
+                            startActivity(new Intent(LoginActivity.this, SharingActivity.class));
+                        } else {
+                            Toast.makeText(LoginActivity.this, R.string.lbl_login_error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
 
 
     private boolean checkData( String email, String password )
