@@ -18,14 +18,15 @@ public class Expense {
     private String mParentSharingActivityId;
     private Boolean mIsSurvey;
     private Date mDate;
+    private User mPayer;
 
     public Expense() {
-        this( null, null, null, null, 0.0, 0.0, null, null, null, false );
+        this( null, null, null, null, 0.0, 0.0, null, null, null, null, false );
     }
 
 
     public Expense(String mName, String mDescription, String mSharingActivityCurrency, String mExpenseCurrenty,
-                   Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Date date, Boolean mIsSurvey) {
+                   Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Date date, User payer, Boolean mIsSurvey) {
         this.mName = mName;
         this.mDescription = mDescription;
         this.mSharingActivityCurrency = mSharingActivityCurrency;
@@ -97,6 +98,10 @@ public class Expense {
     public Date getDate() { return mDate; }
 
     public void setDate( Date date ) { mDate = date; }
+
+    public User getPayer() { return mPayer; }
+
+    public void setPayer( User payer ) { mPayer = payer; }
 
     public Boolean getIsSurvey() {
         return mIsSurvey;

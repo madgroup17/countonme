@@ -85,6 +85,8 @@
 
     <string name="group_status_lbl">Group Status</string>
 
+    <string name="lbl_paid_by">Paid by</string>
+
     <!-- Error -->
 
     <string name="lbl_required_field">Required</string>

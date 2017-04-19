@@ -1,5 +1,8 @@
 package it.polito.mad.countonme.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The sharing activity data model
  * Created by francescobruno on 03/04/17.
@@ -11,6 +14,7 @@ public class SharingActivity {
     private String mImageUrl;
     private String mCurrency;
     private String mKey;
+    private Map<String, User> mUsers;
 
     public SharingActivity() {
         this( null, null, null, null );
@@ -21,6 +25,7 @@ public class SharingActivity {
         mDescription = description;
         mImageUrl = imageUrl;
         mCurrency = currency;
+        mUsers = new HashMap<String, User>();
     }
 
     public void setName( String name ) {
@@ -57,6 +62,15 @@ public class SharingActivity {
 
     public void setKey( String key ) {
         mKey = key;
+    }
+
+    public Map<String, User> getUsers() { return mUsers; }
+
+    public void setUsers( Map<String, User> users ) { mUsers = users; }
+
+    public void addUser( User user ) {
+        if( user == null ) return;
+        mUsers.put( user.getId(), user );
     }
 
 }
