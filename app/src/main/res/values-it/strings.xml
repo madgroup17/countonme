@@ -2,7 +2,7 @@
 <resources>
     <string name="currency_dollar_lbl">Dollari</string>
     <string name="currency_euro_lbl">Euro</string>
-    <string name="currency_pesetas_lbl">Peseta</string>
+    <string name="currency_pesetas_lbl">Pesos</string>
     <string name="lbl_amount">Ammontare</string>
     <string name="lbl_currency">Valuta</string>
     <string name="lbl_date">Data</string>
@@ -19,4 +19,13 @@
     <string name="lbl_expense_saved">Nuova voce di spesa salvata</string>
     <string name="lbl_saving_error">Errore in fase di salvataggio. Riprova</string>
     <string name="example">esempio</string>
+    <string name="err_amount">inserice il valore</string>
+    <string name="err_amount_range">il valore deve di essere di piu a 0</string>
+    <string name="err_description">Inserisce la descripzione</string>
+    <string name="err_name">Inserisce il nome</string>
+    <string name="message_to_share">Hey guarda la mia app in:</string>
+    <string name="sharing_activity_add_new_title">Nuova attività di condividere</string>
+    <string name="succ_save">Salvato con successo</string>
+    <string name="lbl_error_sharing_link">Errore al condividere il link</string>
+    <string name="select_app">Seleziona una applicazione</string>
 </resources>
