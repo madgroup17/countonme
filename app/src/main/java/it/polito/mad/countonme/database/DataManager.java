@@ -111,7 +111,7 @@ public class DataManager {
             throw new InvalidDataException();
         }
         DatabaseReference reference = mDatabase.getReference( key );
-        reference.child( id ).push().setValue( data, listener );
+        reference.child( id ).setValue( data, listener );
     }
 
 

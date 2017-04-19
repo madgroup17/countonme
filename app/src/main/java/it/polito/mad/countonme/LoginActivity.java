@@ -26,17 +26,25 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.polito.mad.countonme.customviews.RequiredInputTextView;
+import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.exceptions.InvalidDataException;
+import it.polito.mad.countonme.models.User;
 
 /**
  * Created by francescobruno on 17/04/17.
  */
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity
+implements DatabaseReference.CompletionListener {
 
     @BindView(R.id.rtv_email) RequiredInputTextView mRtvEmail;
     @BindView(R.id.rtv_password) RequiredInputTextView mRtvPassword;
@@ -97,6 +105,28 @@ public class LoginActivity extends AppCompatActivity {
         startActivity( new Intent( this, RegistrationActivity.class) );
     }
 
+    @Override
+    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+        if( databaseError != null )
+        {
+            Toast.makeText( this, R.string.lbl_login_error, Toast.LENGTH_SHORT).show();
+            try {
+                mFirebaseAuth.getCurrentUser().delete();
+                mFirebaseAuth.signOut();
+            } catch ( NullPointerException npex ) { /* ignored */ }
+        }
+        else
+        {
+            finish();
+            startActivity( new Intent( this, SharingActivity.class ) );
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
     private void loginUser() {
         String email = mEdEmail.getText().toString().trim();
@@ -125,24 +155,43 @@ public class LoginActivity extends AppCompatActivity {
         );
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NonNull final Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            finish();
-                            startActivity(new Intent(LoginActivity.this, SharingActivity.class));
+                            DatabaseReference ref = DataManager.getsInstance().getUserReference( task.getResult().getUser().getUid() );
+                            ref.addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if( dataSnapshot.getValue() == null ) {
+                                                User user = new User( task.getResult().getUser().getUid(),
+                                                        task.getResult().getUser().getDisplayName(),
+                                                        task.getResult().getUser().getPhotoUrl().toString() );
+                                                try {
+                                                    DataManager.getsInstance().addNewUser( user, LoginActivity.this );
+                                                } catch (InvalidDataException e) {
+                                                    try {
+                                                        mFirebaseAuth.getCurrentUser().delete();
+                                                        mFirebaseAuth.signOut();
+                                                    } catch ( NullPointerException npex ) { /* ignored */ }
+                                                    Toast.makeText( LoginActivity.this, R.string.lbl_login_error, Toast.LENGTH_SHORT).show();
+                                                }
+                                            } else {
+                                            finish();
+                                            startActivity(new Intent(LoginActivity.this, SharingActivity.class));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    }
+                            );
                         } else {
                             Toast.makeText(LoginActivity.this, R.string.lbl_login_error, Toast.LENGTH_SHORT).show();
                         }
@@ -177,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
         mEdEmail.setText("");
         mEdPassword.setText("");
     }
+
 
 }
 

@@ -77,6 +77,7 @@ public class RegistrationActivity extends AppCompatActivity
             Toast.makeText( this, R.string.lbl_registration_error, Toast.LENGTH_SHORT).show();
             try {
                 mFirebaseAuth.getCurrentUser().delete();
+                mFirebaseAuth.signOut();
             } catch ( NullPointerException npex ) { /* ignored */ }
         }
         else
@@ -108,6 +109,7 @@ public class RegistrationActivity extends AppCompatActivity
                     } catch (InvalidDataException e) {
                         try {
                             mFirebaseAuth.getCurrentUser().delete();
+                            mFirebaseAuth.signOut();
                         } catch ( NullPointerException npex ) { /* ignored */ }
                         Toast.makeText( RegistrationActivity.this, R.string.lbl_registration_error, Toast.LENGTH_SHORT).show();
                     }
