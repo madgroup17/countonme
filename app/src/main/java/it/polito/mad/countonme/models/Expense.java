@@ -1,6 +1,7 @@
 package it.polito.mad.countonme.models;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * The expense data model
@@ -19,6 +20,7 @@ public class Expense {
     private Boolean mIsSurvey;
     private Date mDate;
     private User mPayer;
+    private List<User> mInvolved;
 
     public Expense() {
         this( null, null, null, null, 0.0, 0.0, null, null, null, null, false );
@@ -102,6 +104,10 @@ public class Expense {
     public User getPayer() { return mPayer; }
 
     public void setPayer( User payer ) { mPayer = payer; }
+
+    public List<User> getInvolved() { return mInvolved; }
+
+    public void setInvolved( List<User> Involved ) { mInvolved = Involved; }
 
     public Boolean getIsSurvey() {
         return mIsSurvey;

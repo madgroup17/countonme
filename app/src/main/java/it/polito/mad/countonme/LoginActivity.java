@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -67,6 +68,7 @@ implements DatabaseReference.CompletionListener {
         ButterKnife.bind( this );
         mFirebaseAuth = FirebaseAuth.getInstance();
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
+
         if( mFirebaseAuth.getInstance().getCurrentUser() != null ) {
             finish();
             // the user is logged in so we will show the first application screen
@@ -105,6 +107,13 @@ implements DatabaseReference.CompletionListener {
     public void gotoRegistration() {
         finish();
         startActivity( new Intent( this, RegistrationActivity.class) );
+    }
+
+    @OnClick(R.id.logout_button)
+    public void logoutAppUser()
+    {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseAuth.signOut();
     }
 
     @Override
