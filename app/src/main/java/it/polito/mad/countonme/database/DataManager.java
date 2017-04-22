@@ -18,6 +18,7 @@ import it.polito.mad.countonme.models.User;
 
 public class DataManager {
     private static final String CHILD_SHARING_ACTIVITIES = "shareacts";
+    private static final String CHILD_SHARING_ACTIVITIES_USERS = "users";
     private static final String CHILD_EXPENSES = "expenses";
     private static final String CHILD_USERS = "users";
 
@@ -46,6 +47,10 @@ public class DataManager {
 
     public DatabaseReference getSharingActivityReference( String activityKey ) {
         return mDatabase.getReference( CHILD_SHARING_ACTIVITIES + "/" + activityKey );
+    }
+
+    public DatabaseReference getSharingActivityUsersReference( String activityKey ) {
+        return mDatabase.getReference( CHILD_SHARING_ACTIVITIES + "/" + activityKey + "/" + CHILD_SHARING_ACTIVITIES_USERS );
     }
 
     public DatabaseReference getExpensesReference() {

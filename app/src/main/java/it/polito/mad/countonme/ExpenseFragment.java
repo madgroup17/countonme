@@ -13,26 +13,38 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
+import it.polito.mad.countonme.lists.UsersAdapter;
 import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.User;
 
 /**
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpenseFragment extends BaseFragment implements DatabaseReference.CompletionListener {
-    TextView mName,
-             mDescription,
-             mAmount;
+public class ExpenseFragment extends BaseFragment implements DatabaseReference.CompletionListener,
+        ValueEventListener {
+    @BindView(R.id.expense_name) TextView mName;
+    @BindView(R.id.expense_description) TextView mDescription;
+    @BindView(R.id.expense_amount) TextView mAmount;
+    @BindView(R.id.currency_spinner) Spinner mCurrency;
+    @BindView(R.id.paidby_spinner) Spinner mPaidBySpinner;
 
-    Spinner mCurrency;
-
+    private UsersAdapter mUsersAdapter;
+    private ArrayList<User> mShareActivityUsersList;
 
     @Override
     public void onAttach(Context context) {
@@ -43,12 +55,28 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expense_fragment, container, false);
-        mName = (TextView) view.findViewById( R.id.expense_name );
-        mDescription = (TextView)view.findViewById( R.id.expense_description);
-        mAmount = (TextView)view.findViewById( R.id.expense_amount);
-        mCurrency = (Spinner)view.findViewById( R.id.currency_spinner );
-
+        ButterKnife.bind(this, view);
+        mShareActivityUsersList = new ArrayList<User>();
+        mUsersAdapter = new UsersAdapter( getActivity(), mShareActivityUsersList );
+        mPaidBySpinner.setAdapter( mUsersAdapter );
         return view;
+    }
+
+
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        User user;
+        mShareActivityUsersList.clear();
+        for( DataSnapshot data: dataSnapshot.getChildren() ) {
+            user = ( User ) data.getValue( User.class );
+            mShareActivityUsersList.add( user );
+        }
+        mUsersAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
     }
 
     /******************************************************************************************/
@@ -143,6 +171,9 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     public void onResume() {
         super.onResume();
         adjustActionBar();
+        DataManager.getsInstance()
+                .getSharingActivityUsersReference( ( String ) getData() )
+                .addListenerForSingleValueEvent( this );
     }
 
     @Override

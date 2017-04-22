@@ -33,10 +33,10 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
         ImageView mImgView;
         TextView  mTextView;
 
-        ShActViewHolder(View itemView ) {
+        public ShActViewHolder(View itemView ) {
             super( itemView );
             mImgView = (ImageView) itemView.findViewById(R.id.sharing_activity_img);
-            mTextView = (TextView) itemView.findViewById( R.id.sharing_activity_name );
+            mTextView = (TextView) itemView.findViewById( R.id.sharing_activity_name);
         }
 
         public void setData(final SharingActivity activity, final OnListItemClickListener listener ) {
