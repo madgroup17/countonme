@@ -44,4 +44,16 @@ public class RequiredInputTextView extends android.support.v7.widget.AppCompatTe
         setText( mStr );
     }
 
+    public String getStrError() {
+        return mStrError;
+    }
+
+    public void setStrError( final String error ) {
+        mStrError = error;
+    }
+
+    public void setSrtError( final int resId ) {
+        mStrError = getResources().getString( resId );
+    }
+
 }

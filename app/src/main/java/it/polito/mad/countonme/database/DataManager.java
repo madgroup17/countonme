@@ -18,6 +18,7 @@ import it.polito.mad.countonme.models.User;
 
 public class DataManager {
     private static final String CHILD_SHARING_ACTIVITIES = "shareacts";
+    private static final String CHILD_SHARING_ACTIVITIES_USERS = "users";
     private static final String CHILD_EXPENSES = "expenses";
     private static final String CHILD_USERS = "users";
 
@@ -48,6 +49,10 @@ public class DataManager {
         return mDatabase.getReference( CHILD_SHARING_ACTIVITIES + "/" + activityKey );
     }
 
+    public DatabaseReference getSharingActivityUsersReference( String activityKey ) {
+        return mDatabase.getReference( CHILD_SHARING_ACTIVITIES + "/" + activityKey + "/" + CHILD_SHARING_ACTIVITIES_USERS );
+    }
+
     public DatabaseReference getExpensesReference() {
         return mDatabase.getReference( CHILD_EXPENSES );
     }
@@ -69,7 +74,7 @@ public class DataManager {
     public void addNewUser(User user, DatabaseReference.CompletionListener completionListener ) throws InvalidDataException
     {
         try {
-            addNewData( user, CHILD_USERS, completionListener );
+            addNewDataWithId( user, CHILD_USERS, user.getId(), completionListener );
         } catch( InvalidDataException ex ) {
             throw new InvalidDataException( "Invalid User has been provided" );
         }
@@ -104,6 +109,14 @@ public class DataManager {
         }
         DatabaseReference reference = mDatabase.getReference( key );
         reference.push().setValue( data, listener );
+    }
+
+    private void addNewDataWithId( Object data, String key, String id, DatabaseReference.CompletionListener listener ) throws InvalidDataException{
+        if ( data == null || key == null || id == null ) {
+            throw new InvalidDataException();
+        }
+        DatabaseReference reference = mDatabase.getReference( key );
+        reference.child( id ).setValue( data, listener );
     }
 
 

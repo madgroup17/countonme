@@ -16,24 +16,38 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
+import it.polito.mad.countonme.lists.UsersAdapter;
 import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.User;
 
 /**
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpenseFragment extends BaseFragment implements DatabaseReference.CompletionListener {
-    TextView mName,
-             mDescription,
-             mAmount;
-    Spinner mCurrency;
+public class ExpenseFragment extends BaseFragment implements DatabaseReference.CompletionListener,
+        ValueEventListener {
+    @BindView(R.id.expense_name) TextView mName;
+    @BindView(R.id.expense_description) TextView mDescription;
+    @BindView(R.id.expense_amount) TextView mAmount;
+    @BindView(R.id.currency_spinner) Spinner mCurrency;
+    @BindView(R.id.paidby_spinner) Spinner mPaidBySpinner;
+
+    private UsersAdapter mUsersAdapter;
+    private ArrayList<User> mShareActivityUsersList;
 
     @Override
     public void onAttach(Context context) {
@@ -43,16 +57,30 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expense_fragment, container, false);
-        mName = (TextView) view.findViewById( R.id.expense_name );
-        mDescription = (TextView)view.findViewById( R.id.expense_description);
-        mAmount = (TextView)view.findViewById( R.id.expense_amount);
-        mCurrency = (Spinner)view.findViewById( R.id.currency_spinner );
+        ButterKnife.bind(this, view);
+        mShareActivityUsersList = new ArrayList<User>();
+        mUsersAdapter = new UsersAdapter( getActivity(), mShareActivityUsersList );
+        mPaidBySpinner.setAdapter( mUsersAdapter );
         return view;
     }
 
-    /******************************************************************************************/
 
-    /******************************************************************************************/
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        User user;
+        mShareActivityUsersList.clear();
+        for( DataSnapshot data: dataSnapshot.getChildren() ) {
+            user = ( User ) data.getValue( User.class );
+            mShareActivityUsersList.add( user );
+        }
+        mUsersAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
+    }
+
     // Methods
 
     private void saveNewExpense()
@@ -63,7 +91,8 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             newExpense.setName(mName.getText().toString());
             newExpense.setDescription(mDescription.getText().toString());
             newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
-            newExpense.setExpenseCurrenty(mCurrency.getSelectedItem().toString());
+            newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
+            newExpense.setPayer( (User) mPaidBySpinner.getSelectedItem() );
             try {
                 DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);//fragment
             } catch (InvalidDataException ex) {
@@ -114,9 +143,6 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
         mAmount.setText("");
     }
 
-    /******************************************************************************************/
-
-    /******************************************************************************************/
     //Events
 
     @Override
@@ -133,15 +159,15 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
         }
     }
 
-    /******************************************************************************************/
-
-    /******************************************************************************************/
     //ActionBar
 
     @Override
     public void onResume() {
         super.onResume();
         adjustActionBar();
+        DataManager.getsInstance()
+                .getSharingActivityUsersReference( ( String ) getData() )
+                .addListenerForSingleValueEvent( this );
     }
 
     @Override
@@ -159,17 +185,14 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     }
 
 
-    /******************************************************************************************/
-
-    /******************************************************************************************/
     // create an action bar button
 
     @Override
     public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
 
         inflater.inflate(R.menu.expense_menu, menu);
-        Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.anim_alpha);
-        animation.startNow();//@+id/share_sharing_activity
+       // Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.anim_alpha);
+       // animation.startNow();//@+id/share_sharing_activity
 
     }
 
@@ -182,44 +205,16 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
                 return true;
             case R.id.share_sharing_activity:
                    //Animation animAlpha = AnimationUtils.loadAnimation(item.,R.anim.anim_alpha);
-                 //esto funciona
-              /*  try{
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    i.setType("text/plain");
-                    i.putExtra(Intent.EXTRA_SUBJECT, "CountOnMe");
-                    String sAux = "\n"+getResources().getString(R.string.message_to_share);//"\nLet me recommend you this application\n\n";
-                    sAux=sAux+" https://play.google.com/store/apps/details?id=com.google.android.apps.plus\n";
-                    //sAux = sAux + "https://play.google.com/store/apps/details?id=Orion.Soft \n\n";
-                    i.putExtra(Intent.EXTRA_TEXT, sAux);
-                    startActivity(Intent.createChooser(i,getResources().getString(R.string.select_app)));
-                    return true;
-                }catch(Exception e){
-                    Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
-                }
-*/
                 try{
-                   // DataManager.getsInstance(). //addNewExpense((String) getData(), newExpense, this);
                     Intent sendIntent = LinkSharing.shareActivity(getActivity(),(String) getData());
                     startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.select_app)));
                     return true;
                 }catch(Exception e){
                     Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
                 }
-/*
-                Intent sendIntent = LinkSharing.shareActivity(getActivity());
-                try{
-                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.select_app)));
-                    //startActivity(sendIntent);
-                }catch(Exception e){
-                    Toast.makeText(getActivity(), R.string.lbl_error_sharing_link, Toast.LENGTH_SHORT).show();
-                }
-*/
-
-
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    /******************************************************************************************/
 }

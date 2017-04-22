@@ -1,6 +1,7 @@
 package it.polito.mad.countonme.models;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * The expense data model
@@ -11,25 +12,27 @@ public class Expense {
     private String mName;
     private String mDescription;
     private String mSharingActivityCurrency;
-    private String mExpenseCurrenty;
+    private String mExpenseCurrency;
     private Double mAmount;
     private Double mConvertedAmount;
     private String mImageUrl;
     private String mParentSharingActivityId;
     private Boolean mIsSurvey;
     private Date mDate;
+    private User mPayer;
+    private List<User> mInvolved;
 
     public Expense() {
-        this( null, null, null, null, 0.0, 0.0, null, null, null, false );
+        this( null, null, null, null, 0.0, 0.0, null, null, null, null, false );
     }
 
 
-    public Expense(String mName, String mDescription, String mSharingActivityCurrency, String mExpenseCurrenty,
-                   Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Date date, Boolean mIsSurvey) {
+    public Expense(String mName, String mDescription, String mSharingActivityCurrency, String mExpenseCurrency,
+                   Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Date date, User payer, Boolean mIsSurvey) {
         this.mName = mName;
         this.mDescription = mDescription;
         this.mSharingActivityCurrency = mSharingActivityCurrency;
-        this.mExpenseCurrenty = mExpenseCurrenty;
+        this.mExpenseCurrency = mExpenseCurrency;
         this.mAmount = mAmount;
         this.mConvertedAmount = mConvertedAmount;
         this.mImageUrl = mImageUrl;
@@ -62,12 +65,12 @@ public class Expense {
         this.mSharingActivityCurrency = mSharingActivityCurrency;
     }
 
-    public String getExpenseCurrenty() {
-        return mExpenseCurrenty;
+    public String getExpenseCurrency() {
+        return mExpenseCurrency;
     }
 
-    public void setExpenseCurrenty(String mExpenseCurrenty) {
-        this.mExpenseCurrenty = mExpenseCurrenty;
+    public void setExpenseCurrency( String mExpenseCurrency ) {
+        this.mExpenseCurrency = mExpenseCurrency;
     }
 
     public Double getAmount() {
@@ -97,6 +100,14 @@ public class Expense {
     public Date getDate() { return mDate; }
 
     public void setDate( Date date ) { mDate = date; }
+
+    public User getPayer() { return mPayer; }
+
+    public void setPayer( User payer ) { mPayer = payer; }
+
+    public List<User> getInvolved() { return mInvolved; }
+
+    public void setInvolved( List<User> Involved ) { mInvolved = Involved; }
 
     public Boolean getIsSurvey() {
         return mIsSurvey;

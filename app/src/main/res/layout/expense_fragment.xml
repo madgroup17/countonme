@@ -76,4 +76,18 @@
         android:layout_height="wrap_content"
         android:entries="@array/currencies_array" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/label_padding_10"
+        android:paddingLeft="@dimen/label_padding_10"
+        android:text="@string/lbl_paid_by"
+        android:textSize="@dimen/interface_text_size" />
+
+    <Spinner
+        android:id="@+id/paidby_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
 </LinearLayout>
