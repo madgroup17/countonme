@@ -79,13 +79,12 @@
     <string name="select_app">Select an application</string>
 
 
-
     <!-- Error -->
 
     <string name="lbl_required_field">Required</string>
     <string name="lbl_login_error">Could not log in. Please try again</string>
     <string name="lbl_registration_error">Could not registered. Please try again</string>
-
+    <string name="asset_statements" translatable="false">[{\n  \"relation\": [\"delegate_permission/common.handle_all_urls\"],\n  \"target\": {\n    \"namespace\": \"web\",\n    \"site\": \"http://play.google.com\",\n  }\n}]</string>
 
 
 </resources>

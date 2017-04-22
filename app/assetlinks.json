@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "it.polito.mad.countonme",
+    "sha256_cert_fingerprints":
+    ["1B:7F:7E:A5:3D:C7:8F:0A:27:DB:BC:4B:0B:88:EA:5E:80:16:D4:8F:F6:3C:F1:93:D7:7C:AC:4F:D0:E5:CC:61"]
+  }
+}]

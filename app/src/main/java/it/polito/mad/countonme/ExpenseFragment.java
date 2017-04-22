@@ -1,6 +1,7 @@
 package it.polito.mad.countonme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,9 +33,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     TextView mName,
              mDescription,
              mAmount;
-
     Spinner mCurrency;
-
 
     @Override
     public void onAttach(Context context) {
@@ -40,14 +41,12 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expense_fragment, container, false);
         mName = (TextView) view.findViewById( R.id.expense_name );
         mDescription = (TextView)view.findViewById( R.id.expense_description);
         mAmount = (TextView)view.findViewById( R.id.expense_amount);
         mCurrency = (Spinner)view.findViewById( R.id.currency_spinner );
-
         return view;
     }
 
@@ -66,7 +65,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
             newExpense.setExpenseCurrenty(mCurrency.getSelectedItem().toString());
             try {
-                DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);
+                DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);//fragment
             } catch (InvalidDataException ex) {
                 Toast.makeText(getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
             }
@@ -167,15 +166,56 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
 
     @Override
     public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
+
         inflater.inflate(R.menu.expense_menu, menu);
+        Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.anim_alpha);
+        animation.startNow();//@+id/share_sharing_activity
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.save_expense:
                 saveNewExpense();
                 return true;
+            case R.id.share_sharing_activity:
+                   //Animation animAlpha = AnimationUtils.loadAnimation(item.,R.anim.anim_alpha);
+                 //esto funciona
+              /*  try{
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "CountOnMe");
+                    String sAux = "\n"+getResources().getString(R.string.message_to_share);//"\nLet me recommend you this application\n\n";
+                    sAux=sAux+" https://play.google.com/store/apps/details?id=com.google.android.apps.plus\n";
+                    //sAux = sAux + "https://play.google.com/store/apps/details?id=Orion.Soft \n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, sAux);
+                    startActivity(Intent.createChooser(i,getResources().getString(R.string.select_app)));
+                    return true;
+                }catch(Exception e){
+                    Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
+                }
+*/
+                try{
+                   // DataManager.getsInstance(). //addNewExpense((String) getData(), newExpense, this);
+                    Intent sendIntent = LinkSharing.shareActivity(getActivity(),(String) getData());
+                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.select_app)));
+                    return true;
+                }catch(Exception e){
+                    Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
+                }
+/*
+                Intent sendIntent = LinkSharing.shareActivity(getActivity());
+                try{
+                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.select_app)));
+                    //startActivity(sendIntent);
+                }catch(Exception e){
+                    Toast.makeText(getActivity(), R.string.lbl_error_sharing_link, Toast.LENGTH_SHORT).show();
+                }
+*/
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }
