@@ -92,7 +92,8 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             newExpense.setName(mName.getText().toString());
             newExpense.setDescription(mDescription.getText().toString());
             newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
-            newExpense.setExpenseCurrenty(mCurrency.getSelectedItem().toString());
+            newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
+            newExpense.setPayer( (User) mPaidBySpinner.getSelectedItem() );
             try {
                 DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);
             } catch (InvalidDataException ex) {

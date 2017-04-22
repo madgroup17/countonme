@@ -4,23 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/list_item_margin"
-    android:background="@color/cardview_dark_background"
     android:padding="@dimen/btn_padding_10">
 
     <ImageView
         android:id="@+id/user_img"
         android:layout_width="@dimen/list_item_height_small"
         android:layout_height="@dimen/list_item_height_small"
-        android:scaleType="fitCenter"
-        android:background="@color/colorAccent"/>
+        android:scaleType="fitCenter"/>
 
-    <TextView
-        android:id="@+id/user_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:paddingLeft="@dimen/list_item_view_spacing"
-        android:textSize="@dimen/interface_text_size"
-        android:textColor="@android:color/black"/>
-
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/list_item_view_spacing"
+            android:textSize="@dimen/interface_text_size"
+            android:textColor="@android:color/black"/>
+        <TextView
+            android:id="@+id/user_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/list_item_view_spacing"
+            android:textSize="@dimen/interface_text_size_small"
+            android:textColor="@android:color/black"/>
+    </LinearLayout>
 </LinearLayout>

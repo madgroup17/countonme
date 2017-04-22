@@ -8,15 +8,17 @@ package it.polito.mad.countonme.models;
 public class User {
     private String mId;
     private String mName;
+    private String mEmail;
     private String mPhotoUrl;
 
     public User() {
-        this( null, null, null );
+        this( null, null, null, null );
     }
 
-    public User( String id, String name, String photoUrl ) {
+    public User( String id, String name, String email, String photoUrl ) {
         mId         = id;
         mName       = name;
+        mEmail      = email;
         mPhotoUrl   = photoUrl;
     }
 
@@ -35,6 +37,10 @@ public class User {
     public void setName(String mName) {
         this.mName = mName;
     }
+
+    public String getEmail() { return mEmail; }
+
+    public void setEmail( String email ) { mEmail = email; }
 
     public String getPhotoUrl() {
         return mPhotoUrl;

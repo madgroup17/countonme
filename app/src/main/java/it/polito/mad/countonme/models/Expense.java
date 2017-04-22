@@ -12,7 +12,7 @@ public class Expense {
     private String mName;
     private String mDescription;
     private String mSharingActivityCurrency;
-    private String mExpenseCurrenty;
+    private String mExpenseCurrency;
     private Double mAmount;
     private Double mConvertedAmount;
     private String mImageUrl;
@@ -27,12 +27,12 @@ public class Expense {
     }
 
 
-    public Expense(String mName, String mDescription, String mSharingActivityCurrency, String mExpenseCurrenty,
+    public Expense(String mName, String mDescription, String mSharingActivityCurrency, String mExpenseCurrency,
                    Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Date date, User payer, Boolean mIsSurvey) {
         this.mName = mName;
         this.mDescription = mDescription;
         this.mSharingActivityCurrency = mSharingActivityCurrency;
-        this.mExpenseCurrenty = mExpenseCurrenty;
+        this.mExpenseCurrency = mExpenseCurrency;
         this.mAmount = mAmount;
         this.mConvertedAmount = mConvertedAmount;
         this.mImageUrl = mImageUrl;
@@ -65,12 +65,12 @@ public class Expense {
         this.mSharingActivityCurrency = mSharingActivityCurrency;
     }
 
-    public String getExpenseCurrenty() {
-        return mExpenseCurrenty;
+    public String getExpenseCurrency() {
+        return mExpenseCurrency;
     }
 
-    public void setExpenseCurrenty(String mExpenseCurrenty) {
-        this.mExpenseCurrenty = mExpenseCurrenty;
+    public void setExpenseCurrency( String mExpenseCurrency ) {
+        this.mExpenseCurrency = mExpenseCurrency;
     }
 
     public Double getAmount() {

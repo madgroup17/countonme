@@ -37,7 +37,7 @@ public class UsersAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return mUsers.get( i );
     }
 
     @Override
@@ -57,7 +57,9 @@ public class UsersAdapter extends BaseAdapter {
         }
 
         User user = mUsers.get( i );
+        // TODO: manage user image
         holder.name.setText( user.getName() );
+        holder.email.setText( user.getEmail() );
         return view;
     }
 
@@ -66,6 +68,7 @@ public class UsersAdapter extends BaseAdapter {
     static class ViewHolder {
         @BindView( R.id.user_img ) ImageView image;
         @BindView( R.id.user_name ) TextView name;
+        @BindView( R.id.user_email ) TextView email;
 
         public ViewHolder( View view ) {
             ButterKnife.bind( this, view );

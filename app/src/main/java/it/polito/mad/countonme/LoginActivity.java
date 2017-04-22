@@ -181,6 +181,7 @@ implements DatabaseReference.CompletionListener {
                                             if( dataSnapshot.getValue() == null ) {
                                                 User user = new User( task.getResult().getUser().getUid(),
                                                         task.getResult().getUser().getDisplayName(),
+                                                        task.getResult().getUser().getEmail(),
                                                         task.getResult().getUser().getPhotoUrl().toString() );
                                                 try {
                                                     DataManager.getsInstance().addNewUser( user, LoginActivity.this );
