@@ -87,12 +87,21 @@
 
     <string name="lbl_paid_by">Paid by</string>
 
-    <!-- Error -->
+    <!-- Navigation drawer entries -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
+    <string name="lbl_nav_drawer_settings">Settings</string>
+    <string name="lbl_nav_drawer_logout">Logout</string>
+
+    <!-- Errors -->
     <string name="lbl_required_field">Required</string>
     <string name="lbl_passwd_too_weak">TOO WEAK!!!</string>
     <string name="lbl_login_error">Could not log in. Please try again</string>
     <string name="lbl_registration_error">Could not registered. Please try again</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

@@ -9,20 +9,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-import java.util.Date;
-
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
-import it.polito.mad.countonme.models.*;
 
 /**
  * Created by Khatereh on 4/13/2017.
@@ -42,7 +37,7 @@ public class SharingActivityFragment extends BaseFragment implements DatabaseRef
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.sharing_activity_fragmnet, container, false);
+        View view = inflater.inflate(R.layout.sharing_activity_fragment, container, false);
 
         spnCurrency = (Spinner) view.findViewById(R.id.currency_spinner);
         txtName = (EditText) view.findViewById(R.id.sharing_activity_name);
