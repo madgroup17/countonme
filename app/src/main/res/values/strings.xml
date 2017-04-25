@@ -28,7 +28,6 @@
     <!-- General strings -->
     <string name="lbl_please_wait">Please wait...</string>
 
-
     <!-- Login and new user registration -->
     <string name="lbl_login">User login</string>
     <string name="lbl_new_user">User registration</string>
@@ -52,6 +51,10 @@
 
     <string name="lbl_registering_user">Registering user</string>
     <string name="lbl_logging_user">Logging in</string>
+
+    <!-- Expenses -->
+    <string name="lbl_saving_expense">Saving expense</string>
+
 
     <!-- Currencies -->
     <string name="currency_euro_lbl">Euro</string>
@@ -99,7 +102,12 @@
     <string name="lbl_passwd_too_weak">TOO WEAK!!!</string>
     <string name="lbl_login_error">Could not log in. Please try again</string>
     <string name="lbl_registration_error">Could not registered. Please try again</string>
+
     <string name="asset_statements" translatable="false">[{\n  \"relation\": [\"delegate_permission/common.handle_all_urls\"],\n  \"target\": {\n    \"namespace\": \"web\",\n    \"site\": \"http://play.google.com\",\n  }\n}]</string>
+
+    <string name="lbl_invalid_value">Invalid value</string>
+
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -95,12 +95,11 @@ implements DatabaseReference.CompletionListener {
 
             @Override
             public void onCancel() {
-                Toast.makeText(LoginActivity.this, "onCancel", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(LoginActivity.this, "onError " + error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, R.string.lbl_login_error, Toast.LENGTH_LONG).show();
             }
         });
     }

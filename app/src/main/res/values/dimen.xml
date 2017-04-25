@@ -9,6 +9,11 @@
 
     <dimen name="label_padding_10">10dp</dimen>
 
+    <dimen name="image_padding_10">10dp</dimen>
+    <dimen name="image_padding_15">15dp</dimen>
+    <dimen name="image_margin_10">10dp</dimen>
+    <dimen name="image_margin_15">15dp</dimen>
+
     <!-- For text size -->
     <dimen name="empty_list_text_size">18sp</dimen>
     <dimen name="interface_text_size">20sp</dimen>
@@ -24,6 +29,13 @@
     <!-- For layout -->
     <dimen name="layout_padding">10dp</dimen>
     <dimen name="layout_padding_5">5dp</dimen>
+
+    <!-- For Label -->
+    <dimen name="lbl_margin_5">5dp</dimen>
+    <dimen name="lbl_padding_5">5dp</dimen>
+
+    <dimen name="lbl_margin_10">10dp</dimen>
+    <dimen name="lbl_padding_10">10dp</dimen>
 
     <!-- For Edit Text -->
     <dimen name="ed_margin_10">10dp</dimen>
@@ -45,6 +57,8 @@
     <dimen name="btn_margin_20">20dp</dimen>
     <dimen name="btn_padding_20">20dp</dimen>
 
+
+    <dimen name="new_image_size">80dp</dimen>
 
     <!-- For drawer -->
     <dimen name="drawer_icon_margin">16dp</dimen>
