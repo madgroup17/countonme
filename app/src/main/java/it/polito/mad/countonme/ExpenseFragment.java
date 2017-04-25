@@ -1,14 +1,17 @@
 package it.polito.mad.countonme;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.lists.UsersAdapter;
@@ -37,14 +41,25 @@ import it.polito.mad.countonme.models.User;
 
 public class ExpenseFragment extends BaseFragment implements DatabaseReference.CompletionListener,
         ValueEventListener {
-    @BindView(R.id.expense_name) TextView mName;
-    @BindView(R.id.expense_description) TextView mDescription;
-    @BindView(R.id.expense_amount) TextView mAmount;
-    @BindView(R.id.currency_spinner) Spinner mCurrency;
-    @BindView(R.id.paidby_spinner) Spinner mPaidBySpinner;
+
+    @BindView( R.id.rtv_expense_name )  RequiredInputTextView mRtvExpenseName;
+    @BindView( R.id.rtv_expense_description ) RequiredInputTextView mRtvExpenseDescription;
+    @BindView( R.id.rtv_expense_amount ) RequiredInputTextView mRtvExpenseAmount;
+    @BindView( R.id.rtv_expense_currency ) RequiredInputTextView mRtvExpenseCurrency;
+    @BindView( R.id.rtv_expense_payer ) RequiredInputTextView mRtvExpensePayer;
+
+    @BindView( R.id.ed_expense_name ) EditText mName;
+    @BindView( R.id.ed_expense_description ) EditText mDescription;
+    @BindView( R.id.ed_expense_amount ) EditText mAmount;
+    @BindView( R.id.spin_expense_currency ) Spinner mCurrency;
+    @BindView( R.id.spin_expense_paidby ) Spinner mPaidBySpinner;
 
     private UsersAdapter mUsersAdapter;
     private ArrayList<User> mShareActivityUsersList;
+
+    private ProgressDialog mProgressDialog;
+
+    private String mSelectedPayer;
 
     @Override
     public void onAttach(Context context) {
@@ -56,9 +71,17 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expense_fragment, container, false);
         ButterKnife.bind(this, view);
+        mSelectedPayer = null;
+        if( savedInstanceState != null ) {
+            setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+            mSelectedPayer = savedInstanceState.getString( AppConstants.USER_KEY );
+        }
         mShareActivityUsersList = new ArrayList<User>();
         mUsersAdapter = new UsersAdapter( getActivity(), mShareActivityUsersList );
         mPaidBySpinner.setAdapter( mUsersAdapter );
+
+        mProgressDialog = new ProgressDialog( getActivity() );
+
         return view;
     }
 
@@ -66,17 +89,28 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         User user;
+        int position = 0;
         mShareActivityUsersList.clear();
         for( DataSnapshot data: dataSnapshot.getChildren() ) {
             user = ( User ) data.getValue( User.class );
             mShareActivityUsersList.add( user );
+            if( mSelectedPayer != null && mSelectedPayer.equals(user.getId() ) )
+                position = mShareActivityUsersList.indexOf( user );
         }
         mUsersAdapter.notifyDataSetChanged();
+        mPaidBySpinner.setSelection( position );
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(AppConstants.SHARING_ACTIVITY_KEY, ( String ) getData() );
+        outState.putString(AppConstants.USER_KEY, ( (User) mPaidBySpinner.getSelectedItem() ).getId() );
     }
 
     /******************************************************************************************/
@@ -86,7 +120,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
 
     private void saveNewExpense()
     {
-        if(IsValid())
+        if( checkData() )
         {
             Expense newExpense = new Expense();
             newExpense.setName(mName.getText().toString());
@@ -95,53 +129,53 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
             newExpense.setPayer( (User) mPaidBySpinner.getSelectedItem() );
             try {
+                mProgressDialog.setTitle( R.string.lbl_saving_expense);
+                mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
+                mProgressDialog.show();
                 DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);
             } catch (InvalidDataException ex) {
+                mProgressDialog.dismiss();
                 Toast.makeText(getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private boolean IsValid()
+    private boolean checkData()
     {
-        if(mName.getText().toString().isEmpty())
-        {
-            Toast.makeText( getActivity(), getResources().getString( R.string.err_name), Toast.LENGTH_SHORT ).show();
-            return false;
+        boolean dataProvided = true;
+
+        if( TextUtils.isEmpty( mName.getText().toString() ) ) {
+            dataProvided =  false;
+            mRtvExpenseName.showError();
+        } else {
+            mRtvExpenseName.cleanError();
         }
 
-        if(mDescription.getText().toString().isEmpty())
-        {
-            Toast.makeText( getActivity(), getResources().getString( R.string.err_description), Toast.LENGTH_SHORT ).show();
-            return false;
+        if( TextUtils.isEmpty( mDescription.getText().toString() ) ) {
+            dataProvided = false;
+            mRtvExpenseDescription.showError();
+        } else {
+            mRtvExpenseDescription.cleanError();
         }
 
-        if(mAmount.getText().toString().isEmpty())
-        {
-            Toast.makeText( getActivity(), getResources().getString( R.string.err_amount), Toast.LENGTH_SHORT ).show();
-            return false;
-        }
-        else
-        {
-            String strAmount = mAmount.getText().toString();
-            Double Amount = Double.parseDouble(strAmount);
-
-            if(Amount == 0)
-            {
-                Toast.makeText(getActivity(), getResources().getString(R.string.err_amount_range), Toast.LENGTH_SHORT).show();
-                return false;
-            }
+        if( TextUtils.isEmpty( mAmount.getText().toString() ) ||
+                Double.parseDouble( mAmount.getText().toString() ) <= 0.0001f ) {
+            dataProvided = false;
+            mRtvExpenseAmount.showError();
+        } else {
+            mRtvExpenseAmount.cleanError();
         }
 
-        return true;
+        // TODO: add check for currency and payer
+
+        return dataProvided;
     }
 
     private void ClearForm()
     {
-        mName.setText("");
-        mDescription  .setText("");
-        mCurrency.setSelection(0);
-        mAmount.setText("");
+        mName.setText( "" );
+        mDescription.setText( "" );
+        mAmount.setText( "" );
     }
 
     /******************************************************************************************/
@@ -151,6 +185,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
 
     @Override
     public void onComplete( DatabaseError databaseError, DatabaseReference databaseReference) {
+        mProgressDialog.dismiss();
         if( databaseError != null )
         {
             Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();

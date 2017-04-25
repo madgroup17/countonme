@@ -8,4 +8,6 @@ public class AppConstants {
 
     public final static String SHARING_ACTIVITY_KEY = "Sharing_Activity_Key";
 
+    public final static String USER_KEY             = "User_Key";
+
 }
