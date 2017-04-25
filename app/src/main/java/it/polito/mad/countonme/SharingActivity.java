@@ -2,20 +2,28 @@ package it.polito.mad.countonme;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
+import it.polito.mad.countonme.interfaces.IOnDrawerItemListener;
 import it.polito.mad.countonme.models.ReportBackAction;
 
-public class SharingActivity extends AppCompatActivity implements IActionReportBack {
+public class SharingActivity extends AppCompatActivity implements IActionReportBack, IOnDrawerItemListener {
     private static final String TAG = SharingActivity.class.getName();
 
     private static enum AppFragment {
@@ -31,16 +39,24 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     private BaseFragment[] mFragmentsList = new BaseFragment[AppFragment.NUM_OF_FRAGMENTS.ordinal() ];
     private int[] mTitlesResIds = new int[ AppFragment.NUM_OF_FRAGMENTS.ordinal() ];
     private FragmentManager mFragmentManager;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerFragment mDrawerFragment;
+    private DrawerLayout mDrawerLayout;
+
+    @BindView( R.id.toolbar ) Toolbar mToolbar;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sharing);
+        ButterKnife.bind( this );
         mFragmentManager = getFragmentManager();
+        setUpDrawer();
+        setUpActionBar();
         loadAppFragments();
         if( savedInstanceState == null )
             showAppFragment(AppFragment.SHARING_ACTIVITIES, false);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
+
     }
 
     @Override
@@ -52,7 +68,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     public void showAppFragment( AppFragment fragment, boolean addToBackStack ) {
         mCurrentFragment = fragment;
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(android.R.id.content, mFragmentsList[mCurrentFragment.ordinal()]);
+        transaction.replace(R.id.content_frame, mFragmentsList[mCurrentFragment.ordinal()]);
         if ( addToBackStack == true ) transaction.addToBackStack(fragment.name());
         transaction.commit();
     }
@@ -79,6 +95,28 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         }
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
+    @Override
+    public void onDrawerItemClick(int itemId) {
+        switch (itemId) {
+            case R.id.menu_logout:
+                doLogout();
+                break;
+            default:
+                Toast.makeText( this, R.string.temp_not_implemeted_lbl, Toast.LENGTH_SHORT ).show();
+        }
+    }
+
     /*    PRIVATE METHODS   */
 
     private void loadAppFragments() {
@@ -89,6 +127,38 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         mFragmentsList[ AppFragment.BALANCE.ordinal() ] = new BalanceFragment();
     }
 
+    private void setUpDrawer() {
+        mDrawerFragment = ( DrawerFragment ) getSupportFragmentManager().findFragmentById( R.id.nav_drawer_fragment );
+        mDrawerLayout = (DrawerLayout) findViewById( R.id.drawer_layout );
+        mDrawerFragment.setUpDrawerItemListener( this );
+    }
+
+    private void setUpActionBar() {
+        setTitle( null );
+        mToolbar.setNavigationIcon( R.drawable.ic_drawer );
+        setSupportActionBar( mToolbar );
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled( true );
+        actionBar.setHomeButtonEnabled( true );
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
+            public void onDrawerClosed(View view) {
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+        };
+    }
+
+    private void doLogout() {
+        FirebaseAuth mFirebaseAuth  = FirebaseAuth.getInstance();
+        mFirebaseAuth.signOut();
+        finish();
+        startActivity(new Intent(this, LoginActivity.class ) );
+    }
 
     // Action handlers
 

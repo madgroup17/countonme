@@ -43,7 +43,7 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
             String imgUrl = activity.getImageUrl();
 
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                new ImageFromUrlTask( mImgView ).execute( imgUrl );
+                new ImageFromUrlTask( mImgView, R.drawable.img_sharing_default, true ).execute( imgUrl );
             } else {
                 mImgView.setImageResource(R.drawable.img_sharing_default);
             }

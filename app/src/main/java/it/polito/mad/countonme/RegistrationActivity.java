@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -35,6 +36,8 @@ public class RegistrationActivity extends AppCompatActivity
         implements DatabaseReference.CompletionListener{
 
 
+    @BindView( R.id.toolbar ) Toolbar mToolbar;
+
     @BindView(R.id.rtv_user_name) RequiredInputTextView mRtvUserName;
     @BindView(R.id.rtv_email) RequiredInputTextView mRtvEmail;
     @BindView(R.id.rtv_password) RequiredInputTextView mRtvPassword;
@@ -51,9 +54,12 @@ public class RegistrationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView( R.layout.registration_layout );
         ButterKnife.bind( this );
+
+        setSupportActionBar( mToolbar );
+        setTitle( R.string.lbl_register_user );
+
         mProgressDialog = new ProgressDialog( this );
         mFirebaseAuth = FirebaseAuth.getInstance();
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
     }
 
 
@@ -115,6 +121,7 @@ public class RegistrationActivity extends AppCompatActivity
                         Toast.makeText( RegistrationActivity.this, R.string.lbl_registration_error, Toast.LENGTH_SHORT).show();
                     }
                 } else {
+                    mProgressDialog.dismiss();
                     Toast.makeText( RegistrationActivity.this, R.string.lbl_registration_error, Toast.LENGTH_SHORT).show();
                 }
             }

@@ -24,7 +24,7 @@
                     android:scheme="https"
                     android:host="www.francesco.com" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
         <activity
             android:name=".LoginActivity"
@@ -37,14 +37,14 @@
 
         <activity
             android:name=".RegistrationActivity"
-            android:windowSoftInputMode="stateHidden" />-->
+            android:windowSoftInputMode="stateHidden" />
 
         <activity android:name=".SharingActivity">
             android:windowSoftInputMode="stateHidden">
-            <intent-filter>
+          <!--  <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".Accept_Reject_SA">
 

@@ -2,8 +2,13 @@ package it.polito.mad.countonme.database;
 
 import android.net.UrlQuerySanitizer;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.models.Expense;
@@ -22,6 +27,7 @@ public class DataManager {
     private static final String CHILD_EXPENSES = "expenses";
     private static final String CHILD_USERS = "users";
 
+    ArrayList<SharingActivity> salist = new ArrayList<>();
 
     public static final DataManager sInstance = new DataManager();
 
@@ -117,6 +123,48 @@ public class DataManager {
         }
         DatabaseReference reference = mDatabase.getReference( key );
         reference.child( id ).setValue( data, listener );
+    }
+
+    //Lina:
+    private void fetchData (DataSnapshot dataSnapshot){
+        salist.clear();
+        for(DataSnapshot ds : dataSnapshot.getChildren()){
+            SharingActivity salist = ds.getValue(SharingActivity.class);
+            for(DataSnapshot ds1  : dataSnapshot.getChildren()) {
+                User user = ds1.getValue(User.class);
+                salist.addUser(user);
+            }
+        }
+    }
+
+    public ArrayList<SharingActivity> retreive(){
+        getDbReference().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                fetchData(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                fetchData(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return salist;
     }
 
 

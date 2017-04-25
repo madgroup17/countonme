@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +48,8 @@ import it.polito.mad.countonme.models.User;
 public class LoginActivity extends AppCompatActivity
 implements DatabaseReference.CompletionListener {
 
+    @BindView( R.id.toolbar ) Toolbar mToolbar;
+
     @BindView(R.id.rtv_email) RequiredInputTextView mRtvEmail;
     @BindView(R.id.rtv_password) RequiredInputTextView mRtvPassword;
 
@@ -54,6 +57,8 @@ implements DatabaseReference.CompletionListener {
     @BindView(R.id.ed_password) EditText mEdPassword;
 
     @BindView(R.id.login_button) LoginButton mFbLoginButton;
+
+
 
     private ProgressDialog mProgressDialog;
     private FirebaseAuth mFirebaseAuth;
@@ -67,7 +72,9 @@ implements DatabaseReference.CompletionListener {
         setContentView( R.layout.login_layout );
         ButterKnife.bind( this );
         mFirebaseAuth = FirebaseAuth.getInstance();
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(102, 187, 106)));
+
+        setSupportActionBar( mToolbar );
+        setTitle( R.string.lbl_login );
 
         if( mFirebaseAuth.getInstance().getCurrentUser() != null ) {
             finish();
@@ -107,13 +114,6 @@ implements DatabaseReference.CompletionListener {
     public void gotoRegistration() {
         finish();
         startActivity( new Intent( this, RegistrationActivity.class) );
-    }
-
-    @OnClick(R.id.logout_button)
-    public void logoutAppUser()
-    {
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseAuth.signOut();
     }
 
     @Override
