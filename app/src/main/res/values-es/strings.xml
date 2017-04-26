@@ -28,4 +28,13 @@
     <string name="succ_save">Guardado satisfactoriamente</string>
     <string name="lbl_error_sharing_link">Error al compartir el link</string>
     <string name="select_app">Selecciona una aplicacion</string>
+    <string name="group_status_lbl">Estadodel Grupo</string>
+    <string name="hello_blank_fragment">Hola fragmento en blanco</string>
+    <string name="lbl_email">Correo electronica:</string>
+    <string name="lbl_email_hint">Ingrese su correo electronico</string>
+    <string name="lbl_invalid_value">Valor erroneo</string>
+    <string name="lbl_logging_user">Ingresar</string>
+    <string name="lbl_login">Registrar usuario</string>
+    <string name="lbl_login_btn">Ingresar</string>
+    <string name="lbl_login_error">No pudo ingresar. porfavor intente de nuevo</string>
 </resources>

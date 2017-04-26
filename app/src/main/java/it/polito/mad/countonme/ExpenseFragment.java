@@ -72,8 +72,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expense_fragment, container, false);
         ButterKnife.bind(this, view);
         mSelectedPayer = null;
@@ -110,6 +109,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     public void onCancelled(DatabaseError databaseError) {
 
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -161,6 +161,15 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             case R.id.save_expense:
                 saveNewExpense();
                 return true;
+            case R.id.share_sharing_activity:
+                try{
+                    Intent sendIntent = LinkSharing.shareActivity(getActivity(),(String) getData());
+                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.select_app)));
+                    return true;
+                }catch(Exception e){
+                    Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
+                }
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -190,10 +199,14 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
             newExpense.setPayer( (User) mPaidBySpinner.getSelectedItem() );
             try {
+
+                DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);//fragment
+
                 mProgressDialog.setTitle( R.string.lbl_saving_expense);
                 mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
                 mProgressDialog.show();
                 DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);
+
             } catch (InvalidDataException ex) {
                 mProgressDialog.dismiss();
                 Toast.makeText(getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();

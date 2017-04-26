@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    android:isScrollContainer="true"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:id="@+id/linearLayout_sa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/sharing_activity_img_sa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:cropToPadding="false"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/img_sharing_default" />
+
+        <TextView
+            android:id="@+id/sharing_activity_name_sa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/label_padding_10"
+            android:text="NameActivity"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/sharing_activity_description_sa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearLayout"
+        android:text="descriptionActivity"
+     />
+
+    <TextView
+        android:id="@+id/sharing_activity_currency_sa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sharing_activity_description_sa"
+        android:layout_marginTop="@dimen/label_padding_10"
+        android:paddingLeft="@dimen/label_padding_10"
+        android:text="@string/lbl_currency"
+        android:textSize="@dimen/interface_text_size" />
+
+    <Button
+        android:id="@+id/accept_sa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="accept"/>
+    <Button
+        android:id="@+id/reject_sa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="reject"/>
+
+</LinearLayout>

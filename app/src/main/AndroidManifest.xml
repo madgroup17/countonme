@@ -9,7 +9,25 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity"
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements" />
+
+        <!--<activity android:name=".TestActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="www.francesco.com" />
+            </intent-filter>
+        </activity>-->
+
+        <activity
+            android:name=".LoginActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,15 +35,34 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RegistrationActivity"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
+        <activity
+            android:name=".RegistrationActivity"
+            android:windowSoftInputMode="stateHidden" />
 
         <activity android:name=".SharingActivity">
+            android:windowSoftInputMode="stateHidden">
+          <!--  <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity android:name=".Accept_Reject_SA">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="www.countonme.com" />
+            </intent-filter>
         </activity>
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/fb_appid"/>
-
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/fb_appid" />
     </application>
 
 </manifest>
