@@ -169,7 +169,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
                 }catch(Exception e){
                     Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
                 }
-                break;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
