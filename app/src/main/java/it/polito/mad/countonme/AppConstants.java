@@ -10,4 +10,7 @@ public class AppConstants {
 
     public final static String USER_KEY             = "User_Key";
 
+
+    public final static int GET_IMAGE_REQUEST       = 1;
+
 }
