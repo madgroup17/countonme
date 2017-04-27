@@ -3,8 +3,6 @@ package it.polito.mad.countonme;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -30,6 +28,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         SHARING_ACTIVITIES,
         EXPENSES,
         SHARING_DETAILS,
+        SHARING_ACTIVITY_DETAILS,  //tabs
         EXPENSE_DETAILS,
         BALANCE,
         NUM_OF_FRAGMENTS
@@ -88,6 +87,9 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
             case ACTION_VIEW_BALANCE:
                 handleActionBALANCE(action.getActionData());
                 break;
+            case ACTION_VIEW_SHARING_ACTIVITY:
+                handleActionSharingActivityDetail(action.getActionData());
+                break;
             default:
                 //Toast.makeText( this, getResources().getString( R.string.temp_not_implemeted_lbl), Toast.LENGTH_SHORT ).show();
                 handleActionAddNewSharingActivity(action.getActionData());
@@ -123,8 +125,9 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingsListFragment();
         mFragmentsList[ AppFragment.EXPENSES.ordinal() ]  = new ExpensesListFragment();
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = new SharingActivityFragment();
+        mFragmentsList[ AppFragment.SHARING_ACTIVITY_DETAILS.ordinal() ] = new SharingActivityDetailFragment();
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ] = new ExpenseFragment();
-        mFragmentsList[ AppFragment.BALANCE.ordinal() ] = new BalanceFragment();
+        mFragmentsList[ AppFragment.BALANCE.ordinal() ] = new SharingActivityDetailFragment();   //BalanceFragment();
     }
 
     private void setUpDrawer() {
@@ -185,6 +188,11 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     private void handleActionBALANCE( Object data ) {
         mFragmentsList[ AppFragment.BALANCE.ordinal() ].setData( (String) data );
         showAppFragment( AppFragment.BALANCE, true );
+    }
+
+    private void handleActionSharingActivityDetail( Object data ) {
+        mFragmentsList[ AppFragment.SHARING_ACTIVITY_DETAILS.ordinal() ].setData( (String) data );
+        showAppFragment( AppFragment.SHARING_ACTIVITY_DETAILS, true );
     }
 
 }

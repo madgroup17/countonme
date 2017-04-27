@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
@@ -49,11 +51,13 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     @BindView( R.id.rtv_expense_currency ) RequiredInputTextView mRtvExpenseCurrency;
     @BindView( R.id.rtv_expense_payer ) RequiredInputTextView mRtvExpensePayer;
 
+    @BindView( R.id.img_expense_photo ) ImageView mImage;
     @BindView( R.id.ed_expense_name ) EditText mName;
     @BindView( R.id.ed_expense_description ) EditText mDescription;
     @BindView( R.id.ed_expense_amount ) EditText mAmount;
     @BindView( R.id.spin_expense_currency ) Spinner mCurrency;
     @BindView( R.id.spin_expense_paidby ) Spinner mPaidBySpinner;
+
 
     private UsersAdapter mUsersAdapter;
     private ArrayList<User> mShareActivityUsersList;
@@ -114,11 +118,75 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
         outState.putString(AppConstants.USER_KEY, ( (User) mPaidBySpinner.getSelectedItem() ).getId() );
     }
 
-    /******************************************************************************************/
+    @Override
+    public void onComplete( DatabaseError databaseError, DatabaseReference databaseReference) {
+        mProgressDialog.dismiss();
+        if( databaseError != null )
+        {
+            Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            ClearForm();
+            getFragmentManager().popBackStack();
+            Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
+        }
+    }
 
-    /******************************************************************************************/
+    @Override
+    public void onResume() {
+        super.onResume();
+        adjustActionBar();
+        DataManager.getsInstance()
+                .getSharingActivityUsersReference( ( String ) getData() )
+                .addListenerForSingleValueEvent( this );
+    }
 
-    // Methods
+    @Override
+    public void onStop() {
+        super.onStop();
+        setHasOptionsMenu( false );
+    }
+
+
+
+    @Override
+    public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.expense_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.save_expense:
+                saveNewExpense();
+                return true;
+            case R.id.share_sharing_activity:
+                try{
+                    Intent sendIntent = LinkSharing.shareActivity(getActivity(),(String) getData());
+                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.select_app)));
+                    return true;
+                }catch(Exception e){
+                    Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @OnClick( R.id.img_expense_photo )
+    public void pickExpensePhoto() {
+        Intent intent = new Intent();
+        intent.setType( "image/*" );
+        intent.setAction( Intent.ACTION_GET_CONTENT );
+        startActivityForResult( Intent.createChooser( intent, "Select Picture"), AppConstants.GET_IMAGE_REQUEST);
+    }
+
+
+    /******************************************************/
+    /*                 PRIVATE METHODS                    */
+    /******************************************************/
 
     private void saveNewExpense()
     {
@@ -184,46 +252,6 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
         mAmount.setText( "" );
     }
 
-    /***************************************************************************************/
-
-    /***************************************************************************************/
-    //Events
-
-    @Override
-    public void onComplete( DatabaseError databaseError, DatabaseReference databaseReference) {
-        mProgressDialog.dismiss();
-        if( databaseError != null )
-        {
-            Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            ClearForm();
-            getFragmentManager().popBackStack();
-            Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /***************************************************************************************/
-
-    /***************************************************************************************/
-    //ActionBar
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        adjustActionBar();
-        DataManager.getsInstance()
-                .getSharingActivityUsersReference( ( String ) getData() )
-                .addListenerForSingleValueEvent( this );
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        setHasOptionsMenu( false );
-    }
-
     private void adjustActionBar() {
         if( getData() instanceof String )
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_add_new_title );
@@ -231,35 +259,4 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
         setHasOptionsMenu( true );
     }
-
-
-    /***************************************************************************************/
-
-    /***************************************************************************************/
-    // create an action bar button
-
-    @Override
-    public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.expense_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.save_expense:
-                saveNewExpense();
-                return true;
-            case R.id.share_sharing_activity:
-                try{
-                    Intent sendIntent = LinkSharing.shareActivity(getActivity(),(String) getData());
-                    startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.select_app)));
-                    return true;
-                }catch(Exception e){
-                    Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
-                }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 }
