@@ -3,8 +3,6 @@ package it.polito.mad.countonme;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -129,7 +127,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = new SharingActivityFragment();
         mFragmentsList[ AppFragment.SHARING_ACTIVITY_DETAILS.ordinal() ] = new SharingActivityDetailFragment();
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ] = new ExpenseFragment();
-        mFragmentsList[ AppFragment.BALANCE.ordinal() ] = new BalanceFragment();
+        mFragmentsList[ AppFragment.BALANCE.ordinal() ] = new SharingActivityDetailFragment();   //BalanceFragment();
     }
 
     private void setUpDrawer() {

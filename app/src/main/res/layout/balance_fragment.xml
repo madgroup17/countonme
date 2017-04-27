@@ -2,7 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/windowBackground">
+    android:background="@color/windowBackground"
+    android:padding="@dimen/layout_padding">
+
+
 
     <LinearLayout
         android:id="@+id/my_balance_container"
@@ -95,39 +98,51 @@
                 android:text="20000"/>
 
         </LinearLayout>
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/interface_text_size"
+            android:textColor="@color/titleColor"
+            android:gravity="center"
+            android:text="@string/group_status_lbl"/>
     </LinearLayout>
 
 
 
-    <LinearLayout
-        android:id="@+id/group_balance_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:paddingBottom="@dimen/label_padding_10"
-        android:layout_below="@id/my_balance_container">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="@dimen/interface_text_size"
-        android:textColor="@color/titleColor"
-        android:gravity="center"
-        android:text="@string/group_status_lbl"/>
 
-    </LinearLayout>
 
-    <com.github.mikephil.charting.charts.BarChart
+
+<!--android:layout_below="@id/group_balance_container"-->
+
+
+
+    <include layout="@layout/balance_chart_layout"
+
+        android:id="@+id/chart"
+    />
+
+   <!-- <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/balance_chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/group_balance_container">
+        android:layout_height="200dp"
+        />-->
 
-    </com.github.mikephil.charting.charts.BarChart>
+
+
+
+
+
+
+
+
+
+    <!--<com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/chart1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />-->
 
    <!-- <android.support.v7.widget.RecyclerView
-        android:id="@+id/expenses_list"
+        android:id="@+id/debt_list"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

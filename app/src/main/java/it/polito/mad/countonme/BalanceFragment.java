@@ -2,6 +2,7 @@ package it.polito.mad.countonme;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +13,34 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
+
+import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.lists.UsersAdapter;
+import it.polito.mad.countonme.models.*;
 
 /**
  * Created by Khatereh on 4/18/2017.
  */
 
-public class BalanceFragment extends BaseFragment
+public class BalanceFragment extends BaseFragment implements ValueEventListener
 {
     BarChart barChart;
+    ArrayList<BarEntry> BARENTRY ;
+    ArrayList<String> BarEntryLabels ;
+    BarDataSet Bardataset ;
+    BarData BARDATA ;
+    private UsersAdapter mUsersAdapter;
+    private ArrayList<User> mShareActivityUsersList;
 
     @Override
     public void onAttach(Context context) {
@@ -32,8 +48,14 @@ public class BalanceFragment extends BaseFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        if( savedInstanceState != null ) setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+
         View view = inflater.inflate(R.layout.balance_fragment, container, false);
+
+        mShareActivityUsersList = new ArrayList<User>();
+        mUsersAdapter = new UsersAdapter( getActivity(), mShareActivityUsersList );
 
         barChart = (BarChart) view.findViewById(R.id.balance_chart);
         FillChart();
@@ -41,32 +63,74 @@ public class BalanceFragment extends BaseFragment
         return view;
     }
 
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        User user;
+        int position = 0;
+        mShareActivityUsersList.clear();
+        for( DataSnapshot data: dataSnapshot.getChildren() ) {
+            user = ( User ) data.getValue( User.class );
+            mShareActivityUsersList.add( user );
+        }
+        mUsersAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adjustActionBar();
+        DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).addValueEventListener( this );
+    }
+
+    private void adjustActionBar() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.balance_title );
+        setHasOptionsMenu( true );
+    }
+
+    /******************************************************************************************/
+
+    /******************************************************************************************/
+
     private  void  FillChart()
     {
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(4f, 0));
-        entries.add(new BarEntry(8f, 1));
-        entries.add(new BarEntry(6f, 2));
-        entries.add(new BarEntry(12f, 3));
-        entries.add(new BarEntry(18f, 4));
-        entries.add(new BarEntry(9f, 5));
+        BARENTRY = new ArrayList<>();
+        BarEntryLabels = new ArrayList<String>();
 
-        BarDataSet dataset = new BarDataSet(entries, "of Calls");
+        AddValuesToBARENTRY();
+        AddValuesToBarEntryLabels();
 
-        ArrayList<String> labels = new ArrayList<String>();
-        labels.add("January");
-        labels.add("February");
-        labels.add("March");
-        labels.add("April");
-        labels.add("May");
-        labels.add("June");
-
-        dataset.setColors(ColorTemplate.COLORFUL_COLORS);
-
-        BarData data = new BarData(labels, dataset);
-        barChart.setData(data);
+        Bardataset = new BarDataSet(BARENTRY, "Members");
+        BARDATA = new BarData(BarEntryLabels,Bardataset);
+        Bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
+        barChart.setData(BARDATA);
         barChart.invalidate();
-        //barChart.setDescription("Description");
+        barChart.animateY(3000);
+        barChart.setDescription("Credits");
+    }
+
+    public void AddValuesToBARENTRY(){
+
+        BARENTRY.add(new BarEntry(-2f, 0));
+        BARENTRY.add(new BarEntry(4f, 1));
+        BARENTRY.add(new BarEntry(6f, 2));
+        BARENTRY.add(new BarEntry(8f, 3));
+        BARENTRY.add(new BarEntry(7f, 4));
+        BARENTRY.add(new BarEntry(3f, 5));
+    }
+
+    public void AddValuesToBarEntryLabels(){
+
+        BarEntryLabels.add("January");
+        BarEntryLabels.add("February");
+        BarEntryLabels.add("March");
+        BarEntryLabels.add("April");
+        BarEntryLabels.add("May");
+        BarEntryLabels.add("June");
     }
 
 
