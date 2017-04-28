@@ -55,7 +55,12 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
     @Override
     public View onCreateView(LayoutInflater inflater,
                               ViewGroup container, Bundle savedInstanceState) {
+        Bundle args;
         if( savedInstanceState != null ) setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+        else {
+            args = getArguments();
+            if(args != null ) setData( args.getString("sharingkey") );
+        }
         View view = inflater.inflate(R.layout.expenses_list_fragment, container, false);
         mActionButton = ( FloatingActionButton ) view.findViewById( R.id.fabexp );
         mActionButton.setOnClickListener( this );
@@ -129,33 +134,6 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
     private void adjustActionBar() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expenses_title );
         setHasOptionsMenu( true );
-    }
-
-    /******************************************************************************************/
-
-    /******************************************************************************************/
-    // create an action bar button
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.sharing_activity_detail_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.balance:
-                Activity parentActivity  = getActivity();
-                if( parentActivity instanceof IActionReportBack)
-                    ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY, null) );
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     /******************************************************************************************/

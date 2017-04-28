@@ -35,9 +35,11 @@ public class SharingActivityDetailFragment extends BaseFragment
         String SharingActTitle = getResources().getString(R.string.sharing_activity_details_title);
 
         // Add each tab
-        mTabHost.addTab(mTabHost.newTabSpec("SharingAct").setIndicator(SharingActTitle), SharingActivityView.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("Expense").setIndicator(ExpenseTitle), ExpensesListFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("Balance").setIndicator(BalanceTitle), BalanceFragment.class, null);
+        Bundle bundle = new Bundle();
+        bundle.putString("sharingkey", (String) getData());
+        mTabHost.addTab(mTabHost.newTabSpec("SharingAct").setIndicator(SharingActTitle), SharingActivityView.class, bundle);
+        mTabHost.addTab(mTabHost.newTabSpec("Expense").setIndicator(ExpenseTitle), ExpensesListFragment.class, bundle);
+        mTabHost.addTab(mTabHost.newTabSpec("Balance").setIndicator(BalanceTitle), BalanceFragment.class, bundle);
         mTabHost.setCurrentTabByTag("SharingAct");
 
         /*mTabHost.postDelayed(new Runnable() {

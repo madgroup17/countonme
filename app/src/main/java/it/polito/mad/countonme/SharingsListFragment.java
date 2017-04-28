@@ -94,7 +94,7 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
         SharingActivity activity = (SharingActivity) clickedItem;
         Activity parentActivity  = getActivity();
         if( parentActivity instanceof IActionReportBack ) {
-            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSES_LIST, ((SharingActivity) clickedItem).getKey()));
+            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY, ((SharingActivity) clickedItem).getKey()));
         }
     }
 
