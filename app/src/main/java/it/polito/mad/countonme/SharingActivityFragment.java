@@ -45,6 +45,8 @@ public class SharingActivityFragment extends BaseFragment implements DatabaseRef
         txtName = (EditText) view.findViewById(R.id.sharing_activity_name);
         txtDescription = (EditText) view.findViewById(R.id.sharing_activity_description);
 
+        ((CountOnMeApp)getActivity().getApplication()).getCurrentUser();
+
         return view;
     }
 

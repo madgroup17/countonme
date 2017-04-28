@@ -6,6 +6,8 @@ import android.support.multidex.MultiDexApplication;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthProvider;
 
+import it.polito.mad.countonme.models.User;
+
 /**
  * Exended application class for data global sharing
  * Created by francescobruno on 29/03/17.
@@ -13,4 +15,14 @@ import com.google.firebase.auth.FirebaseAuthProvider;
 
 public class CountOnMeApp extends MultiDexApplication
 {
+    private User mCurrentUser;
+
+    public User getCurrentUser() {
+        return mCurrentUser;
+    }
+
+    public void setCurrentUser( User currentUser ) {
+        mCurrentUser = currentUser;
+    }
+
 }

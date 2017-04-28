@@ -1,6 +1,7 @@
 package it.polito.mad.countonme;
 
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,8 @@ public class SharingActivityDetailFragment extends BaseFragment
 {
 
     FragmentTabHost mTabHost;
+    FragmentManager mChildFragmentManager;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -28,7 +32,8 @@ public class SharingActivityDetailFragment extends BaseFragment
         View view = inflater.inflate(R.layout.sharing_activity_detail, container, false);
 
         mTabHost = (FragmentTabHost) view.findViewById(R.id.tabhost);
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.container);
+        mChildFragmentManager = getChildFragmentManager();
+        mTabHost.setup(getActivity(), mChildFragmentManager, R.id.container);
 
         String ExpenseTitle = getResources().getString(R.string.expenses_title);
         String BalanceTitle = getResources().getString(R.string.balance_title);
@@ -53,6 +58,20 @@ public class SharingActivityDetailFragment extends BaseFragment
 
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
 
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
