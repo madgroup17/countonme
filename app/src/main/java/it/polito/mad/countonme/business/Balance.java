@@ -27,7 +27,7 @@ public class Balance
     private List<Expense> ExpenseList;
     private Map<String, User> mUsers;
 
-    public void Balance(List<Expense> ExpenseList,Map<String, User> mUsers)
+    public Balance(List<Expense> ExpenseList,Map<String, User> mUsers)
     {
         this.ExpenseList = ExpenseList;
         this.mUsers = mUsers;

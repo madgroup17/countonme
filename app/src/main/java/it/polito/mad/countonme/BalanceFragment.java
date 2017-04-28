@@ -22,8 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import it.polito.mad.countonme.business.Balance;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.lists.UsersAdapter;
 import it.polito.mad.countonme.models.*;
@@ -39,8 +42,18 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener
     ArrayList<String> BarEntryLabels ;
     BarDataSet Bardataset ;
     BarData BARDATA ;
+
+    TextView tvMySpend;
+    TextView tvMyCredit;
+    TextView tvMyDebt;
+
+    List<Debt> DebtList;
+
     private UsersAdapter mUsersAdapter;
     private ArrayList<User> mShareActivityUsersList;
+
+    private List<Expense> ExpenseList ;
+    private Map<String, User> mUsers;
 
     @Override
     public void onAttach(Context context) {
@@ -53,6 +66,11 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener
         if( savedInstanceState != null ) setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
 
         View view = inflater.inflate(R.layout.balance_fragment, container, false);
+
+        tvMySpend = (TextView) view.findViewById(R.id.my_spend);
+        tvMyCredit = (TextView) view.findViewById(R.id.my_credit);
+        tvMyDebt = (TextView) view.findViewById(R.id.my_debt);
+
 
         mShareActivityUsersList = new ArrayList<User>();
         mUsersAdapter = new UsersAdapter( getActivity(), mShareActivityUsersList );
@@ -104,6 +122,9 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener
         AddValuesToBARENTRY();
         AddValuesToBarEntryLabels();
 
+        //FillData();
+
+
         Bardataset = new BarDataSet(BARENTRY, "Members");
         BARDATA = new BarData(BarEntryLabels,Bardataset);
         Bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
@@ -113,7 +134,30 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener
         barChart.setDescription("Credits");
     }
 
-    public void AddValuesToBARENTRY(){
+    private void FillData()
+    {
+        Balance BalanceClass = new Balance(ExpenseList , mUsers);
+
+        tvMySpend.setText(String.valueOf(BalanceClass.GetMySpend()));
+        tvMyCredit.setText(String.valueOf(BalanceClass.GetMyCredit()));
+        tvMyDebt.setText(String.valueOf(BalanceClass.GetMyDept()));
+
+        DebtList =  BalanceClass.getDebtList();
+        AddDebtsToBARENTRY();
+    }
+
+    private void AddDebtsToBARENTRY()
+    {
+        int Index = 0;
+        for (Iterator<Debt> i = DebtList.iterator(); i.hasNext();)
+        {
+            Debt item = i.next();
+            BARENTRY.add(new BarEntry(item.getCredit().intValue(), Index));
+            BarEntryLabels.add(item.getUser().getName());
+        }
+    }
+
+    private void AddValuesToBARENTRY(){
 
         BARENTRY.add(new BarEntry(-2f, 0));
         BARENTRY.add(new BarEntry(4f, 1));
@@ -123,7 +167,7 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener
         BARENTRY.add(new BarEntry(3f, 5));
     }
 
-    public void AddValuesToBarEntryLabels(){
+    private void AddValuesToBarEntryLabels(){
 
         BarEntryLabels.add("User1");
         BarEntryLabels.add("User2");

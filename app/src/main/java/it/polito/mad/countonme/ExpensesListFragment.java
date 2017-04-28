@@ -153,9 +153,6 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
                     ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY, null) );
                 return true;
 
-            case R.id.detail:
-
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

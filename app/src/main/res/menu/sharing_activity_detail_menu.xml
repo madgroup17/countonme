@@ -4,8 +4,6 @@
     <item android:id="@+id/balance"
         android:icon="@drawable/chart"
         app:showAsAction="always"/>
-    <item android:id="@+id/detail"
-        android:icon="@drawable/details"
-        app:showAsAction="always"/>
+
 
 </menu>
