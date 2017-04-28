@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
     android:padding="@dimen/layout_padding">
-
-
 
     <LinearLayout
         android:id="@+id/my_balance_container"
@@ -107,39 +110,10 @@
             android:text="@string/group_status_lbl"/>
     </LinearLayout>
 
-
-
-
-
-
-<!--android:layout_below="@id/group_balance_container"-->
-
-
-
     <include layout="@layout/balance_chart_layout"
-
         android:id="@+id/chart"
     />
 
-   <!-- <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/balance_chart"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        />-->
-
-
-
-
-
-
-
-
-
-
-    <!--<com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/chart1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />-->
 
    <!-- <android.support.v7.widget.RecyclerView
         android:id="@+id/debt_list"
@@ -148,8 +122,6 @@
         android:layout_height="match_parent"
         android:layout_below="@id/balance_chart"/> -->
 
-
-
-
-
 </RelativeLayout>
+
+</ScrollView>

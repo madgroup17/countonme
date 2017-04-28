@@ -29,6 +29,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         EXPENSES,
         SHARING_DETAILS,
         SHARING_ACTIVITY_DETAILS,  //tabs
+        SHARING_VIEW,
         EXPENSE_DETAILS,
         BALANCE,
         NUM_OF_FRAGMENTS
@@ -90,6 +91,9 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
             case ACTION_VIEW_SHARING_ACTIVITY:
                 handleActionSharingActivityDetail(action.getActionData());
                 break;
+            case ACTION_MODIFY_SHARING_ACTIVITY:
+                handleActionSharingActivityView(action.getActionData());
+                break;
             default:
                 //Toast.makeText( this, getResources().getString( R.string.temp_not_implemeted_lbl), Toast.LENGTH_SHORT ).show();
                 handleActionAddNewSharingActivity(action.getActionData());
@@ -127,7 +131,9 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = new SharingActivityFragment();
         mFragmentsList[ AppFragment.SHARING_ACTIVITY_DETAILS.ordinal() ] = new SharingActivityDetailFragment();
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ] = new ExpenseFragment();
-        mFragmentsList[ AppFragment.BALANCE.ordinal() ] = new SharingActivityDetailFragment();   //BalanceFragment();
+        mFragmentsList[ AppFragment.BALANCE.ordinal() ] = new BalanceFragment();
+        mFragmentsList[ AppFragment.SHARING_VIEW.ordinal() ] = new SharingActivityView();
+
     }
 
     private void setUpDrawer() {
@@ -190,8 +196,15 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         showAppFragment( AppFragment.BALANCE, true );
     }
 
+    private void handleActionSharingActivityView( Object data ) {
+        mFragmentsList[ AppFragment.SHARING_VIEW.ordinal() ].setData( (String) data );
+        showAppFragment( AppFragment.SHARING_VIEW, true );
+    }
+
     private void handleActionSharingActivityDetail( Object data ) {
         mFragmentsList[ AppFragment.SHARING_ACTIVITY_DETAILS.ordinal() ].setData( (String) data );
+        mFragmentsList[ AppFragment.BALANCE.ordinal() ].setData( (String) data );
+        mFragmentsList[ AppFragment.EXPENSES.ordinal() ].setData( (String) data );
         showAppFragment( AppFragment.SHARING_ACTIVITY_DETAILS, true );
     }
 

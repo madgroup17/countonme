@@ -7,7 +7,7 @@
 
     <string name="sharing_activities_title">Sharing activities</string>
     <string name="sharing_activity_add_new_title">New Sharing activity</string>
-    <string name="sharing_activity_details_title">Sharing activity details</string>
+    <string name="sharing_activity_details_title">Details</string>
 
     <string name="expenses_title">Expenses</string>
     <string name="expense_details_title">Expense details</string>

@@ -13,11 +13,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
+import it.polito.mad.countonme.models.User;
 
 /**
  * Created by Khatereh on 4/13/2017.
@@ -75,7 +77,21 @@ public class SharingActivityFragment extends BaseFragment implements DatabaseRef
         model.setDescription(txtDescription.getText().toString());
         model.setCurrency(spnCurrency.getSelectedItem().toString());
 
+        User UserModel = GetCurrentUser();
+        model.addUser(UserModel);
+
         return model;
+    }
+
+    private User GetCurrentUser()
+    {
+        User UserModel = new User();
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        com.google.firebase.auth.FirebaseUser currentUser = mFirebaseAuth.getInstance().getCurrentUser();
+        UserModel.setId(currentUser.getUid());
+        UserModel.setEmail(currentUser.getEmail());
+        UserModel.setName(currentUser.getDisplayName());
+        return UserModel;
     }
 
     private boolean IsValid()

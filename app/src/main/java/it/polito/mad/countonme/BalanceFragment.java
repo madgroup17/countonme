@@ -125,12 +125,12 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener
 
     public void AddValuesToBarEntryLabels(){
 
-        BarEntryLabels.add("January");
-        BarEntryLabels.add("February");
-        BarEntryLabels.add("March");
-        BarEntryLabels.add("April");
-        BarEntryLabels.add("May");
-        BarEntryLabels.add("June");
+        BarEntryLabels.add("User1");
+        BarEntryLabels.add("User2");
+        BarEntryLabels.add("User3");
+        BarEntryLabels.add("User4");
+        BarEntryLabels.add("User5");
+        BarEntryLabels.add("User6");
     }
 
 

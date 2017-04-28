@@ -150,7 +150,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
             case R.id.balance:
                 Activity parentActivity  = getActivity();
                 if( parentActivity instanceof IActionReportBack)
-                    ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_BALANCE, null) );
+                    ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY, null) );
                 return true;
 
             case R.id.detail:
