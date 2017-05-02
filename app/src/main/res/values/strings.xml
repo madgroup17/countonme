@@ -23,6 +23,9 @@
     <string name="lbl_amount">Amount</string>
     <string name="lbl_currency">Currency</string>
     <string name="lbl_date">Date</string>
+    <string name="lbl_money_transfer">Money tranfer</string>
+    <string name="lbl_yes">YES</string>
+    <string name="lbl_no">NO</string>
 
     <string name="lbl_saving_error">Saving error. Please try again</string>
     <string name="lbl_expense_saved">New expense saved successfully</string>
