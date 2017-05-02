@@ -56,9 +56,9 @@ public class SharingActivityView extends BaseFragment implements ValueEventListe
         path = path.substring(1);*/
        DataManager.getsInstance().getSharingActivityReference( (String)getData() ).addListenerForSingleValueEvent(this);
 
-        spnCurrency = (Spinner) view.findViewById(R.id.currency_spinner);
-        txtName = (EditText) view.findViewById(R.id.sharing_activity_name);
-        txtDescription = (EditText) view.findViewById(R.id.sharing_activity_description);
+        spnCurrency = (Spinner) view.findViewById(R.id.spin_sharing_activity_currency);
+        txtName = (EditText) view.findViewById(R.id.ed_sharing_activity_name);
+        txtDescription = (EditText) view.findViewById(R.id.ed_sharing_activity_description);
 
         return view;
     }

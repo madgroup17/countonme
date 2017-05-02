@@ -41,9 +41,9 @@ public class SharingActivityFragment extends BaseFragment implements DatabaseRef
     {
         View view = inflater.inflate(R.layout.sharing_activity_fragment, container, false);
 
-        spnCurrency = (Spinner) view.findViewById(R.id.currency_spinner);
-        txtName = (EditText) view.findViewById(R.id.sharing_activity_name);
-        txtDescription = (EditText) view.findViewById(R.id.sharing_activity_description);
+        spnCurrency = (Spinner) view.findViewById(R.id.spin_sharing_activity_currency);
+        txtName = (EditText) view.findViewById(R.id.ed_sharing_activity_name);
+        txtDescription = (EditText) view.findViewById(R.id.ed_sharing_activity_description);
 
         ((CountOnMeApp)getActivity().getApplication()).getCurrentUser();
 
