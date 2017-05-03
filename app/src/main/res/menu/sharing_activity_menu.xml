@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/save_sharing_activity"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_save"
         app:showAsAction="always"/>
-    <!--
-    <item android:id="@+id/share_sharing_activity"
-        android:icon="@android:drawable/ic_menu_share"
-        android:actionProviderClass="android.widget.ShareActionProvider"
-        app:showAsAction="always"/>
-     -->
 </menu>
