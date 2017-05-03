@@ -1,4 +1,4 @@
-package it.polito.mad.countonme.business;
+package it.polito.mad.countonme.database;
 
 import android.content.Context;
 

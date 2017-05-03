@@ -1,6 +1,7 @@
 package it.polito.mad.countonme;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -30,7 +31,7 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
     private RecyclerView mSharActsRv;
     private SharingActivitiesAdapter mSharActsAdapter;
     private List<SharingActivity> mSharActsList;
-
+    private ProgressDialog mProgressDialog;
     private FloatingActionButton mActionButton;
 
 
@@ -55,7 +56,7 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
         mSharActsRv.setLayoutManager( layoutManager );
         mSharActsRv.setAdapter( mSharActsAdapter );
         mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
-
+        initProgressDialog();
         return view;
     }
 
@@ -64,11 +65,13 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
         super.onResume();
         adjustActionBar();
         DataManager.getsInstance().getSharingActivitiesReference().addValueEventListener( this );
+        mProgressDialog.show();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        mProgressDialog.dismiss();
         DataManager.getsInstance().getSharingActivitiesReference().removeEventListener( this );
     }
 
@@ -82,6 +85,7 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
             mSharActsList.add( tmp );
         }
         mSharActsAdapter.notifyDataSetChanged();
+        mProgressDialog.dismiss();
     }
 
     @Override
@@ -110,4 +114,11 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
     private void adjustActionBar() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.sharing_activities_title );
     }
+
+    private void initProgressDialog() {
+        mProgressDialog = new ProgressDialog( getActivity() );
+        mProgressDialog.setTitle( R.string.lbl_loading_data );
+        mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
+    }
+
 }
