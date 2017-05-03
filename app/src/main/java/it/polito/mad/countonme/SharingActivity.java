@@ -20,9 +20,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import it.polito.mad.countonme.database.CurrentUserLoader;
+import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
+import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.interfaces.IOnDrawerItemListener;
 import it.polito.mad.countonme.models.ReportBackAction;
+import it.polito.mad.countonme.models.User;
 
 public class SharingActivity extends AppCompatActivity implements IActionReportBack, IOnDrawerItemListener {
     private static final String TAG = SharingActivity.class.getName();
@@ -50,13 +54,32 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-
+        initProgressDialog();
         // check whether the user is logged in
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if( currentUser == null ) {
             // no user logged in so we switch to the login activity
             finish();
             startActivity( new Intent(this, LoginActivity.class) );
+        } else {
+            // if there is no current user already loaded at application level it will be loaded
+            if( ( (CountOnMeApp)getApplication() ).getCurrentUser() == null )
+            {
+                CurrentUserLoader userDataLoader = new CurrentUserLoader();
+                userDataLoader.setOnDataListener(new IOnDataListener() {
+                    @Override
+                    public void onData(Object data) {
+                        hideLoadingDialog();
+                        ( (CountOnMeApp)getApplication() ).setCurrentUser( (User) data );
+                    }
+                });
+                try {
+                    showLoadingDialog();
+                    userDataLoader.loadCurrentUser( currentUser.getUid() );
+                } catch (DataLoaderException e) {
+                    /* ignored */
+                }
+            }
         }
 
 
@@ -66,7 +89,6 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         setUpDrawer();
         setUpActionBar();
         loadAppFragments();
-        initProgressDialog();
         if( savedInstanceState == null )
             showAppFragment(AppFragment.SHARING_ACTIVITIES, false);
 
