@@ -31,7 +31,6 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
     private RecyclerView mSharActsRv;
     private SharingActivitiesAdapter mSharActsAdapter;
     private List<SharingActivity> mSharActsList;
-    private ProgressDialog mProgressDialog;
     private FloatingActionButton mActionButton;
 
 
@@ -56,7 +55,6 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
         mSharActsRv.setLayoutManager( layoutManager );
         mSharActsRv.setAdapter( mSharActsAdapter );
         mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
-        initProgressDialog();
         return view;
     }
 
@@ -65,13 +63,13 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
         super.onResume();
         adjustActionBar();
         DataManager.getsInstance().getSharingActivitiesReference().addValueEventListener( this );
-        mProgressDialog.show();
+        ((it.polito.mad.countonme.SharingActivity) getActivity() ).showLoadingDialog();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mProgressDialog.dismiss();
+        ((it.polito.mad.countonme.SharingActivity) getActivity() ).hideLoadingDialog();
         DataManager.getsInstance().getSharingActivitiesReference().removeEventListener( this );
     }
 
@@ -85,12 +83,12 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
             mSharActsList.add( tmp );
         }
         mSharActsAdapter.notifyDataSetChanged();
-        mProgressDialog.dismiss();
+        ((it.polito.mad.countonme.SharingActivity) getActivity() ).hideLoadingDialog();
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-
+        ((it.polito.mad.countonme.SharingActivity) getActivity() ).hideLoadingDialog();
     }
 
     @Override
@@ -113,12 +111,6 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
 
     private void adjustActionBar() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.sharing_activities_title );
-    }
-
-    private void initProgressDialog() {
-        mProgressDialog = new ProgressDialog( getActivity() );
-        mProgressDialog.setTitle( R.string.lbl_loading_data );
-        mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
     }
 
 }
