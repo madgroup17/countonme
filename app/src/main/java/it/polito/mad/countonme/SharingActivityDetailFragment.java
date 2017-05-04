@@ -7,13 +7,10 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TabHost;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
-import it.polito.mad.countonme.interfaces.FragmentTabHost;
+import it.polito.mad.countonme.UI.FragmentTabHost;
 
 /**
  * Created by Khatereh on 4/27/2017.

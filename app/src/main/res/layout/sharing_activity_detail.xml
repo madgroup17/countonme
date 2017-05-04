@@ -8,7 +8,7 @@
     android:clickable="true"
     android:padding="@dimen/list_item_margin">
 
-    <it.polito.mad.countonme.interfaces.FragmentTabHost
+    <it.polito.mad.countonme.UI.FragmentTabHost
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:id="@+id/tabhost">
         <LinearLayout
@@ -33,6 +33,6 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
         </LinearLayout>
-    </it.polito.mad.countonme.interfaces.FragmentTabHost>
+    </it.polito.mad.countonme.UI.FragmentTabHost>
 
 </RelativeLayout>

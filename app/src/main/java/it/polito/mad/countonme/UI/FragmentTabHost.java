@@ -1,4 +1,4 @@
-package it.polito.mad.countonme.interfaces;
+package it.polito.mad.countonme.UI;
 
 /**
  * Created by Khatereh on 4/27/2017.
