@@ -20,8 +20,8 @@ public class NavigationDrawerData {
     };
 
     private static int mIcons[] = {
-        R.drawable.settings,
-        R.drawable.logout
+        R.drawable.ic_settings,
+        R.drawable.ic_logout
     };
 
     private static int mLabels[] = {

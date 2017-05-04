@@ -76,12 +76,6 @@ implements DatabaseReference.CompletionListener {
         setSupportActionBar( mToolbar );
         setTitle( R.string.lbl_login );
 
-        if( mFirebaseAuth.getInstance().getCurrentUser() != null ) {
-            finish();
-            // the user is logged in so we will show the first application screen
-            startActivity( new Intent( this, SharingActivity.class ) );
-            return;
-        }
         mProgressDialog = new ProgressDialog( this );
         mCallbackManager = CallbackManager.Factory.create();
         mFbLoginButton.setReadPermissions( "email", "public_profile" );

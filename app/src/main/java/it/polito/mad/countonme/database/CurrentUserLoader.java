@@ -1,4 +1,4 @@
-package it.polito.mad.countonme.business;
+package it.polito.mad.countonme.database;
 
 import android.content.Context;
 
@@ -8,28 +8,29 @@ import com.google.firebase.database.ValueEventListener;
 
 import it.polito.mad.countonme.CountOnMeApp;
 import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.models.User;
 
 /**
- * Created by Khatereh on 4/28/2017.
+ * Created by francescobruno on 03/05/2017.
  */
 
-public class CurrentUserLoader implements ValueEventListener {
-    private CountOnMeApp mApp;
+public class CurrentUserLoader extends DataLoader {
 
-    public CurrentUserLoader( CountOnMeApp app, String userKey ) {
-        mApp = app;
-        DataManager.getsInstance().getUserReference(userKey).addListenerForSingleValueEvent( this );
+    public void loadCurrentUser( String userKey ) throws DataLoaderException{
+        loadData( DataManager.getsInstance().getUserReference( userKey) );
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         User user = dataSnapshot.getValue( User.class );
-        mApp.setCurrentUser( user );
+        if( mListener != null )
+            mListener.onData( user );
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-
+        if( mListener != null )
+            mListener.onData( null );
     }
 }

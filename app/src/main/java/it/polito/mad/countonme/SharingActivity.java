@@ -2,6 +2,7 @@ package it.polito.mad.countonme;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -10,16 +11,22 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import it.polito.mad.countonme.database.CurrentUserLoader;
+import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
+import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.interfaces.IOnDrawerItemListener;
 import it.polito.mad.countonme.models.ReportBackAction;
+import it.polito.mad.countonme.models.User;
 
 public class SharingActivity extends AppCompatActivity implements IActionReportBack, IOnDrawerItemListener {
     private static final String TAG = SharingActivity.class.getName();
@@ -40,12 +47,42 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerFragment mDrawerFragment;
     private DrawerLayout mDrawerLayout;
+    private ProgressDialog mLoadingProgressDialog;
 
     @BindView( R.id.toolbar ) Toolbar mToolbar;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+        initProgressDialog();
+        // check whether the user is logged in
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if( currentUser == null ) {
+            // no user logged in so we switch to the login activity
+            finish();
+            startActivity( new Intent(this, LoginActivity.class) );
+        } else {
+            // if there is no current user already loaded at application level it will be loaded
+            if( ( (CountOnMeApp)getApplication() ).getCurrentUser() == null )
+            {
+                CurrentUserLoader userDataLoader = new CurrentUserLoader();
+                userDataLoader.setOnDataListener(new IOnDataListener() {
+                    @Override
+                    public void onData(Object data) {
+                        hideLoadingDialog();
+                        ( (CountOnMeApp)getApplication() ).setCurrentUser( (User) data );
+                    }
+                });
+                try {
+                    showLoadingDialog();
+                    userDataLoader.loadCurrentUser( currentUser.getUid() );
+                } catch (DataLoaderException e) {
+                    /* ignored */
+                }
+            }
+        }
+
+
         setContentView(R.layout.activity_sharing);
         ButterKnife.bind( this );
         mFragmentManager = getFragmentManager();
@@ -115,6 +152,14 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         }
     }
 
+    public void showLoadingDialog() {
+        mLoadingProgressDialog.show();
+    }
+
+    public void hideLoadingDialog() {
+        mLoadingProgressDialog.dismiss();
+    }
+
     /*    PRIVATE METHODS   */
 
     private void loadAppFragments() {
@@ -154,6 +199,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     private void doLogout() {
         FirebaseAuth mFirebaseAuth  = FirebaseAuth.getInstance();
         mFirebaseAuth.signOut();
+        ( ( CountOnMeApp ) getApplication()).setCurrentUser( null );
         finish();
         startActivity(new Intent(this, LoginActivity.class ) );
     }
@@ -183,6 +229,12 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     private void handleActionSharingActivityDetail( Object data ) {
         mFragmentsList[ AppFragment.SHARING_ACTIVITY_DETAILS.ordinal() ].setData( (String) data );
         showAppFragment( AppFragment.SHARING_ACTIVITY_DETAILS, true );
+    }
+
+    private void initProgressDialog() {
+        mLoadingProgressDialog = new ProgressDialog( this );
+        mLoadingProgressDialog.setTitle( R.string.lbl_loading_data );
+        mLoadingProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
     }
 
 }

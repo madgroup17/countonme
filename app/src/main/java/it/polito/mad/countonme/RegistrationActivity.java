@@ -90,7 +90,7 @@ public class RegistrationActivity extends AppCompatActivity
         {
             cleanRegistrationForm();
             finish();
-            startActivity( new Intent( this, SharingActivity.class ) );
+            startActivity( new Intent( this, SharingActivity.class ) ); // TODO May we pass from login page?
         }
     }
 

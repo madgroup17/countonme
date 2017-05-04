@@ -31,6 +31,7 @@
     <string name="lbl_expense_saved">New expense saved successfully</string>
 
     <!-- General strings -->
+    <string name="lbl_loading_data">Loading data</string>
     <string name="lbl_please_wait">Please wait...</string>
 
     <!-- Login and new user registration -->
