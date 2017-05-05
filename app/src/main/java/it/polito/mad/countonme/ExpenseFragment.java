@@ -139,7 +139,9 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             ClearForm();
             getFragmentManager().popBackStack();
             Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
-            sendNotificationFromNewExpense( null );
+            String key= databaseReference.getKey();
+           // Toast.makeText( getActivity(),key, Toast.LENGTH_LONG).show();
+            sendNotificationFromNewExpense( key );
         }
     }
 
@@ -269,9 +271,9 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
                 .setSmallIcon(R.drawable.img_sharing_default);
 
         Intent moreInfoIntent = new Intent(context, SharingActivity.class);
-        moreInfoIntent.putExtra("NOTIFICATION", true );
+        //moreInfoIntent.putExtra("NOTIFICATION", true );
 
-        moreInfoIntent.putExtra( "ExpenseKey", "pippo" );
+        moreInfoIntent.putExtra( "ExpenseKey", expenseKey );
 
         TaskStackBuilder tStackBuilder = TaskStackBuilder.create(context);
         tStackBuilder.addParentStack(SharingActivity.class);
