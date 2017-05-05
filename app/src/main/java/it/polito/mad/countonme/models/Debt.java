@@ -1,5 +1,6 @@
 package it.polito.mad.countonme.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -7,13 +8,17 @@ import java.util.Map;
  * Created by Khatereh on 4/21/2017.
  */
 
-public class Debt
-{
+public class Debt {
     private Double mSpend;
     private Double mShare;
     private Double mCredit;
     private User mUser;
     private List<DebtValue> mDebts;
+    private Double mTempCredit;
+
+    public Debt() {
+        mDebts = new ArrayList<DebtValue>();
+    }
 
     public Double getSpend() {
         return mSpend;
@@ -39,20 +44,32 @@ public class Debt
         this.mCredit = Credit;
     }
 
-    public User getUser() {return mUser;}
+    public User getUser() {
+        return mUser;
+    }
 
     public void setUser(User User) {
         this.mUser = User;
     }
 
-    public List<DebtValue> getDebts() { return mDebts; }
+    public List<DebtValue> getDebts() {
+        return mDebts;
+    }
 
-    public void setDebts( List<DebtValue> Debts ) { mDebts = Debts; }
+    public void setDebts(List<DebtValue> Debts) {
+        mDebts = Debts;
+    }
 
-    public void addDebt( DebtValue Debt ) {
-        if( Debt == null ) return;
+    public void addDebt(DebtValue Debt) {
+        if (Debt == null) return;
         mDebts.add(Debt);
     }
 
+    public Double getTempCredit() {
+        return mTempCredit;
+    }
 
+    public void setTempCredit(Double Credit) {
+        this.mTempCredit = Credit;
+    }
 }
