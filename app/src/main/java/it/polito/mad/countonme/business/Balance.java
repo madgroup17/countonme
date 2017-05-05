@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,13 +23,11 @@ import static java.lang.Math.abs;
  * Created by Khatereh on 4/20/2017.
  */
 
-public class Balance
-{
+public class Balance {
     private List<Expense> ExpenseList;
     private Map<String, User> mUsers;
 
-    public Balance(List<Expense> ExpenseList,Map<String, User> mUsers)
-    {
+    public Balance(List<Expense> ExpenseList, Map<String, User> mUsers) {
         this.ExpenseList = ExpenseList;
         this.mUsers = mUsers;
     }
@@ -37,47 +36,38 @@ public class Balance
 
     /******************************************************************************************/
     // Methods
-
-    public Double GetSpend(String UserId)
-    {
+    public Double GetSpend(String UserId) {
         Double Amount = 0.0;
 
-        for(Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); )
-        {
+        for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
             Expense item = i.next();
 
-            if(item.getPayer().getId() == UserId)
-            {
-                Amount+=item.getAmount();
+            if (new String(item.getPayer().getId()).equals(UserId)) {
+                Amount += item.getAmount();
             }
         }
 
         return Amount;
     }
 
-    public Double GetOthersSpend(String UserId)
-    {
+    public Double GetOthersSpend(String UserId) {
         Double Amount = 0.0;
 
-        for(Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); )
-        {
+        for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
             Expense item = i.next();
 
-            if(item.getPayer().getId()!= UserId)
-            {
-                Amount+=item.getAmount();
+            if (!new String(item.getPayer().getId()).equals(UserId)) {
+                Amount += item.getAmount();
             }
         }
 
         return Amount;
     }
 
-    public Double GetShare(String UserId)
-    {
+    public Double GetShare(String UserId) {
         Double Amount = 0.0;
 
-        for(Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); )
-        {
+        for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
             Expense item = i.next();
 
             /*if(isIinvolved(UserId,item))
@@ -85,40 +75,35 @@ public class Balance
                 Amount+=(item.getAmount()/ item.getInvolved().size());
             }*/
 
-            Amount+=(item.getAmount()/ mUsers.size());
+            Amount += (item.getAmount() / mUsers.size());
         }
 
         return Amount;
     }
 
-    public Double GetCredit(String UserId)
-    {
-        Double Spend = GetDept(UserId);
+    public Double GetCredit(String UserId) {
+        Double Spend = GetSpend(UserId);
         Double Share = GetShare(UserId);
 
-        return  Spend - Share;
+        return Spend - Share;
     }
 
-    public Double GetDept(String UserId)
-    {
+    public Double GetDept(String UserId) {
         Double Credit = GetCredit(UserId);
 
-        if(Credit>0)
+        if (Credit > 0)
             return 0.0;
         else
             return Credit;
     }
 
-    public boolean isIinvolved(String UserId,Expense model)
-    {
+    public boolean isIinvolved(String UserId, Expense model) {
         boolean IsExist = false;
 
-        for(Iterator<User> i = model.getInvolved().iterator(); i.hasNext(); )
-        {
+        for (Iterator<User> i = model.getInvolved().iterator(); i.hasNext(); ) {
             User item = i.next();
 
-            if(item.getId()== UserId)
-            {
+            if (item.getId() == UserId) {
                 return true;
             }
         }
@@ -131,107 +116,101 @@ public class Balance
 
     /******************************************************************************************/
     // MyMethods
-
-    public Double GetMySpend()
-    {
+    public Double GetMySpend() {
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         com.google.firebase.auth.FirebaseUser currentUser = mFirebaseAuth.getInstance().getCurrentUser();
 
         return GetSpend(currentUser.getUid());
     }
 
-    public Double GetMyOthersSpend()
-    {
+    public Double GetMyOthersSpend() {
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         com.google.firebase.auth.FirebaseUser currentUser = mFirebaseAuth.getInstance().getCurrentUser();
 
         return GetOthersSpend(currentUser.getUid());
     }
 
-    public Double GetMyDept()
-    {
+    public Double GetMyDept() {
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         com.google.firebase.auth.FirebaseUser currentUser = mFirebaseAuth.getInstance().getCurrentUser();
 
         return GetDept(currentUser.getUid());
     }
 
-    public Double GetMyCredit()
-    {
+    public Double GetMyCredit() {
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         com.google.firebase.auth.FirebaseUser currentUser = mFirebaseAuth.getInstance().getCurrentUser();
 
-        return  GetCredit(currentUser.getUid());
+        return GetCredit(currentUser.getUid());
     }
 
     /******************************************************************************************/
 
     /******************************************************************************************/
     // Debts
-
-    public List<Debt> getDebtList()
-    {
+    public List<Debt> getDebtList() {
         List<Debt> DebtList = setUserBalance();
-        List<Debt> PositiveCredit = null;
-        List<Debt> NegetiveCredit = null;
+        List<Debt> PositiveCredit = new ArrayList<Debt>();
+        List<Debt> NegetiveCredit = new ArrayList<Debt>();
 
         GetPosNegCredit(DebtList, PositiveCredit, NegetiveCredit);
 
-        for(Iterator<Debt> i = NegetiveCredit.iterator(); i.hasNext(); )
+        for (Iterator<Debt> i = DebtList.iterator(); i.hasNext(); )
         {
             Debt NegetiveItem = i.next();
-
-            while (NegetiveItem.getCredit()!=0)
+            if (NegetiveItem.getCredit() < 0)
             {
                 int j = 0;
                 int Size = PositiveCredit.size();
-                if(j<= Size && abs(NegetiveItem.getCredit())<= PositiveCredit.get(j).getCredit())
+                while (j < Size && NegetiveItem.getTempCredit() < 0)
                 {
-                    Double NegCredit = NegetiveItem.getCredit();
-                    Double PosCredit = PositiveCredit.get(j).getCredit();
-                    Double Debt = PosCredit - NegCredit;
+                    if(PositiveCredit.get(j).getTempCredit()!= 0)
+                    {
+                        if (abs(NegetiveItem.getTempCredit()) <= PositiveCredit.get(j).getTempCredit())
+                        {
+                            Double NegCredit = NegetiveItem.getTempCredit();
+                            Double PosCredit = PositiveCredit.get(j).getTempCredit();
+                            Double Debt = abs(NegCredit);
 
-                    DebtValue DValue = new DebtValue();
-                    DValue.setAmount(Debt);
-                    DValue.setUser(PositiveCredit.get(j).getUser());
+                            DebtValue DValue = new DebtValue();
+                            DValue.setAmount(Debt);
+                            DValue.setUser(PositiveCredit.get(j).getUser());
+                            NegetiveItem.addDebt(DValue);
 
-                    NegetiveItem.setCredit(Debt);
-                    NegetiveItem.addDebt(DValue);
+                            NegetiveItem.setTempCredit(0.0);
+                            PositiveCredit.get(j).setTempCredit(PosCredit - Debt);
+                        }
+                        else
+                        {
+                            Double NegCredit = NegetiveItem.getTempCredit();
+                            Double PosCredit = PositiveCredit.get(j).getTempCredit();
+                            Double Debt = PosCredit;
 
-                    if(Debt == 0)
-                        PositiveCredit.remove(j);
+                            DebtValue DValue = new DebtValue();
+                            DValue.setAmount(Debt);
+                            DValue.setUser(PositiveCredit.get(j).getUser());
+                            NegetiveItem.addDebt(DValue);
+
+                            NegetiveItem.setTempCredit(NegCredit + PosCredit);
+                            PositiveCredit.get(j).setTempCredit(0.0);
+                        }
+                    }
                     else
-                        PositiveCredit.get(j).setCredit(Debt);
-                }
-                else
-                {
-                    Double NegCredit = NegetiveItem.getCredit();
-                    Double PosCredit = PositiveCredit.get(j).getCredit();
-                    Double Debt = NegCredit + PosCredit;
-
-                    DebtValue DValue = new DebtValue();
-                    DValue.setAmount(PosCredit);
-                    DValue.setUser(PositiveCredit.get(j).getUser());
-
-                    NegetiveItem.setCredit(Debt);
-                    NegetiveItem.addDebt(DValue);
-
-                   PositiveCredit.remove(j);
+                    {
+                        j++;
+                    }
                 }
             }
         }
 
 
-
         return DebtList;
     }
 
-    private List<Debt> setUserBalance()
-    {
-        List<Debt> DebtList = null;
+    private List<Debt> setUserBalance() {
+        List<Debt> DebtList = new ArrayList<Debt>();
 
-        for(Map.Entry<String, User> entry : mUsers.entrySet())
-        {
+        for (Map.Entry<String, User> entry : mUsers.entrySet()) {
             String key = entry.getKey();
             User value = entry.getValue();
 
@@ -240,6 +219,7 @@ public class Balance
             DebtItem.setSpend(GetSpend(key));
             DebtItem.setShare(GetShare(key));
             DebtItem.setCredit(GetCredit(key));
+            DebtItem.setTempCredit(DebtItem.getCredit());
 
             DebtList.add(DebtItem);
         }
@@ -247,18 +227,14 @@ public class Balance
         return DebtList;
     }
 
-    private void GetPosNegCredit(List<Debt> DebtList,List<Debt> PositiveCredit,List<Debt> NegetiveCredit)
-    {
-        for(Iterator<Debt> i = DebtList.iterator(); i.hasNext(); )
-        {
+    private void GetPosNegCredit(List<Debt> DebtList, List<Debt> PositiveCredit, List<Debt> NegetiveCredit) {
+        for (Iterator<Debt> i = DebtList.iterator(); i.hasNext(); ) {
             Debt item = i.next();
 
-            if(item.getCredit()> 0)
-            {
+            if (item.getCredit() > 0) {
                 PositiveCredit.add(item);
                 item.setDebts(null);
-            }
-            else
+            } else
                 NegetiveCredit.add(item);
         }
     }

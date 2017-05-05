@@ -28,6 +28,9 @@ public class SharingActivityDetailFragment extends BaseFragment
     {
         View view = inflater.inflate(R.layout.sharing_activity_detail, container, false);
 
+        if( savedInstanceState != null) {
+            setData(savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
+        }
         mTabHost = (FragmentTabHost) view.findViewById(R.id.tabhost);
         mChildFragmentManager = getChildFragmentManager();
         mTabHost.setup(getActivity(), mChildFragmentManager, R.id.container);
@@ -35,6 +38,8 @@ public class SharingActivityDetailFragment extends BaseFragment
         String ExpenseTitle = getResources().getString(R.string.expenses_title);
         String BalanceTitle = getResources().getString(R.string.balance_title);
         String SharingActTitle = getResources().getString(R.string.sharing_activity_details_title);
+
+
 
         // Add each tab
         Bundle bundle = new Bundle();
@@ -71,4 +76,10 @@ public class SharingActivityDetailFragment extends BaseFragment
         }
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString( AppConstants.SHARING_ACTIVITY_KEY, (String) getData());
+    }
 }
