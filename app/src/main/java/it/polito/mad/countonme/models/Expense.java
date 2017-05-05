@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public class Expense {
+    private String mKey;
     private String mName;
     private String mDescription;
     private String mSharingActivityCurrency;
@@ -39,6 +40,14 @@ public class Expense {
         this.mParentSharingActivityId = mParentSharingActivityId;
         this.mDate = date;
         this.mIsSurvey = mIsSurvey;
+    }
+
+    public String getKey() {
+        return mKey;
+    }
+
+    public void setKey( String key ) {
+        mKey = key;
     }
 
     public String getName() {

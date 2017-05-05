@@ -1,10 +1,14 @@
 package it.polito.mad.countonme;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,8 +39,7 @@ import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.lists.UsersAdapter;
-import it.polito.mad.countonme.models.Expense;
-import it.polito.mad.countonme.models.User;
+import it.polito.mad.countonme.models.*;
 
 /**
  * Created by francescobruno on 04/04/17.
@@ -65,6 +68,12 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
     private ProgressDialog mProgressDialog;
 
     private String mSelectedPayer;
+    //attributes for notification management:
+    NotificationManager notificationManager;
+   // boolean isNotificActive =false;
+    int notifID=33;
+    private String path;
+
 
     @Override
     public void onAttach(Context context) {
@@ -130,6 +139,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             ClearForm();
             getFragmentManager().popBackStack();
             Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
+            sendNotificationFromNewExpense( null );
         }
     }
 
@@ -190,13 +200,10 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
             newExpense.setPayer( (User) mPaidBySpinner.getSelectedItem() );
             try {
-
-                DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);//fragment
-
                 mProgressDialog.setTitle( R.string.lbl_saving_expense);
                 mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
                 mProgressDialog.show();
-                DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);
+                DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);//fragment
 
             } catch (InvalidDataException ex) {
                 mProgressDialog.dismiss();
@@ -250,4 +257,29 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
         setHasOptionsMenu( true );
     }
+
+    private void sendNotificationFromNewExpense( String expenseKey ){
+        Context context = getActivity().getApplicationContext();
+        //getResources().getString( R.string.notificationTitle )
+        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
+                .setContentTitle(getResources().getString( R.string.notificationTitle ))//("CountOnMe")//
+                .setContentText(getResources().getString( R.string.notificationDetail ))//("New Expense Created")//
+                .setTicker(getResources().getString( R.string.notificationDetail ))//("New Expense Created")
+                .setSmallIcon(R.drawable.img_sharing_default);
+
+        Intent moreInfoIntent = new Intent(context, SharingActivity.class);
+        moreInfoIntent.putExtra("NOTIFICATION", true );
+
+        moreInfoIntent.putExtra( "ExpenseKey", "pippo" );
+
+        TaskStackBuilder tStackBuilder = TaskStackBuilder.create(context);
+        tStackBuilder.addParentStack(SharingActivity.class);
+        tStackBuilder.addNextIntent(moreInfoIntent);
+        PendingIntent pendingIntent = tStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        notificationBuilder.setContentIntent(pendingIntent);
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(notifID,notificationBuilder.build());
+
+    }
+
 }

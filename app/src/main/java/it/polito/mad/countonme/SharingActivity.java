@@ -38,6 +38,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         SHARING_ACTIVITY_DETAILS,  //tabs
         EXPENSE_DETAILS,
         NUM_OF_FRAGMENTS
+
     };
 
     private AppFragment mCurrentFragment;
@@ -92,6 +93,10 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
         if( savedInstanceState == null )
             showAppFragment(AppFragment.SHARING_ACTIVITIES, false);
 
+        Intent callingIntent = getIntent();
+        String key;
+        if( (key = callingIntent.getStringExtra( "ExpenseKey")) != null )
+            handleActionViewExpenseDetails( key );
     }
 
     @Override
@@ -122,6 +127,9 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
                 break;
             case ACTION_VIEW_SHARING_ACTIVITY:
                 handleActionSharingActivityDetail(action.getActionData());
+                break;
+            case ACTION_VIEW_EXPENSE_DETAILS:
+                handleActionViewExpenseDetails(action.getActionData());
                 break;
             default:
                 //Toast.makeText( this, getResources().getString( R.string.temp_not_implemeted_lbl), Toast.LENGTH_SHORT ).show();
@@ -164,7 +172,7 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
 
     private void loadAppFragments() {
         mFragmentsList[ AppFragment.SHARING_ACTIVITIES.ordinal() ] = new SharingsListFragment();
-        mFragmentsList[ AppFragment.EXPENSES.ordinal() ]  = new ExpensesListFragment();
+        mFragmentsList[ AppFragment.EXPENSES.ordinal() ]  = new ExpenseDetailsFragment();
         mFragmentsList[ AppFragment.SHARING_DETAILS.ordinal() ] = new SharingActivityFragment();
         mFragmentsList[ AppFragment.SHARING_ACTIVITY_DETAILS.ordinal() ] = new SharingActivityDetailFragment();
         mFragmentsList[ AppFragment.EXPENSE_DETAILS.ordinal() ] = new ExpenseFragment();
@@ -229,6 +237,11 @@ public class SharingActivity extends AppCompatActivity implements IActionReportB
     private void handleActionSharingActivityDetail( Object data ) {
         mFragmentsList[ AppFragment.SHARING_ACTIVITY_DETAILS.ordinal() ].setData( (String) data );
         showAppFragment( AppFragment.SHARING_ACTIVITY_DETAILS, true );
+    }
+
+    private void handleActionViewExpenseDetails( Object data ) {
+        mFragmentsList[ AppFragment.EXPENSES.ordinal() ].setData( (String) data );
+        showAppFragment( AppFragment.EXPENSES, true );
     }
 
     private void initProgressDialog() {
