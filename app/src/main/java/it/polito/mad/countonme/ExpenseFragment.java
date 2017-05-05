@@ -191,8 +191,6 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
             newExpense.setPayer( (User) mPaidBySpinner.getSelectedItem() );
             try {
 
-                DataManager.getsInstance().addNewExpense((String) getData(), newExpense, this);//fragment
-
                 mProgressDialog.setTitle( R.string.lbl_saving_expense);
                 mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
                 mProgressDialog.show();
