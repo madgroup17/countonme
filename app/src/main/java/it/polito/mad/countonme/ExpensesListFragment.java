@@ -36,7 +36,7 @@ import it.polito.mad.countonme.models.*;
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpensesListFragment extends BaseFragment implements  View.OnClickListener, ValueEventListener,OnListItemClickListener {
+public class ExpensesListFragment extends BaseFragment implements  View.OnClickListener, ValueEventListener, OnListItemClickListener {
     private FloatingActionButton mActionButton;
     private RecyclerView mExpensesRv;
     private ExpenseAdapter mExpensesAdapter;
@@ -67,7 +67,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         mTotalBalance=(TextView)view.findViewById(R.id.total_balance);
         mExpensesRv = (RecyclerView)view.findViewById(R.id.expenses_list);
         mExpensesList = new ArrayList<Expense>();
-        mExpensesAdapter = new ExpenseAdapter(getActivity(),mExpensesList,null);
+        mExpensesAdapter = new ExpenseAdapter(getActivity(),mExpensesList,this);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mExpensesRv.setLayoutManager(layoutManager);
         mExpensesRv.setAdapter(mExpensesAdapter);
@@ -113,7 +113,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
     public void onItemClick( Object clickedItem ) {
         Expense model = (Expense) clickedItem;
         Activity parentActivity  = getActivity();
-        ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE, ((Expense) clickedItem)));
+        ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, ((Expense) clickedItem).getKey()));
 
     }
 

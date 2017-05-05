@@ -60,6 +60,8 @@
 
     <!-- Expenses -->
     <string name="lbl_saving_expense">Saving expense</string>
+    <string name="notificationTitle" translatable="false">CountOnMe</string>
+    <string name="notificationDetail">New expense created</string>
 
 
     <!-- Currencies -->
@@ -112,7 +114,6 @@
     <string name="asset_statements" translatable="false">[{\n  \"relation\": [\"delegate_permission/common.handle_all_urls\"],\n  \"target\": {\n    \"namespace\": \"web\",\n    \"site\": \"http://play.google.com\",\n  }\n}]</string>
 
     <string name="lbl_invalid_value">Invalid value</string>
-
 
 
     <!-- TODO: Remove or change this placeholder text -->

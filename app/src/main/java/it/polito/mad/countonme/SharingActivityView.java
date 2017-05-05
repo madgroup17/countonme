@@ -3,7 +3,6 @@ package it.polito.mad.countonme;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,9 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import butterknife.BindView;
+import it.polito.mad.countonme.business.LinkSharing;
 import it.polito.mad.countonme.database.DataManager;
-import it.polito.mad.countonme.models.*;
 
 /**
  * Created by Khatereh on 4/28/2017.

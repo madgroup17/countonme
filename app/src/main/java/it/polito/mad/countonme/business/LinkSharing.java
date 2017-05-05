@@ -1,4 +1,4 @@
-package it.polito.mad.countonme;
+package it.polito.mad.countonme.business;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import it.polito.mad.countonme.R;
 import it.polito.mad.countonme.database.DataManager;
 
 import static android.app.PendingIntent.getActivity;

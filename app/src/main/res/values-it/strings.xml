@@ -37,4 +37,7 @@
     <string name="lbl_login">Registrare utente</string>
     <string name="lbl_login_btn">Accesso</string>
     <string name="lbl_login_error">Accesso non valido. faccialo un\'altra volta</string>
+    <string name="balance_title">Bilancio</string>
+    <string name="lbl_nav_drawer_logout">uscita</string>
+    <string name="lbl_yes">SI</string>
 </resources>
