@@ -38,10 +38,6 @@ public class ExpensesListFragmentI extends BaseFragment implements  View.OnClick
     private RecyclerView mExpensesRv;
     private ExpenseAdapter mExpensesAdapter;
     private List<Expense> mExpensesList;
-    private TextView mTotalBalance;
-
-    private NumberFormat mFormatter = new DecimalFormat("#0.00");
-
 
 
     @Override
@@ -61,7 +57,6 @@ public class ExpensesListFragmentI extends BaseFragment implements  View.OnClick
         View view = inflater.inflate(R.layout.expenses_list_fragment, container, false);
         mActionButton = ( FloatingActionButton ) view.findViewById( R.id.fabexp );
         mActionButton.setOnClickListener( this );
-        mTotalBalance=(TextView)view.findViewById(R.id.total_balance);
         mExpensesRv = (RecyclerView)view.findViewById(R.id.expenses_list);
         mExpensesList = new ArrayList<Expense>();
         mExpensesAdapter = new ExpenseAdapter(getActivity(),mExpensesList,this);
@@ -98,12 +93,9 @@ public class ExpensesListFragmentI extends BaseFragment implements  View.OnClick
         it.polito.mad.countonme.models.Expense tmp;
         mExpensesList.clear();
         for ( DataSnapshot data : dataSnapshot.getChildren() ) {
-            tmp = (it.polito.mad.countonme.models.Expense) data.getValue( Expense.class );
-            total+=tmp.getAmount();
-            mExpensesList.add( tmp );
+            mExpensesList.add( (it.polito.mad.countonme.models.Expense) data.getValue( Expense.class ) );
         }
         mExpensesAdapter.notifyDataSetChanged();
-        mTotalBalance.setText( mFormatter.format( total.doubleValue() ) + "");
     }
 
     @Override
