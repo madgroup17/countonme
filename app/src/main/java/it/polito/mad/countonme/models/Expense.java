@@ -19,9 +19,11 @@ public class Expense {
     private String mImageUrl;
     private String mParentSharingActivityId;
     private Boolean mIsSurvey;
+    private Boolean mIsMoneyTransfer;
+    private String mSubmitterId;
     private Date mDate;
     private User mPayer;
-    private List<User> mInvolved;
+    private List<User> mInvolved; // TODO must be changed we need a new model for saving this information
 
     public Expense() {
         this( null, null, null, null, 0.0, 0.0, null, null, null, null, false );
@@ -122,9 +124,17 @@ public class Expense {
         return mIsSurvey;
     }
 
-    public void setIsSurvey(Boolean mIsSurvey) {
-        this.mIsSurvey = mIsSurvey;
+    public void setIsSurvey(Boolean isSurvey) {
+        mIsSurvey = isSurvey;
     }
+
+    public Boolean getIsMoneyTransfer(  ) { return mIsMoneyTransfer; }
+
+    public void setIsMoneyTransfer(Boolean isMoneyTransfer) { mIsMoneyTransfer = isMoneyTransfer; }
+
+    public String getSubmitterId() { return mSubmitterId; }
+
+    public void setSubmitterId( String submitterId) { mSubmitterId = submitterId; }
 
     public String getParentSharingActivityId() {
         return mParentSharingActivityId;
