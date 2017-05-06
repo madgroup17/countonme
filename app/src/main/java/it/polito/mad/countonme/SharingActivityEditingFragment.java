@@ -25,7 +25,7 @@ import it.polito.mad.countonme.models.User;
  * Created by Khatereh on 4/13/2017.
  */
 
-public class SharingActivityFragment extends BaseFragment implements DatabaseReference.CompletionListener
+public class SharingActivityEditingFragment extends BaseFragment implements DatabaseReference.CompletionListener
 {
     EditText txtName;
     EditText txtDescription;
@@ -39,7 +39,7 @@ public class SharingActivityFragment extends BaseFragment implements DatabaseRef
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.sharing_activity_fragment, container, false);
+        View view = inflater.inflate(R.layout.sharing_activity_editing_fragment, container, false);
 
         spnCurrency = (Spinner) view.findViewById(R.id.spin_sharing_activity_currency);
         txtName = (EditText) view.findViewById(R.id.ed_sharing_activity_name);

@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -27,10 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +41,7 @@ import it.polito.mad.countonme.models.*;
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpenseFragment extends BaseFragment implements DatabaseReference.CompletionListener,
+public class ExpenseEditingFragment extends BaseFragment implements DatabaseReference.CompletionListener,
         ValueEventListener {
 
     @BindView( R.id.rtv_expense_name )  RequiredInputTextView mRtvExpenseName;
@@ -82,7 +78,7 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.expense_fragment, container, false);
+        View view = inflater.inflate(R.layout.expense_editing_fragment, container, false);
         ButterKnife.bind(this, view);
         mSelectedPayer = null;
         if( savedInstanceState != null ) {
@@ -270,13 +266,13 @@ public class ExpenseFragment extends BaseFragment implements DatabaseReference.C
                 .setTicker(getResources().getString( R.string.notificationDetail ))//("New Expense Created")
                 .setSmallIcon(R.drawable.img_sharing_default);
 
-        Intent moreInfoIntent = new Intent(context, SharingActivity.class);
+        Intent moreInfoIntent = new Intent(context, CountOnMeActivity.class);
         //moreInfoIntent.putExtra("NOTIFICATION", true );
 
-        moreInfoIntent.putExtra( "ExpenseKey", expenseKey );
+        moreInfoIntent.putExtra( AppConstants.EXPENSE_KEY, expenseKey );
 
         TaskStackBuilder tStackBuilder = TaskStackBuilder.create(context);
-        tStackBuilder.addParentStack(SharingActivity.class);
+        tStackBuilder.addParentStack( CountOnMeActivity.class );
         tStackBuilder.addNextIntent(moreInfoIntent);
         PendingIntent pendingIntent = tStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.setContentIntent(pendingIntent);

@@ -16,8 +16,11 @@ import it.polito.mad.countonme.UI.FragmentTabHost;
  * Created by Khatereh on 4/27/2017.
  */
 
-public class SharingActivityDetailFragment extends BaseFragment
+public class SharingActivityTabsFragment extends BaseFragment
 {
+    private static final String TAB_TAG_SHARING_ACTIVITY_DETAILS = "Sharing_Activity_Details";
+    private static final String TAB_TAG_EXPENSES_LIST            = "Expenses_List";
+    private static final String TAB_TAG_BALANCE_DETAILS          = "Balance_Details";
 
     FragmentTabHost mTabHost;
     FragmentManager mChildFragmentManager;
@@ -26,38 +29,24 @@ public class SharingActivityDetailFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.sharing_activity_detail, container, false);
+        View view = inflater.inflate(R.layout.sharing_activity_details_tab_fragment, container, false);
 
         if( savedInstanceState != null) {
-            setData(savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
+            setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
         }
         mTabHost = (FragmentTabHost) view.findViewById(R.id.tabhost);
         mChildFragmentManager = getChildFragmentManager();
         mTabHost.setup(getActivity(), mChildFragmentManager, R.id.container);
 
-        String ExpenseTitle = getResources().getString(R.string.expenses_title);
-        String BalanceTitle = getResources().getString(R.string.balance_title);
-        String SharingActTitle = getResources().getString(R.string.sharing_activity_details_title);
-
-
-
         // Add each tab
         Bundle bundle = new Bundle();
-        bundle.putString("sharingkey", (String) getData());
-        mTabHost.addTab(mTabHost.newTabSpec("SharingAct").setIndicator(SharingActTitle), SharingActivityView.class, bundle);
-        mTabHost.addTab(mTabHost.newTabSpec("Expense").setIndicator(ExpenseTitle), ExpensesListFragment.class, bundle);
-        mTabHost.addTab(mTabHost.newTabSpec("Balance").setIndicator(BalanceTitle), BalanceFragment.class, bundle);
-        mTabHost.setCurrentTabByTag("SharingAct");
-
-        /*mTabHost.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mTabHost.setCurrentTabByTag("second");
-            }
-        }, 5000);*/
+        bundle.putString( AppConstants.SHARING_ACTIVITY_KEY, (String) getData() );
+        mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_SHARING_ACTIVITY_DETAILS ).setIndicator( getResources().getString(R.string.sharing_activity_details_title) ), SharingActivityDetailsFragment.class, bundle);
+        mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_EXPENSES_LIST ).setIndicator( getResources().getString(R.string.expenses_title) ), ExpensesListFragmentI.class, bundle);
+        mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_BALANCE_DETAILS ).setIndicator( getResources().getString(R.string.balance_title) ), BalanceFragment.class, bundle);
+        mTabHost.setCurrentTabByTag( TAB_TAG_SHARING_ACTIVITY_DETAILS );
 
         return view;
-
     }
 
     @Override

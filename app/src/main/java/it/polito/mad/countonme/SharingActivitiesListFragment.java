@@ -1,7 +1,6 @@
 package it.polito.mad.countonme;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,12 +21,12 @@ import java.util.List;
 import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
-import it.polito.mad.countonme.interfaces.OnListItemClickListener;
+import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
 
-public class SharingsListFragment extends BaseFragment implements ValueEventListener, OnListItemClickListener, View.OnClickListener {
+public class SharingActivitiesListFragment extends BaseFragment implements ValueEventListener, IOnListItemClickListener, View.OnClickListener {
     private RecyclerView mSharActsRv;
     private SharingActivitiesAdapter mSharActsAdapter;
     private List<SharingActivity> mSharActsList;
@@ -42,12 +41,12 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sharing_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.sharing_activities_list_fragment, container, false);
 
         mActionButton = ( FloatingActionButton ) view.findViewById( R.id.fab );
         mActionButton.setOnClickListener( this );
 
-        mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activity_list );
+        mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activities_list );
         mSharActsList = new ArrayList<SharingActivity>();
         mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList, this );
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -63,13 +62,13 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
         super.onResume();
         adjustActionBar();
         DataManager.getsInstance().getSharingActivitiesReference().addValueEventListener( this );
-        ((it.polito.mad.countonme.SharingActivity) getActivity() ).showLoadingDialog();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).showLoadingDialog();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((it.polito.mad.countonme.SharingActivity) getActivity() ).hideLoadingDialog();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
         DataManager.getsInstance().getSharingActivitiesReference().removeEventListener( this );
     }
 
@@ -83,12 +82,12 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
             mSharActsList.add( tmp );
         }
         mSharActsAdapter.notifyDataSetChanged();
-        ((it.polito.mad.countonme.SharingActivity) getActivity() ).hideLoadingDialog();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-        ((it.polito.mad.countonme.SharingActivity) getActivity() ).hideLoadingDialog();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
     }
 
     @Override
@@ -96,7 +95,7 @@ public class SharingsListFragment extends BaseFragment implements ValueEventList
         SharingActivity activity = (SharingActivity) clickedItem;
         Activity parentActivity  = getActivity();
         if( parentActivity instanceof IActionReportBack ) {
-            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY, ((SharingActivity) clickedItem).getKey()));
+            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY_DETAIL_TABS, ((SharingActivity) clickedItem).getKey()));
         }
     }
 

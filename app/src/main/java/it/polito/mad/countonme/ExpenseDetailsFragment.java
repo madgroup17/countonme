@@ -1,23 +1,11 @@
 package it.polito.mad.countonme;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-
-import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
-import it.polito.mad.countonme.database.DataManager;
-import it.polito.mad.countonme.lists.ExpenseAdapter;
-import it.polito.mad.countonme.models.Expense;
 
 public class ExpenseDetailsFragment extends BaseFragment  {
     private TextView ExpenseDetailTV;
@@ -34,7 +22,7 @@ public class ExpenseDetailsFragment extends BaseFragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_expense_details, container, false);
+        View view = inflater.inflate(R.layout.expense_details_fragment, container, false);
         return view;
     }
 

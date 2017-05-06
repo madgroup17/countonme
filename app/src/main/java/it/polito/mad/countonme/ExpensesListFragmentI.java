@@ -8,9 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -27,7 +24,7 @@ import java.util.List;
 import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
-import it.polito.mad.countonme.interfaces.OnListItemClickListener;
+import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.lists.ExpenseAdapter;
 import it.polito.mad.countonme.models.*;
 
@@ -36,7 +33,7 @@ import it.polito.mad.countonme.models.*;
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpensesListFragment extends BaseFragment implements  View.OnClickListener, ValueEventListener, OnListItemClickListener {
+public class ExpensesListFragmentI extends BaseFragment implements  View.OnClickListener, ValueEventListener, IOnListItemClickListener {
     private FloatingActionButton mActionButton;
     private RecyclerView mExpensesRv;
     private ExpenseAdapter mExpensesAdapter;
@@ -59,7 +56,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         if( savedInstanceState != null ) setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
         else {
             args = getArguments();
-            if(args != null ) setData( args.getString("sharingkey") );
+            if(args != null ) setData( args.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
         }
         View view = inflater.inflate(R.layout.expenses_list_fragment, container, false);
         mActionButton = ( FloatingActionButton ) view.findViewById( R.id.fabexp );

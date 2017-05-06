@@ -13,7 +13,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import it.polito.mad.countonme.R;
-import it.polito.mad.countonme.interfaces.OnListItemClickListener;
+import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.models.Expense;
 
 
@@ -37,7 +37,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
             mTvAmount = (TextView) itemView.findViewById( R.id.expense_amount);
         }
 
-        public void setData(final Expense expense, final OnListItemClickListener listener ) {
+        public void setData(final Expense expense, final IOnListItemClickListener listener ) {
             String imgUrl = expense.getImageUrl();
 
             if( imgUrl != null && imgUrl.length() > 0 )
@@ -62,9 +62,9 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
     private List<Expense> mExpense;
     private LayoutInflater mInflater;
-    private OnListItemClickListener mListener;
+    private IOnListItemClickListener mListener;
 
-    public ExpenseAdapter(Context context, List<Expense> data, OnListItemClickListener listener ) {
+    public ExpenseAdapter(Context context, List<Expense> data, IOnListItemClickListener listener ) {
         mExpense = data;
         mListener = listener;
         mInflater = LayoutInflater.from( context );
@@ -72,7 +72,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
     @Override
     public ExpenseAdapter.ExpViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.expense_item_list, parent, false);
+        View view = mInflater.inflate(R.layout.expenses_list_item, parent, false);
         return new ExpenseAdapter.ExpViewHolder( view );
     }
 

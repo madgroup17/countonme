@@ -122,7 +122,7 @@ implements DatabaseReference.CompletionListener {
         else
         {
             finish();
-            startActivity( new Intent( this, SharingActivity.class ) );
+            startActivity( new Intent( this, CountOnMeActivity.class ) );
         }
     }
 
@@ -150,7 +150,7 @@ implements DatabaseReference.CompletionListener {
                         if (task.isSuccessful()) {
                             finish();
                             cleanLoginForm();
-                            startActivity(new Intent(LoginActivity.this, SharingActivity.class));
+                            startActivity(new Intent(LoginActivity.this, CountOnMeActivity.class));
                         } else {
                             Toast.makeText(LoginActivity.this, R.string.lbl_login_error, Toast.LENGTH_SHORT).show();
                         }
@@ -187,7 +187,7 @@ implements DatabaseReference.CompletionListener {
                                                 }
                                             } else {
                                             finish();
-                                            startActivity(new Intent(LoginActivity.this, SharingActivity.class));
+                                            startActivity(new Intent(LoginActivity.this, CountOnMeActivity.class));
                                             }
                                         }
 

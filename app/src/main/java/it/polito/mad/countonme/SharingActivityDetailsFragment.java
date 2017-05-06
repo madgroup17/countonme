@@ -3,6 +3,7 @@ package it.polito.mad.countonme;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +28,7 @@ import it.polito.mad.countonme.database.DataManager;
  * Created by Khatereh on 4/28/2017.
  */
 
-public class SharingActivityView extends BaseFragment implements ValueEventListener {
+public class SharingActivityDetailsFragment extends BaseFragment implements ValueEventListener {
     EditText txtName;
     EditText txtDescription;
     Spinner spnCurrency;
@@ -42,9 +43,9 @@ public class SharingActivityView extends BaseFragment implements ValueEventListe
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sharing_activity_fragment, container, false);
+        View view = inflater.inflate(R.layout.sharing_activity_editing_fragment, container, false);
         Bundle args = getArguments();
-        if (args != null) setData(args.getString("sharingkey"));
+        if (args != null) setData(args.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 

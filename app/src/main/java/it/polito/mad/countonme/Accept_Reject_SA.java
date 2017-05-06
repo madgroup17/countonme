@@ -119,7 +119,6 @@ public class Accept_Reject_SA extends AppCompatActivity  implements  ValueEventL
                 if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                     Toast.makeText(Accept_Reject_SA.this, "User didnt do log in", Toast.LENGTH_LONG).show();
                     finish();
-            //        startActivity(new Intent(Accept_Reject_SA.this, it.polito.mad.countonme.LoginActivity.class));
                 } else {
                     // the user is logged in so we will show the application first screen
                     Intent llave = new Intent(Intent.ACTION_SEND);
@@ -128,17 +127,12 @@ public class Accept_Reject_SA extends AppCompatActivity  implements  ValueEventL
                     DataManager.getsInstance().getSharingActivityReference(path).child("users").addListenerForSingleValueEvent(Accept_Reject_SA.this);
                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
                     DatabaseReference actuserref = ref.child("shareacts").child(path).child("users");
-                    //DatabaseReference userref = ref.child("users").child(currentFirebaseUser.getUid());
-                    //userref.addListenerForSingleValueEvent(Accept_Reject_SA.this);
-                    //name and url are empty from currentFirebaseUser, if we can keep all data, we can add, or just we need those two (email and id).
                     User current = new User(currentFirebaseUser.getUid(),currentFirebaseUser.getDisplayName(),currentFirebaseUser.getEmail(),null);//(idUser,nUser,emailUser,urlUser);
                     actuserref.child(currentFirebaseUser.getUid()).setValue(current);
 
                     //redirect to sharing activity item list
                     finish();
-                    startActivity(new Intent(Accept_Reject_SA.this, it.polito.mad.countonme.SharingActivity.class));
-      //              Toast.makeText(Accept_Reject_SA.this, mostrar, Toast.LENGTH_LONG).show();
-
+                    startActivity(new Intent(Accept_Reject_SA.this, it.polito.mad.countonme.CountOnMeActivity.class));
                 }
             }
         });

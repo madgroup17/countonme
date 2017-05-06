@@ -64,10 +64,10 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
         View view = inflater.inflate(R.layout.balance_fragment, container, false);
 
         if (savedInstanceState != null)
-            setData(savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
+            setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
         else {
             Bundle args = getArguments();
-            if (args != null) setData(args.getString("sharingkey"));
+            if (args != null) setData(args.getString( AppConstants.SHARING_ACTIVITY_KEY ));
         }
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
