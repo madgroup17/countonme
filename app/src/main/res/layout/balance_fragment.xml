@@ -45,7 +45,7 @@
                     android:id="@+id/my_spend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="10000"
+                    android:text="0"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/interface_text_size" />
 
@@ -71,7 +71,7 @@
                     android:id="@+id/my_credit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="5000"
+                    android:text="0"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/interface_text_size" />
 
@@ -96,7 +96,7 @@
                     android:id="@+id/my_debt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="20000"
+                    android:text="0"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/interface_text_size" />
 

@@ -70,10 +70,10 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
         View view = inflater.inflate(R.layout.balance_fragment, container, false);
 
         if (savedInstanceState != null)
-            setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+            setData(savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
         else {
             Bundle args = getArguments();
-            if (args != null) setData(args.getString( AppConstants.SHARING_ACTIVITY_KEY ));
+            if (args != null) setData(args.getString(AppConstants.SHARING_ACTIVITY_KEY));
         }
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -94,14 +94,15 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString( AppConstants.SHARING_ACTIVITY_KEY, (String) getData());
+        outState.putString(AppConstants.SHARING_ACTIVITY_KEY, (String) getData());
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        if(mUsers==null || mUsers.size()==0) {
+        if (mUsers == null || mUsers.size() == 0) {
             it.polito.mad.countonme.models.SharingActivity myActivity = (it.polito.mad.countonme.models.SharingActivity) dataSnapshot.getValue(it.polito.mad.countonme.models.SharingActivity.class);
-            mUsers = myActivity.getUsers();
+            if (myActivity != null)
+                mUsers = myActivity.getUsers();
         }
 
         it.polito.mad.countonme.models.Expense tmp;
@@ -115,10 +116,8 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
                     ExpenseList.add(tmp);
                 }
             }
-        }
-        catch (Exception exp )
-        {}
-        finally {
+        } catch (Exception exp) {
+        } finally {
             FillChart();
         }
     }
@@ -132,14 +131,14 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
     public void onResume() {
         super.onResume();
         adjustActionBar();
-        DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).addValueEventListener( this );
+        DataManager.getsInstance().getSharActExpensesReference((String) getData()).addValueEventListener(this);
 
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).removeEventListener( this );
+        DataManager.getsInstance().getSharActExpensesReference((String) getData()).removeEventListener(this);
     }
 
     private void adjustActionBar() {
@@ -172,7 +171,7 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
     }
 
     private void FillData() {
-        if(ExpenseList!=null && mUsers!=null && ExpenseList.size()!=0 && mUsers.size()!=0) {
+        if (ExpenseList != null && mUsers != null && ExpenseList.size() != 0 && mUsers.size() != 0) {
             Balance BalanceClass = new Balance(ExpenseList, mUsers);
 
             tvMySpend.setText(String.valueOf(BalanceClass.GetMySpend()));
@@ -190,7 +189,7 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
             Debt item = i.next();
             BARENTRY.add(new BarEntry(item.getCredit().intValue(), Index));
             String Name = item.getUser().getName();
-            if(Name == null) Name = item.getUser().getEmail();
+            if (Name == null) Name = item.getUser().getEmail();
             BarEntryLabels.add(Name);
             Index++;
         }

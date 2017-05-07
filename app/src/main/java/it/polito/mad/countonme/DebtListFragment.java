@@ -43,8 +43,7 @@ import it.polito.mad.countonme.models.User;
  * Created by Khatereh on 5/7/2017.
  */
 
-public class DebtListFragment extends BaseFragment implements  ValueEventListener, IOnListItemClickListener
-{
+public class DebtListFragment extends BaseFragment implements ValueEventListener, IOnListItemClickListener {
     private DatabaseReference mDatabase;
 
     List<Debt> DebtList;
@@ -54,6 +53,8 @@ public class DebtListFragment extends BaseFragment implements  ValueEventListene
     private RecyclerView mDebtValueRv;
     private DebtAdapter mDebtValueAdapter;
     private List<DebtValue> mDebtValueList;
+
+    private boolean listIsFilled;
 
     @Override
     public void onAttach(Context context) {
@@ -65,17 +66,20 @@ public class DebtListFragment extends BaseFragment implements  ValueEventListene
         View view = inflater.inflate(R.layout.debt_list_fragment, container, false);
 
         Bundle args;
-        if( savedInstanceState != null ) setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+        if (savedInstanceState != null)
+            setData(savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
         else {
             args = getArguments();
-            if(args != null ) setData( args.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+            if (args != null) setData(args.getString(AppConstants.SHARING_ACTIVITY_KEY));
         }
+
+        listIsFilled = false;
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         DataManager.getsInstance().getSharingActivityReference((String) getData()).addListenerForSingleValueEvent(this);
         DataManager.getsInstance().getSharActExpensesReference((String) getData()).addValueEventListener(this);
 
-        mDebtValueRv = (RecyclerView)view.findViewById(R.id.debt_list);
+        mDebtValueRv = (RecyclerView) view.findViewById(R.id.debt_list);
         mDebtValueList = new ArrayList<DebtValue>();
 
         return view;
@@ -84,15 +88,15 @@ public class DebtListFragment extends BaseFragment implements  ValueEventListene
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString( AppConstants.SHARING_ACTIVITY_KEY, (String) getData());
+        outState.putString(AppConstants.SHARING_ACTIVITY_KEY, (String) getData());
     }
 
     @Override
-    public void onDataChange(DataSnapshot dataSnapshot)
-    {
-        if(mUsers == null || mUsers.size()==0) {
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        if (mUsers == null || mUsers.size() == 0) {
             it.polito.mad.countonme.models.SharingActivity myActivity = (it.polito.mad.countonme.models.SharingActivity) dataSnapshot.getValue(it.polito.mad.countonme.models.SharingActivity.class);
-            mUsers = myActivity.getUsers();
+            if (myActivity != null)
+                mUsers = myActivity.getUsers();
         }
 
         it.polito.mad.countonme.models.Expense tmp;
@@ -106,10 +110,11 @@ public class DebtListFragment extends BaseFragment implements  ValueEventListene
                     ExpenseList.add(tmp);
                 }
             }
-        }
-        catch (Exception exp )
-        {}
-        finally {
+
+            listIsFilled = true;
+        } catch (Exception exp) {
+            listIsFilled = false;
+        } finally {
             FillData();
         }
 
@@ -121,29 +126,26 @@ public class DebtListFragment extends BaseFragment implements  ValueEventListene
     }
 
     @Override
-    public void onItemClick( Object clickedItem ) {
+    public void onItemClick(Object clickedItem) {
         DebtValue model = (DebtValue) clickedItem;
-        Activity parentActivity  = getActivity();
+        Activity parentActivity = getActivity();
     }
 
 
-
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         adjustActionBar();
-        DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).addValueEventListener( this );
+        DataManager.getsInstance().getSharActExpensesReference((String) getData()).addValueEventListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).removeEventListener( this );
+        DataManager.getsInstance().getSharActExpensesReference((String) getData()).removeEventListener(this);
     }
 
-    private void adjustActionBar()
-    {
+    private void adjustActionBar() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.balance_title);
         setHasOptionsMenu(true);
     }
@@ -151,20 +153,24 @@ public class DebtListFragment extends BaseFragment implements  ValueEventListene
     /******************************************************************************************/
 
     /******************************************************************************************/
-    private void FillData()
-    {
-        if(ExpenseList != null && mUsers != null && ExpenseList.size()!=0 && mUsers.size()!=0)
-        {
+    private void FillData() {
+        if (ExpenseList != null && mUsers != null && ExpenseList.size() != 0 && mUsers.size() != 0) {
             Balance BalanceClass = new Balance(ExpenseList, mUsers);
             DebtList = BalanceClass.getDebtList();
 
             mDebtValueList = BalanceClass.GetOwsList(DebtList);
 
-            mDebtValueAdapter = new DebtAdapter(getActivity(),mDebtValueList,this);
+            mDebtValueAdapter = new DebtAdapter(getActivity(), mDebtValueList, this);
             final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             mDebtValueRv.setLayoutManager(layoutManager);
             mDebtValueRv.setAdapter(mDebtValueAdapter);
-            mDebtValueRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
+            mDebtValueRv.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        } else if (listIsFilled) {
+            mDebtValueAdapter = new DebtAdapter(getActivity(), mDebtValueList, this);
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            mDebtValueRv.setLayoutManager(layoutManager);
+            mDebtValueRv.setAdapter(mDebtValueAdapter);
+            mDebtValueRv.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         }
     }
 }
