@@ -146,13 +146,12 @@
 
         <TextView
             android:id="@+id/tv_expense_date"
-            android:clickable="true"
-            android:text="12/05/2017"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/rtv_expense_date"
+            android:clickable="true"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/interface_text_size"
-            android:layout_below="@id/rtv_expense_date"/>
+            android:textSize="@dimen/interface_text_size" />
 
         <LinearLayout
             android:layout_width="match_parent"

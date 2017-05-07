@@ -15,6 +15,8 @@ public class AppConstants {
 
     public final static String SAVE_STATE_KEY_SAVED  = "Saved";
 
+    public final static String SAVE_STATE_KEY_DATE   = "Date";
+
 
     public final static int GET_IMAGE_REQUEST       = 1;
 

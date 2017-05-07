@@ -13,7 +13,16 @@
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="android:editTextColor">@color/textColor</item>
+        <item name="android:datePickerDialogTheme">@style/DatePickerDialog</item>
     </style>
+
+
+
+    <style name="DatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">@color/colorPrimary</item>
+
+    </style>
+
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
