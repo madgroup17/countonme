@@ -2,126 +2,120 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/windowBackground"
-    android:padding="@dimen/layout_padding">
-
-    <LinearLayout
-        android:id="@+id/my_balance_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:paddingBottom="@dimen/label_padding_10">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="@dimen/interface_text_size"
-            android:textColor="@color/titleColor"
-            android:gravity="center"
-            android:text="@string/my_status_lbl"/>
-
-        <LinearLayout
-            android:id="@+id/my_spend_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentTop="true"
-            android:paddingBottom="@dimen/label_padding_10">
-
-            <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/interface_text_size"
-            android:textColor="@color/textColor"
-            android:text="@string/my_spend_lbl"/>
-
-            <TextView
-                android:id="@+id/my_spend"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/interface_text_size"
-                android:textColor="@color/textColor"
-                android:text="10000"/>
-
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/my_credit_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentTop="true"
-            android:paddingBottom="@dimen/label_padding_10">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/interface_text_size"
-                android:textColor="@color/textColor"
-                android:text="@string/my_credit_lbl"/>
-
-            <TextView
-                android:id="@+id/my_credit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/interface_text_size"
-                android:textColor="@color/textColor"
-                android:text="5000"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/my_debt_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentTop="true"
-            android:paddingBottom="@dimen/label_padding_10">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/interface_text_size"
-                android:textColor="@color/textColor"
-                android:text="@string/my_debt_lbl"/>
-
-            <TextView
-                android:id="@+id/my_debt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/interface_text_size"
-                android:textColor="@color/textColor"
-                android:text="20000"/>
-
-        </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="@dimen/interface_text_size"
-            android:textColor="@color/titleColor"
-            android:gravity="center"
-            android:text="@string/group_status_lbl"/>
-    </LinearLayout>
-
-    <include layout="@layout/balance_chart_layout"
-        android:id="@+id/chart"
-    />
-
-
-   <!-- <android.support.v7.widget.RecyclerView
-        android:id="@+id/debt_list"
-        android:scrollbars="vertical"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/balance_chart"/> -->
+        android:background="@color/windowBackground"
+        android:padding="@dimen/layout_padding">
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/my_balance_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/label_padding_10">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/my_status_lbl"
+                android:textColor="@color/titleColor"
+                android:textSize="@dimen/interface_text_size" />
+
+            <LinearLayout
+                android:id="@+id/my_spend_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/label_padding_10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_spend_lbl"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/interface_text_size" />
+
+                <TextView
+                    android:id="@+id/my_spend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="10000"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/interface_text_size" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/my_credit_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/label_padding_10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_credit_lbl"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/interface_text_size" />
+
+                <TextView
+                    android:id="@+id/my_credit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="5000"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/interface_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/my_debt_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/label_padding_10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_debt_lbl"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/interface_text_size" />
+
+                <TextView
+                    android:id="@+id/my_debt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="20000"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/interface_text_size" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/group_status_lbl"
+                android:textColor="@color/titleColor"
+                android:textSize="@dimen/interface_text_size" />
+        </LinearLayout>
+
+        <include
+            android:id="@+id/chart"
+            layout="@layout/balance_chart_layout" />
+
+
+    </RelativeLayout>
 
 </ScrollView>
