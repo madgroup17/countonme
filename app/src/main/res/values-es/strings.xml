@@ -66,4 +66,5 @@
     <string name="my_spend_lbl">Gastos:</string>
     <string name="my_status_lbl">Mi estado</string>
     <string name="notificationDetail">Nuevo gasto creado</string>
+    <string name="balance_owes">Le debe</string>
 </resources>

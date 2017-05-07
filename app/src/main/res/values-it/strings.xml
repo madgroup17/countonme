@@ -40,4 +40,5 @@
     <string name="balance_title">Bilancio</string>
     <string name="lbl_nav_drawer_logout">uscita</string>
     <string name="lbl_yes">SI</string>
+    <string name="balance_owes"></string>
 </resources>
