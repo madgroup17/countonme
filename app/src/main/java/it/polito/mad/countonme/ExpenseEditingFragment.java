@@ -1,5 +1,7 @@
 package it.polito.mad.countonme;
 
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -26,11 +29,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.polito.mad.countonme.UI.DatePicker;
 import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
@@ -42,7 +51,9 @@ import it.polito.mad.countonme.models.*;
  */
 
 public class ExpenseEditingFragment extends BaseFragment implements DatabaseReference.CompletionListener,
-        ValueEventListener {
+        ValueEventListener, DatePickerDialog.OnDateSetListener {
+
+    private static final String DATE_PICKER_TAG = "date_picker";
 
     @BindView( R.id.rtv_expense_name )  RequiredInputTextView mRtvExpenseName;
     @BindView( R.id.rtv_expense_description ) RequiredInputTextView mRtvExpenseDescription;
@@ -56,12 +67,14 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @BindView( R.id.ed_expense_amount ) EditText mAmount;
     @BindView( R.id.spin_expense_currency ) Spinner mCurrency;
     @BindView( R.id.spin_expense_paidby ) Spinner mPaidBySpinner;
+    @BindView( R.id.tv_expense_date ) TextView mTvDate;
 
 
     private UsersAdapter mUsersAdapter;
     private ArrayList<User> mShareActivityUsersList;
 
     private ProgressDialog mProgressDialog;
+    private DatePicker mDatePickerDialog;
 
     private String mSelectedPayer;
     //attributes for notification management:
@@ -69,6 +82,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
    // boolean isNotificActive =false;
     int notifID=33;
     private String path;
+    private DateFormat mDateFormat;
+    private Date mExpenseDate;
 
 
     @Override
@@ -84,12 +99,18 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         if( savedInstanceState != null ) {
             setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
             mSelectedPayer = savedInstanceState.getString( AppConstants.USER_KEY );
+            mExpenseDate = ( Date ) savedInstanceState.getSerializable( AppConstants.SAVE_STATE_KEY_DATE );
+        }
+        else {
+            mExpenseDate = new Date();
         }
         mShareActivityUsersList = new ArrayList<User>();
         mUsersAdapter = new UsersAdapter( getActivity(), mShareActivityUsersList );
         mPaidBySpinner.setAdapter( mUsersAdapter );
 
         mProgressDialog = new ProgressDialog( getActivity() );
+        createDatePickerDialog();
+        initializeViewContent();
 
         return view;
     }
@@ -121,6 +142,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         super.onSaveInstanceState(outState);
         outState.putString(AppConstants.SHARING_ACTIVITY_KEY, ( String ) getData() );
         outState.putString(AppConstants.USER_KEY, ( (User) mPaidBySpinner.getSelectedItem() ).getId() );
+        outState.putSerializable( AppConstants.SAVE_STATE_KEY_DATE, mExpenseDate );
     }
 
     @Override
@@ -157,7 +179,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     }
 
 
-
     @Override
     public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.expense_menu, menu);
@@ -182,10 +203,33 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         startActivityForResult( Intent.createChooser( intent, "Select Picture"), AppConstants.GET_IMAGE_REQUEST);
     }
 
+    @OnClick( R.id.tv_expense_date )
+    public void pickExpenseDate() {
+        mDatePickerDialog.show( getFragmentManager(), DATE_PICKER_TAG );
+    }
+
+
+    @Override
+    public void onDateSet(android.widget.DatePicker datePicker, int year, int month, int date) {
+        updateDate( year, month, date );
+        mTvDate.setText( mDateFormat.format( mExpenseDate ) );
+        mDatePickerDialog.setDate( mExpenseDate );
+    }
 
     /******************************************************/
     /*                 PRIVATE METHODS                    */
     /******************************************************/
+
+    private void initializeViewContent() {
+        mTvDate.setText( mDateFormat.format( mExpenseDate ) );
+    }
+
+    private void createDatePickerDialog() {
+        mDateFormat = new SimpleDateFormat( getString( R.string.fmt_date ) );
+        mDatePickerDialog = new DatePicker();
+        mDatePickerDialog.setDateSetListener( this );
+        mDatePickerDialog.setDate( mExpenseDate );
+    }
 
     private void saveNewExpense()
     {
@@ -281,4 +325,10 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     }
 
+
+    private void updateDate( int year, int month, int date ) {
+        Calendar c = Calendar.getInstance();
+        c.set( year, month, date );
+        mExpenseDate.setTime( c.getTimeInMillis() );
+    }
 }

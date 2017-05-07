@@ -54,7 +54,7 @@
     <string name="lbl_register_user">Registro de usuario</string>
     <string name="lbl_registering_user">Registrando usuario</string>
     <string name="lbl_registration_error">No se ha registrado. Porfavor registrese</string>
-    <string name="lbl_registration_instr_1">No tiene una cuenta</string>
+    <string name="lbl_registration_instr_1">No tiene una cuenta?&#032;</string>
     <string name="lbl_registration_instr_2">Registrese aquí</string>
     <string name="lbl_required_field">Requerido</string>
     <string name="lbl_saving_expense">Guardando el gasto</string>
@@ -66,5 +66,10 @@
     <string name="my_spend_lbl">Gastos:</string>
     <string name="my_status_lbl">Mi estado</string>
     <string name="notificationDetail">Nuevo gasto creado</string>
+
     <string name="balance_owes">Le debe</string>
+
+    <string name="fmt_date">dd/MM/yyyy</string>
+    <string name="login_title" translatable="false"></string>
+
 </resources>

@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:padding="@dimen/list_item_margin">
+    android:padding="@dimen/list_item_padding">
 
     <ImageView
         android:id="@+id/sharing_activity_img"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/list_item_height"
-        android:scaleType="fitCenter"/>
+        android:layout_width="@dimen/list_item_height"
+        android:layout_height="@dimen/list_item_height"/>
 
-    <TextView
-        android:id="@+id/sharing_activity_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
         android:paddingLeft="@dimen/list_item_view_spacing"
-        android:textSize="@dimen/interface_text_size"
-        android:textColor="@android:color/black"/>
+        android:layout_toRightOf="@+id/sharing_activity_img">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/sharing_activity_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/interface_text_size"
+            android:textColor="@android:color/black"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/sharing_activity_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/interface_small_text_size"/>
+    </LinearLayout>
+
+</RelativeLayout>

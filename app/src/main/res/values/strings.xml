@@ -86,7 +86,7 @@
     <string name="succ_save">Succesfuly Saved</string>
 
     <string name="temp_not_implemeted_lbl">Not implemented yet</string>
-    <string name="message_to_share">Hey check out my app at:</string>
+    <string name="message_to_share">You have been invited to a expenses sharing activity:</string>
     <string name="lbl_error_sharing_link">Error sharing link</string>
     <string name="select_app">Select an application</string>
 
@@ -119,6 +119,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <!-- formatting and parametric string -->
+    <string name="fmt_date">yyyy/MM/dd</string>
 
 
 </resources>

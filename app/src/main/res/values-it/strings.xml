@@ -23,7 +23,7 @@
     <string name="err_amount_range">il valore deve di essere di piu a 0</string>
     <string name="err_description">Inserisce la descripzione</string>
     <string name="err_name">Inserisce il nome</string>
-    <string name="message_to_share">Hey guarda la mia app in:</string>
+    <string name="message_to_share">Sei stato invitatio ad una attività di condivisione spese:</string>
     <string name="sharing_activity_add_new_title">Nuova attività di condividere</string>
     <string name="succ_save">Salvato con successo</string>
     <string name="lbl_error_sharing_link">Errore al condividere il link</string>
@@ -38,7 +38,34 @@
     <string name="lbl_login_btn">Accesso</string>
     <string name="lbl_login_error">Accesso non valido. faccialo un\'altra volta</string>
     <string name="balance_title">Bilancio</string>
-    <string name="lbl_nav_drawer_logout">uscita</string>
+    <string name="lbl_nav_drawer_logout">Uscita</string>
     <string name="lbl_yes">SI</string>
+
     <string name="balance_owes"></string>
+
+    <string name="fmt_date">dd/MM/yyyy</string>
+    <string name="lbl_nav_drawer_settings">Impostazioni</string>
+    <string name="lbl_new_user">Registrazione utente</string>
+    <string name="lbl_no">NO</string>
+    <string name="lbl_paid_by">Pagata da</string>
+    <string name="lbl_passwd_too_weak">TROPPO DEBOLE!!!</string>
+    <string name="lbl_password">Password</string>
+    <string name="lbl_password_hint">Inserisci la tua password</string>
+    <string name="lbl_please_wait">Attendere prego...</string>
+    <string name="lbl_register_user"></string>
+    <string name="lbl_registering_user">Sto registrando l\'utente</string>
+    <string name="lbl_registration_error">Errore in fase di registrazione. Per favore riprovare</string>
+    <string name="lbl_registration_instr_1">Non hai un account?&#032;</string>
+    <string name="lbl_registration_instr_2">Registrati qui</string>
+    <string name="lbl_required_field">Richiesto</string>
+    <string name="lbl_saving_expense">Sto slavando la spesa</string>
+    <string name="lbl_user_name">Nome utente:</string>
+    <string name="lbl_user_name_hint">Inserisci il tuo nome utente</string>
+    <string name="login_title" translatable="false"></string>
+    <string name="my_credit_lbl">Credito:</string>
+    <string name="my_debt_lbl">Debito:</string>
+    <string name="my_spend_lbl">Speso:</string>
+    <string name="my_status_lbl">Il mio stato</string>
+    <string name="notificationDetail">Nuova spesa</string>
+
 </resources>

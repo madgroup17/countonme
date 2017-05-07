@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import it.polito.mad.countonme.R;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.models.SharingActivity;
@@ -23,25 +25,26 @@ import it.polito.mad.countonme.networking.ImageFromUrlTask;
 public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivitiesAdapter.ShActViewHolder> {
 
     public static class ShActViewHolder extends RecyclerView.ViewHolder {
-        ImageView mImgView;
-        TextView  mTextView;
+        @BindView( R.id.sharing_activity_img ) ImageView mIvPhoto;
+        @BindView( R.id.sharing_activity_name) TextView mTvName;
+        @BindView( R.id.sharing_activity_desc ) TextView mTvDesc;
 
         public ShActViewHolder(View itemView ) {
             super( itemView );
-            mImgView = (ImageView) itemView.findViewById(R.id.sharing_activity_img);
-            mTextView = (TextView) itemView.findViewById( R.id.sharing_activity_name);
+            ButterKnife.bind( this, itemView );
         }
 
         public void setData(final SharingActivity activity, final IOnListItemClickListener listener ) {
             String imgUrl = activity.getImageUrl();
 
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                new ImageFromUrlTask( mImgView, R.drawable.img_sharing_default, true ).execute( imgUrl );
+                new ImageFromUrlTask(  mIvPhoto, R.drawable.img_sharing_default, true ).execute( imgUrl );
             } else {
-                mImgView.setImageResource(R.drawable.img_sharing_default);
+                 mIvPhoto.setImageResource(R.drawable.img_sharing_default);
             }
 
-            mTextView.setText( activity.getName() );
+            mTvName.setText( activity.getName() );
+            mTvDesc.setText( activity.getDescription() );
 
             // attach the listener to the view
             itemView.setOnClickListener(new View.OnClickListener() {

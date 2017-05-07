@@ -4,43 +4,39 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:padding="@dimen/list_item_margin">
+    android:padding="@dimen/list_item_padding">
 
     <ImageView
         android:id="@+id/expense_img"
-        android:src="@drawable/img_sharing_default"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/list_item_height"
-        android:scaleType="fitCenter"
-    />
-
+        android:layout_width="@dimen/list_item_height"
+        android:layout_height="@dimen/list_item_height"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_centerInParent="true"
+        android:paddingLeft="@dimen/list_item_view_spacing"
         android:layout_toRightOf="@+id/expense_img">
         <TextView
             android:id="@+id/expense_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/list_item_view_spacing"
             android:textSize="@dimen/interface_text_size"
             android:textColor="@android:color/black"
-            />
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/expense_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/list_item_view_spacing"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/interface_small_text_size"
-            android:layout_below="@+id/expense_amount"
-            />
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/interface_small_text_size" />
     </LinearLayout>
 
 
