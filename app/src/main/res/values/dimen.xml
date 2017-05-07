@@ -2,7 +2,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="list_item_margin">10dp</dimen>
-    <dimen name="list_item_view_spacing">10dp</dimen>
+    <dimen name="list_item_padding">5dp</dimen>
+    <dimen name="list_item_view_spacing">5dp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_height_small">40dp</dimen>
     <dimen name="fragment_view_padding">10dp</dimen>
