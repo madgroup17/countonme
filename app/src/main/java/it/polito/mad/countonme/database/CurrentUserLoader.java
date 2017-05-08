@@ -17,6 +17,10 @@ import it.polito.mad.countonme.models.User;
 
 public class CurrentUserLoader extends DataLoader {
 
+    public CurrentUserLoader() {
+        super();
+    }
+
     public void loadCurrentUser( String userKey ) throws DataLoaderException{
         loadData( DataManager.getsInstance().getUserReference( userKey) );
     }

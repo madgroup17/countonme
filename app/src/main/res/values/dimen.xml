@@ -61,6 +61,10 @@
 
     <dimen name="new_image_size">80dp</dimen>
 
+
+    <!-- chart dimensions -->
+    <dimen name="chart_height">200dp</dimen>
+
     <!-- For drawer -->
     <dimen name="drawer_icon_margin">16dp</dimen>
     <dimen name="drawer_tv_magin">16dp</dimen>

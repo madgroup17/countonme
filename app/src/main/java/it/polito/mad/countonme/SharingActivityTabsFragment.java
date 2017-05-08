@@ -21,7 +21,6 @@ public class SharingActivityTabsFragment extends BaseFragment
     private static final String TAB_TAG_SHARING_ACTIVITY_DETAILS = "Sharing_Activity_Details";
     private static final String TAB_TAG_EXPENSES_LIST            = "Expenses_List";
     private static final String TAB_TAG_BALANCE_DETAILS          = "Balance_Details";
-    private static final String TAB_TAG_DEBT_LIST                = "Debt_List";
 
     FragmentTabHost mTabHost;
     FragmentManager mChildFragmentManager;
@@ -45,7 +44,6 @@ public class SharingActivityTabsFragment extends BaseFragment
         mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_SHARING_ACTIVITY_DETAILS ).setIndicator( getResources().getString(R.string.sharing_activity_details_title) ), SharingActivityDetailsFragment.class, bundle);
         mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_EXPENSES_LIST ).setIndicator( getResources().getString(R.string.expenses_title) ), ExpensesListFragmentI.class, bundle);
         mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_BALANCE_DETAILS ).setIndicator( getResources().getString(R.string.balance_title) ), BalanceFragment.class, bundle);
-        mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_DEBT_LIST ).setIndicator( getResources().getString(R.string.balance_owes) ), DebtListFragment.class, bundle);
 
         mTabHost.setCurrentTabByTag( TAB_TAG_SHARING_ACTIVITY_DETAILS );
 

@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:textSize="@dimen/interface_text_size"
+        android:text="Katrina"
         android:textColor="@android:color/black"
         android:maxLines="1"
         android:ellipsize="end"/>
@@ -46,6 +47,7 @@
             android:textColor="@android:color/black"
             android:maxLines="1"
             android:ellipsize="end"
+            android:text="100"
             android:layout_toRightOf="@id/owes_title"
             android:textSize="@dimen/interface_small_text_size"
             />
@@ -60,6 +62,7 @@
         android:textColor="@android:color/black"
         android:maxLines="1"
         android:layout_below="@id/amount"
+        android:text="Francesco"
         android:ellipsize="end"/>
 
 </RelativeLayout>
