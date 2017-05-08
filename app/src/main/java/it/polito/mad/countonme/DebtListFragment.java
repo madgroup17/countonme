@@ -1,5 +1,6 @@
 package it.polito.mad.countonme;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,16 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,33 +30,31 @@ import java.util.Map;
 import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.business.Balance;
 import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.lists.DebtAdapter;
-import it.polito.mad.countonme.lists.ExpenseAdapter;
-import it.polito.mad.countonme.lists.UsersAdapter;
-import it.polito.mad.countonme.models.*;
+import it.polito.mad.countonme.models.Debt;
+import it.polito.mad.countonme.models.DebtValue;
+import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.ReportBackAction;
+import it.polito.mad.countonme.models.User;
 
 /**
- * Created by Khatereh on 4/18/2017.
+ * Created by Khatereh on 5/7/2017.
  */
 
-public class BalanceFragment extends BaseFragment implements ValueEventListener {
-    BarChart barChart;
-    ArrayList<BarEntry> BARENTRY;
-    ArrayList<String> BarEntryLabels;
-    BarDataSet Bardataset;
-    BarData BARDATA;
-
-    TextView tvMySpend;
-    TextView tvMyCredit;
-    TextView tvMyDebt;
-
-    List<Debt> DebtList;
-
+public class DebtListFragment extends BaseFragment implements ValueEventListener, IOnListItemClickListener {
     private DatabaseReference mDatabase;
 
+    List<Debt> DebtList;
     private List<Expense> ExpenseList;
     private Map<String, User> mUsers;
+
+    private RecyclerView mDebtValueRv;
+    private DebtAdapter mDebtValueAdapter;
+    private List<DebtValue> mDebtValueList;
+
+    private boolean listIsFilled;
 
     @Override
     public void onAttach(Context context) {
@@ -67,26 +63,24 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.balance_fragment, container, false);
+        View view = inflater.inflate(R.layout.debt_list_fragment, container, false);
 
+        Bundle args;
         if (savedInstanceState != null)
             setData(savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
         else {
-            Bundle args = getArguments();
+            args = getArguments();
             if (args != null) setData(args.getString(AppConstants.SHARING_ACTIVITY_KEY));
         }
+
+        listIsFilled = false;
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         DataManager.getsInstance().getSharingActivityReference((String) getData()).addListenerForSingleValueEvent(this);
         DataManager.getsInstance().getSharActExpensesReference((String) getData()).addValueEventListener(this);
 
-        tvMySpend = (TextView) view.findViewById(R.id.my_spend);
-        tvMyCredit = (TextView) view.findViewById(R.id.my_credit);
-        tvMyDebt = (TextView) view.findViewById(R.id.my_debt);
-
-        barChart = (BarChart) view.findViewById(R.id.balance_chart);
-        //FillChart();
-
+        mDebtValueRv = (RecyclerView) view.findViewById(R.id.debt_list);
+        mDebtValueList = new ArrayList<DebtValue>();
 
         return view;
     }
@@ -116,10 +110,14 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
                     ExpenseList.add(tmp);
                 }
             }
+
+            listIsFilled = true;
         } catch (Exception exp) {
+            listIsFilled = false;
         } finally {
-            FillChart();
+            FillData();
         }
+
     }
 
     @Override
@@ -128,11 +126,17 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
     }
 
     @Override
+    public void onItemClick(Object clickedItem) {
+        DebtValue model = (DebtValue) clickedItem;
+        Activity parentActivity = getActivity();
+    }
+
+
+    @Override
     public void onResume() {
         super.onResume();
         adjustActionBar();
         DataManager.getsInstance().getSharActExpensesReference((String) getData()).addValueEventListener(this);
-
     }
 
     @Override
@@ -149,69 +153,24 @@ public class BalanceFragment extends BaseFragment implements ValueEventListener 
     /******************************************************************************************/
 
     /******************************************************************************************/
-
-    private void FillChart() {
-        BARENTRY = new ArrayList<>();
-        BarEntryLabels = new ArrayList<String>();
-
-        //AddValuesToBARENTRY();
-        //AddValuesToBarEntryLabels();
-
-        FillData();
-
-        Bardataset = new BarDataSet(BARENTRY, "Members");
-        BARDATA = new BarData(BarEntryLabels, Bardataset);
-        Bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
-        barChart.setData(BARDATA);
-        barChart.invalidate();
-        barChart.animateY(3000);
-        barChart.setDescription("Credits");
-
-        BARDATA.notifyDataChanged();
-    }
-
     private void FillData() {
         if (ExpenseList != null && mUsers != null && ExpenseList.size() != 0 && mUsers.size() != 0) {
             Balance BalanceClass = new Balance(ExpenseList, mUsers);
-
-            tvMySpend.setText(String.valueOf(BalanceClass.GetMySpend()));
-            tvMyCredit.setText(String.valueOf(BalanceClass.GetMyCredit()));
-            tvMyDebt.setText(String.valueOf(BalanceClass.GetMyDept()));
-
             DebtList = BalanceClass.getDebtList();
-            AddDebtsToBARENTRY();
+
+            mDebtValueList = BalanceClass.GetOwsList(DebtList);
+
+            mDebtValueAdapter = new DebtAdapter(getActivity(), mDebtValueList, this);
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            mDebtValueRv.setLayoutManager(layoutManager);
+            mDebtValueRv.setAdapter(mDebtValueAdapter);
+            mDebtValueRv.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        } else if (listIsFilled) {
+            mDebtValueAdapter = new DebtAdapter(getActivity(), mDebtValueList, this);
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            mDebtValueRv.setLayoutManager(layoutManager);
+            mDebtValueRv.setAdapter(mDebtValueAdapter);
+            mDebtValueRv.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         }
-    }
-
-    private void AddDebtsToBARENTRY() {
-        int Index = 0;
-        for (Iterator<Debt> i = DebtList.iterator(); i.hasNext(); ) {
-            Debt item = i.next();
-            BARENTRY.add(new BarEntry(item.getCredit().intValue(), Index));
-            String Name = item.getUser().getName();
-            if (Name == null) Name = item.getUser().getEmail();
-            BarEntryLabels.add(Name);
-            Index++;
-        }
-    }
-
-    private void AddValuesToBARENTRY() {
-
-        BARENTRY.add(new BarEntry(-2f, 0));
-        BARENTRY.add(new BarEntry(4f, 1));
-        BARENTRY.add(new BarEntry(6f, 2));
-        BARENTRY.add(new BarEntry(8f, 3));
-        BARENTRY.add(new BarEntry(7f, 4));
-        BARENTRY.add(new BarEntry(3f, 5));
-    }
-
-    private void AddValuesToBarEntryLabels() {
-
-        BarEntryLabels.add("User1");
-        BarEntryLabels.add("User2");
-        BarEntryLabels.add("User3");
-        BarEntryLabels.add("User4");
-        BarEntryLabels.add("User5");
-        BarEntryLabels.add("User6");
     }
 }

@@ -14,6 +14,7 @@
     <string name="expense_add_new_title">New expense</string>
 
     <string name="balance_title">Balance</string>
+    <string name="balance_owes">Owes</string>
 
     <string name="empty_sharing_list_lbl">You do not have sharing activities yet</string>
     <string name="total_balance_lbl">Total balance:</string>

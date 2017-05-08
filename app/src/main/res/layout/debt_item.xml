@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:padding="@dimen/list_item_padding"
+    android:paddingRight="@dimen/list_item_padding">
+
+    <TextView
+        android:id="@+id/debter_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textSize="@dimen/interface_text_size"
+        android:textColor="@android:color/black"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <LinearLayout
+        android:id="@+id/amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/debter_name"
+        android:paddingLeft="@dimen/list_item_view_spacing">
+
+        <TextView
+            android:id="@+id/owes_title"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/interface_text_size_small"
+            android:textColor="@android:color/secondary_text_light"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="@string/balance_owes"/>
+
+        <TextView
+            android:id="@+id/owes_amount"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:textColor="@android:color/black"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_toRightOf="@id/owes_title"
+            android:textSize="@dimen/interface_small_text_size"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/spend_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textSize="@dimen/interface_text_size"
+        android:textColor="@android:color/black"
+        android:maxLines="1"
+        android:layout_below="@id/amount"
+        android:ellipsize="end"/>
+
+</RelativeLayout>

@@ -6,8 +6,15 @@ package it.polito.mad.countonme.models;
 
 public class DebtValue
 {
+    private User mDebterUser;
     private Double mAmount;
     private User mUser;
+
+    public User getDebterUser() {return mDebterUser;}
+
+    public void setDebterUser(User User) {
+        this.mDebterUser = User;
+    }
 
     public Double getAmount() {
         return mAmount;

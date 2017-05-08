@@ -40,6 +40,9 @@
     <string name="balance_title">Bilancio</string>
     <string name="lbl_nav_drawer_logout">Uscita</string>
     <string name="lbl_yes">SI</string>
+
+    <string name="balance_owes"></string>
+
     <string name="fmt_date">dd/MM/yyyy</string>
     <string name="lbl_nav_drawer_settings">Impostazioni</string>
     <string name="lbl_new_user">Registrazione utente</string>
@@ -64,4 +67,5 @@
     <string name="my_spend_lbl">Speso:</string>
     <string name="my_status_lbl">Il mio stato</string>
     <string name="notificationDetail">Nuova spesa</string>
+
 </resources>

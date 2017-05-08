@@ -173,6 +173,7 @@ public class Balance {
                             Double Debt = abs(NegCredit);
 
                             DebtValue DValue = new DebtValue();
+                            DValue.setDebterUser(NegetiveItem.getUser());
                             DValue.setAmount(Debt);
                             DValue.setUser(PositiveCredit.get(j).getUser());
                             NegetiveItem.addDebt(DValue);
@@ -187,6 +188,7 @@ public class Balance {
                             Double Debt = PosCredit;
 
                             DebtValue DValue = new DebtValue();
+                            DValue.setDebterUser(NegetiveItem.getUser());
                             DValue.setAmount(Debt);
                             DValue.setUser(PositiveCredit.get(j).getUser());
                             NegetiveItem.addDebt(DValue);
@@ -205,6 +207,27 @@ public class Balance {
 
 
         return DebtList;
+    }
+
+    public List<DebtValue> GetOwsList(List<Debt> DebtList)
+    {
+        List<DebtValue> DebtValueList = new ArrayList<DebtValue>();
+
+        for (Iterator<Debt> i = DebtList.iterator(); i.hasNext(); ) {
+            Debt NegetiveItem = i.next();
+
+            if (NegetiveItem.getCredit() < 0)
+            {
+
+                for (Iterator<DebtValue> j = NegetiveItem.getDebts().iterator(); j.hasNext(); )
+                {
+                    DebtValue DebtValueItem = j.next();
+                    DebtValueList.add(DebtValueItem);
+                }
+            }
+        }
+
+        return DebtValueList;
     }
 
     private List<Debt> setUserBalance() {

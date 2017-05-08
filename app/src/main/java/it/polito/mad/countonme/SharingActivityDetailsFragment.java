@@ -44,8 +44,13 @@ public class SharingActivityDetailsFragment extends BaseFragment implements Valu
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sharing_activity_editing_fragment, container, false);
-        Bundle args = getArguments();
-        if (args != null) setData(args.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+
+        if (savedInstanceState != null)
+            setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+        else {
+            Bundle args = getArguments();
+            if (args != null) setData(args.getString(AppConstants.SHARING_ACTIVITY_KEY));
+        }
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -56,6 +61,12 @@ public class SharingActivityDetailsFragment extends BaseFragment implements Valu
         txtDescription = (EditText) view.findViewById(R.id.ed_sharing_activity_description);
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString( AppConstants.SHARING_ACTIVITY_KEY, (String) getData());
     }
 
     @Override
