@@ -1,6 +1,10 @@
 package it.polito.mad.countonme.models;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,16 +12,17 @@ import java.util.Map;
  * Created by francescobruno on 03/04/17.
  */
 
+@IgnoreExtraProperties
 public class SharingActivity {
     private String mName;
     private String mDescription;
     private String mImageUrl;
     private String mCurrency;
     private String mKey;
-    private Map<String, User> mUsers;
+    private User mCreatedBy;
+    private Map<String, User> mUsers = new HashMap<>();
 
     public SharingActivity() {
-        this( null, null, null, null );
     }
 
     public SharingActivity( String name, String description, String imageUrl, String currency ) {
@@ -68,9 +73,13 @@ public class SharingActivity {
 
     public void setUsers( Map<String, User> users ) { mUsers = users; }
 
+    public void setCreatedBy( User user ) { mCreatedBy = user; }
+
+    public User getCreatedBy() { return mCreatedBy; }
+
+    @Exclude
     public void addUser( User user ) {
         if( user == null ) return;
         mUsers.put( user.getId(), user );
     }
-
 }

@@ -1,33 +1,40 @@
 package it.polito.mad.countonme.models;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The user data model
  * Created by francescobruno on 17/04/17.
  */
 
+@IgnoreExtraProperties
 public class User {
-    private String mId;
+    private String mId; // for convenience
     private String mName;
     private String mEmail;
     private String mPhotoUrl;
 
     public User() {
-        this( null, null, null, null );
     }
 
-    public User( String id, String name, String email, String photoUrl ) {
-        mId         = id;
-        mName       = name;
-        mEmail      = email;
-        mPhotoUrl   = photoUrl;
+    public User(String id, String name, String email, String photoUrl) {
+        mId = id;
+        mName = name;
+        mEmail = email;
+        mPhotoUrl = photoUrl;
     }
 
     public String getId() {
         return mId;
     }
 
-    public void setId(String mId) {
-        this.mId = mId;
+    public void setId(String id) {
+        mId = id;
     }
 
     public String getName() {
@@ -38,9 +45,13 @@ public class User {
         this.mName = mName;
     }
 
-    public String getEmail() { return mEmail; }
+    public String getEmail() {
+        return mEmail;
+    }
 
-    public void setEmail( String email ) { mEmail = email; }
+    public void setEmail(String email) {
+        mEmail = email;
+    }
 
     public String getPhotoUrl() {
         return mPhotoUrl;
@@ -49,4 +60,5 @@ public class User {
     public void setPhotoUrl(String mPhotoUrl) {
         this.mPhotoUrl = mPhotoUrl;
     }
+    
 }

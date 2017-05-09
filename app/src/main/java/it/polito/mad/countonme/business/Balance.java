@@ -97,7 +97,7 @@ public class Balance {
             return Credit;
     }
 
-    public boolean isIinvolved(String UserId, Expense model) {
+    /*public boolean isInvolved(String UserId, Expense model) {
         boolean IsExist = false;
 
         for (Iterator<User> i = model.getInvolved().iterator(); i.hasNext(); ) {
@@ -109,7 +109,7 @@ public class Balance {
         }
 
         return IsExist;
-    }
+    }*/
 
 
     /******************************************************************************************/

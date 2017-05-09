@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +69,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @BindView( R.id.spin_expense_currency ) Spinner mCurrency;
     @BindView( R.id.spin_expense_paidby ) Spinner mPaidBySpinner;
     @BindView( R.id.tv_expense_date ) TextView mTvDate;
+    @BindView( R.id.sw_money_transfer ) Switch mSwMoneyTransfer;
+    @BindView( R.id.sw_share_evenly ) Switch mSwShareEvenly;
 
 
     private UsersAdapter mUsersAdapter;
@@ -84,6 +87,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     private String path;
     private DateFormat mDateFormat;
     private Date mExpenseDate;
+    private Boolean mIsNewData;
 
 
     @Override
@@ -140,7 +144,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(AppConstants.SHARING_ACTIVITY_KEY, ( String ) getData() );
+        outState.putBoolean( AppConstants.SAVE_STATE_NEW_DATA, mIsNewData );
+        outState.putString( mIsNewData ? AppConstants.SHARING_ACTIVITY_KEY : AppConstants.EXPENSE_KEY, ( String ) getData() );
         outState.putString(AppConstants.USER_KEY, ( (User) mPaidBySpinner.getSelectedItem() ).getId() );
         outState.putSerializable( AppConstants.SAVE_STATE_KEY_DATE, mExpenseDate );
     }
@@ -157,9 +162,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             ClearForm();
             getFragmentManager().popBackStack();
             Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
-            String key= databaseReference.getKey();
-           // Toast.makeText( getActivity(),key, Toast.LENGTH_LONG).show();
-            sendNotificationFromNewExpense( key );
         }
     }
 
@@ -300,31 +302,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
         setHasOptionsMenu( true );
     }
-
-    private void sendNotificationFromNewExpense( String expenseKey ){
-        Context context = getActivity().getApplicationContext();
-        //getResources().getString( R.string.notificationTitle )
-        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                .setContentTitle(getResources().getString( R.string.notificationTitle ))//("CountOnMe")//
-                .setContentText(getResources().getString( R.string.notificationDetail ))//("New Expense Created")//
-                .setTicker(getResources().getString( R.string.notificationDetail ))//("New Expense Created")
-                .setSmallIcon(R.drawable.img_sharing_default);
-
-        Intent moreInfoIntent = new Intent(context, CountOnMeActivity.class);
-        //moreInfoIntent.putExtra("NOTIFICATION", true );
-
-        moreInfoIntent.putExtra( AppConstants.EXPENSE_KEY, expenseKey );
-
-        TaskStackBuilder tStackBuilder = TaskStackBuilder.create(context);
-        tStackBuilder.addParentStack( CountOnMeActivity.class );
-        tStackBuilder.addNextIntent(moreInfoIntent);
-        PendingIntent pendingIntent = tStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
-        notificationBuilder.setContentIntent(pendingIntent);
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notifID,notificationBuilder.build());
-
-    }
-
 
     private void updateDate( int year, int month, int date ) {
         Calendar c = Calendar.getInstance();

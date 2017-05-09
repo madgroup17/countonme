@@ -1,7 +1,9 @@
 package it.polito.mad.countonme;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -12,7 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -21,20 +26,38 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import it.polito.mad.countonme.business.LinkSharing;
 import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.database.SharingActivityLoader;
+import it.polito.mad.countonme.exceptions.DataLoaderException;
+import it.polito.mad.countonme.interfaces.IActionReportBack;
+import it.polito.mad.countonme.interfaces.IOnDataListener;
+import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.ReportBackAction;
+import it.polito.mad.countonme.models.SharingActivity;
+import it.polito.mad.countonme.models.User;
+import it.polito.mad.countonme.networking.ImageFromUrlTask;
 
 /**
  * Created by Khatereh on 4/28/2017.
  */
 
-public class SharingActivityDetailsFragment extends BaseFragment implements ValueEventListener {
-    EditText txtName;
-    EditText txtDescription;
-    Spinner spnCurrency;
+public class SharingActivityDetailsFragment extends BaseFragment implements IOnDataListener {
 
-    private String path;
-    private DatabaseReference mDatabase;
+    @BindView(R.id.tv_name) TextView mTvName;
+    @BindView(R.id.tv_created_by) TextView mTvCreatedBy;
+    @BindView(R.id.tv_description) TextView mTvDescription;
+    @BindView(R.id.tv_currency) TextView mTvCurrency;
+
+    @BindView(R.id.ll_users) LinearLayout mLlUsers;
+
+
+    private SharingActivityLoader mSharingActivityLoader;
 
     @Override
     public void onAttach(Context context) {
@@ -43,7 +66,8 @@ public class SharingActivityDetailsFragment extends BaseFragment implements Valu
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sharing_activity_editing_fragment, container, false);
+        View view = inflater.inflate(R.layout.sharing_activity_details_fragment, container, false);
+        ButterKnife.bind( this, view );
 
         if (savedInstanceState != null)
             setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
@@ -52,13 +76,8 @@ public class SharingActivityDetailsFragment extends BaseFragment implements Valu
             if (args != null) setData(args.getString(AppConstants.SHARING_ACTIVITY_KEY));
         }
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        DataManager.getsInstance().getSharingActivityReference((String) getData()).addListenerForSingleValueEvent(this);
-
-        spnCurrency = (Spinner) view.findViewById(R.id.spin_sharing_activity_currency);
-        txtName = (EditText) view.findViewById(R.id.ed_sharing_activity_name);
-        txtDescription = (EditText) view.findViewById(R.id.ed_sharing_activity_description);
+        mSharingActivityLoader = new SharingActivityLoader();
+        mSharingActivityLoader.setOnDataListener( this );
 
         return view;
     }
@@ -70,22 +89,21 @@ public class SharingActivityDetailsFragment extends BaseFragment implements Valu
     }
 
     @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        it.polito.mad.countonme.models.SharingActivity myActivity = (it.polito.mad.countonme.models.SharingActivity) dataSnapshot.getValue(it.polito.mad.countonme.models.SharingActivity.class);
-        txtName.setText(myActivity.getName());
-        txtDescription.setText(myActivity.getDescription());
-        SetCurrency(myActivity.getCurrency());
-    }
-
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-
+    public void onData( Object data ) {
+        if( data instanceof SharingActivity) {
+            fillUi( ( SharingActivity ) data );
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         adjustActionBar();
+        try {
+            mSharingActivityLoader.loadSharingActivity( (String) getData() );
+        } catch (DataLoaderException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -96,25 +114,34 @@ public class SharingActivityDetailsFragment extends BaseFragment implements Valu
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.sharing_activity_details_menu, menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.share_sharing_activity:
                 try {
                     Intent sendIntent = LinkSharing.shareActivity(getActivity(), (String) getData());
                     startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.select_app)));
-                    return true;
                 } catch (Exception e) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
                 }
                 return true;
+            case R.id.edit_sharing_activity:
+                Activity parentActivity  = getActivity();
+                if( parentActivity instanceof IActionReportBack) {
+                    ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_EDIT_SHARING_ACTIVITY, getData() ) );
+                }
+                return true;
+            case R.id.delete_sharing_activity:
+                Toast.makeText(getActivity(), getResources().getString( R.string.temp_not_implemeted_lbl ), Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.sharing_activity_details_menu, menu);
     }
 
     private void adjustActionBar()
@@ -123,13 +150,30 @@ public class SharingActivityDetailsFragment extends BaseFragment implements Valu
         setHasOptionsMenu(true);
     }
 
-    private void SetCurrency(String CurrencyValue) {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.currencies_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnCurrency.setAdapter(adapter);
-        if (!CurrencyValue.equals(null)) {
-            int spinnerPosition = adapter.getPosition(CurrencyValue);
-            spnCurrency.setSelection(spinnerPosition);
+    private void fillUi( SharingActivity activity ) {
+        if( activity == null ) return;
+        mTvName.setText( activity.getName() );
+        Resources res = getResources();
+        String createdBy = String.format( res.getString(R.string.lbl_created_by ), activity.getCreatedBy().getName() );
+        mTvCreatedBy.setText( createdBy );
+        mTvDescription.setText( activity.getDescription() );
+        mTvCurrency.setText( activity.getCurrency() );
+
+        LayoutInflater myInflater = LayoutInflater.from( getActivity() );
+
+        for (Map.Entry<String, User> entry : activity.getUsers().entrySet()) {
+            User user = entry.getValue();
+            View child = myInflater.inflate( R.layout.user_list_item, null );
+            ImageView userPhoto = ( ImageView ) child.findViewById( R.id.user_img );
+            TextView userName = (TextView) child.findViewById( R.id.user_name );
+            TextView userEmail = ( TextView ) child.findViewById( R.id.user_email );
+            new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
+            userName.setText( user.getName() );
+            userEmail.setText( user.getEmail() );
+
+            mLlUsers.addView( child );
         }
     }
+
+
 }

@@ -17,19 +17,24 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
+import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.models.User;
 
 /**
  * Created by Khatereh on 4/13/2017.
  */
 
-public class SharingActivityEditingFragment extends BaseFragment implements DatabaseReference.CompletionListener
+public class SharingActivityEditingFragment extends BaseFragment implements IOnDataListener, DatabaseReference.CompletionListener
 {
-    EditText txtName;
-    EditText txtDescription;
-    Spinner spnCurrency;
+    @BindView( R.id.ed_sharing_activity_name ) EditText txtName;
+    @BindView( R.id.ed_sharing_activity_description) EditText txtDescription;
+    @BindView( R.id.spin_sharing_activity_currency ) Spinner spnCurrency;
+
+    private boolean isAddNewSharing;
 
     @Override
     public void onAttach(Context context) {
@@ -37,15 +42,15 @@ public class SharingActivityEditingFragment extends BaseFragment implements Data
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
     {
         View view = inflater.inflate(R.layout.sharing_activity_editing_fragment, container, false);
+        ButterKnife.bind( this, view );
+        if( savedInstanceState != null ) {
+            isAddNewSharing = savedInstanceState.getBoolean( AppConstants.SAVE_STATE_NEW_DATA );
+        }
 
-        spnCurrency = (Spinner) view.findViewById(R.id.spin_sharing_activity_currency);
-        txtName = (EditText) view.findViewById(R.id.ed_sharing_activity_name);
-        txtDescription = (EditText) view.findViewById(R.id.ed_sharing_activity_description);
-
-        ((CountOnMeApp)getActivity().getApplication()).getCurrentUser();
+        isAddNewSharing  = ( getData() == null );
 
         return view;
     }
@@ -59,11 +64,11 @@ public class SharingActivityEditingFragment extends BaseFragment implements Data
     {
         if(IsValid())
         {
-            it.polito.mad.countonme.models.SharingActivity model = GetSharingActivity();
+            it.polito.mad.countonme.models.SharingActivity shaAct = GetSharingActivity();
 
             try
             {
-                DataManager.getsInstance().addNewSharingActivity( model, this);
+                DataManager.getsInstance().addNewSharingActivity( shaAct, this);
             }
             catch ( InvalidDataException ex ) {
                 Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
@@ -73,28 +78,19 @@ public class SharingActivityEditingFragment extends BaseFragment implements Data
 
     private it.polito.mad.countonme.models.SharingActivity GetSharingActivity()
     {
-        it.polito.mad.countonme.models.SharingActivity model = new it.polito.mad.countonme.models.SharingActivity();
+        it.polito.mad.countonme.models.SharingActivity shaAct = new it.polito.mad.countonme.models.SharingActivity();
 
-        model.setName(txtName.getText().toString());
-        model.setDescription(txtDescription.getText().toString());
-        model.setCurrency(spnCurrency.getSelectedItem().toString());
+        User currentUser = ((CountOnMeApp)getActivity().getApplication()).getCurrentUser();
+        shaAct.setName( txtName.getText().toString() );
+        shaAct.setDescription(txtDescription.getText().toString());
+        shaAct.setCurrency(spnCurrency.getSelectedItem().toString());
+        shaAct.setCreatedBy( currentUser );
 
-        User UserModel = GetCurrentUser();
-        model.addUser(UserModel);
+        shaAct.addUser( currentUser );
 
-        return model;
+        return shaAct;
     }
 
-    private User GetCurrentUser()
-    {
-        User UserModel = new User();
-        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-        com.google.firebase.auth.FirebaseUser currentUser = mFirebaseAuth.getInstance().getCurrentUser();
-        UserModel.setId(currentUser.getUid());
-        UserModel.setEmail(currentUser.getEmail());
-        UserModel.setName(currentUser.getDisplayName());
-        return UserModel;
-    }
 
     private boolean IsValid()
     {

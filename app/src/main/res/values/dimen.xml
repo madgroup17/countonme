@@ -6,6 +6,7 @@
     <dimen name="list_item_view_spacing">5dp</dimen>
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_item_height_small">40dp</dimen>
+    <dimen name="list_item_height_50">50dp</dimen>
     <dimen name="fragment_view_padding">10dp</dimen>
 
     <dimen name="label_padding_10">10dp</dimen>
@@ -15,6 +16,8 @@
     <dimen name="image_margin_10">10dp</dimen>
     <dimen name="image_margin_15">15dp</dimen>
 
+    <dimen name="share_ed_width">100dp</dimen>
+
     <!-- For text size -->
     <dimen name="empty_list_text_size">18sp</dimen>
     <dimen name="interface_text_size">20sp</dimen>
@@ -23,8 +26,18 @@
     <dimen name="interface_small_text_size">18sp</dimen>
     <dimen name="list_item_main_text_size">12sp</dimen>
 
-    <dimen name="list_item_text_size_15">15sp</dimen>
     <dimen name="list_item_text_size_10">10sp</dimen>
+    <dimen name="list_item_text_size_15">15sp</dimen>
+    <dimen name="list_item_text_size_20">20sp</dimen>
+
+    <dimen name="details_text_size_big">20sp</dimen>
+    <dimen name="details_text_size_medium">15sp</dimen>
+    <dimen name="details_text_size_small">10sp</dimen>
+
+    <dimen name="details_over_image_text_size_big">25sp</dimen>
+    <dimen name="details_over_image_text_size_medium">15sp</dimen>
+    <dimen name="details_over_image_text_size_small">10sp</dimen>
+
 
 
     <!-- For layout -->

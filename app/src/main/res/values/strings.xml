@@ -9,6 +9,8 @@
     <string name="sharing_activity_add_new_title">New Sharing activity</string>
     <string name="sharing_activity_details_title">Details</string>
 
+    <string name="lbl_users">Users</string>
+
     <string name="expenses_title">Expenses</string>
     <string name="expense_details_title">Expense details</string>
     <string name="expense_add_new_title">New expense</string>
@@ -25,8 +27,11 @@
     <string name="lbl_currency">Currency</string>
     <string name="lbl_date">Date</string>
     <string name="lbl_money_transfer">Money tranfer</string>
+    <string name="lbl_share_evenly">Share evenly</string>
     <string name="lbl_yes">YES</string>
     <string name="lbl_no">NO</string>
+
+    <string name="lbl_created_by">Created by: %1$s</string>
 
     <string name="lbl_saving_error">Saving error. Please try again</string>
     <string name="lbl_expense_saved">New expense saved successfully</string>

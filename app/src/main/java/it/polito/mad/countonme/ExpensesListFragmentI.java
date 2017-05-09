@@ -102,7 +102,7 @@ public class ExpensesListFragmentI extends BaseFragment implements  View.OnClick
     public void onItemClick( Object clickedItem ) {
         Expense model = (Expense) clickedItem;
         Activity parentActivity  = getActivity();
-        ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, ((Expense) clickedItem).getKey()));
+        ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, ( ( Expense ) clickedItem).getKey() ) );
 
     }
 
@@ -111,7 +111,7 @@ public class ExpensesListFragmentI extends BaseFragment implements  View.OnClick
         // we just have the floating action button to manage here
         Activity parentActivity  = getActivity();
         if( parentActivity instanceof IActionReportBack) {
-            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, getData()) );
+            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, getData() ) );
         }
     }
 

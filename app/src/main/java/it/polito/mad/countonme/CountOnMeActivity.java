@@ -28,7 +28,7 @@ import it.polito.mad.countonme.interfaces.IOnDrawerItemListener;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.User;
 
-public class CountOnMeActivity extends AppCompatActivity implements IActionReportBack, IOnDrawerItemListener {
+public class CountOnMeActivity extends AppCompatActivity implements IActionReportBack, IOnDrawerItemListener, IOnDataListener {
 
     private static final String TAG = CountOnMeActivity.class.getName();
 
@@ -52,6 +52,8 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
     private DrawerFragment mDrawerFragment;
     private DrawerLayout mDrawerLayout;
     private ProgressDialog mLoadingProgressDialog;
+    private boolean mShowShalist;
+    private boolean mIsLoadingUser;
 
     @BindView( R.id.toolbar ) Toolbar mToolbar;
 
@@ -70,21 +72,17 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
             if( ( (CountOnMeApp)getApplication() ).getCurrentUser() == null )
             {
                 CurrentUserLoader userDataLoader = new CurrentUserLoader();
-                userDataLoader.setOnDataListener(new IOnDataListener() {
-                    @Override
-                    public void onData(Object data) {
-                        hideLoadingDialog();
-                        ( (CountOnMeApp)getApplication() ).setCurrentUser( (User) data );
-                    }
-                });
+                userDataLoader.setOnDataListener( this );
+                mIsLoadingUser = true;
                 try {
                     showLoadingDialog();
                     userDataLoader.loadCurrentUser( currentUser.getUid() );
                 } catch (DataLoaderException e) {
-                    /* ignored */
+                    finish(); // can't load the user exit
                 }
             }
         }
+        mShowShalist = ( savedInstanceState == null);
         setContentView(R.layout.activity_sharing);
         ButterKnife.bind( this );
         mFragmentManager = getFragmentManager();
@@ -92,14 +90,22 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
         setUpActionBar();
         loadAppFragments();
 
-        if( savedInstanceState == null )
-            showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
-
-        Intent callingIntent = getIntent();
-        String key;
-        if( (key = callingIntent.getStringExtra( AppConstants.EXPENSE_KEY )) != null )
-            handleActionViewExpenseDetails( key );
+        if( mIsLoadingUser == false ) {
+            if( mShowShalist == true )
+                showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
+            manageCallingIntent();
+        }
     }
+
+    @Override
+    public void onData(Object data) {
+        hideLoadingDialog();
+        ( (CountOnMeApp)getApplication() ).setCurrentUser( (User) data );
+        if( mShowShalist );
+            showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
+        manageCallingIntent();
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -134,7 +140,9 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
             case ACTION_VIEW_EXPENSE_DETAILS:
                 handleActionViewExpenseDetails( action.getActionData() );
                 break;
-            case ACTION_ADD_NEW_EXPENSE: // pass through
+            case ACTION_ADD_NEW_EXPENSE:
+                handleActionAddNewExpense( action.getActionData() );
+                break;
             case ACTION_EDIT_EXPENSE:
                 handleActionEditExpense( action.getActionData() );
                 break;
@@ -178,6 +186,13 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
 
 
     /* ---------------------  PRIVATE METHODS ------------------- */
+
+    private void manageCallingIntent() {
+        Intent callingIntent = getIntent();
+        String key;
+        if ((key = callingIntent.getStringExtra(AppConstants.EXPENSE_KEY)) != null)
+            handleActionViewExpenseDetails(key);
+    }
 
     private void loadAppFragments() {
         mFragmentsList[ AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT.ordinal() ] = new SharingActivitiesListFragment();
@@ -270,7 +285,7 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
 
 
     /**
-     * Shows the fragment containg the details about a chosen expense
+     * Shows the fragment containig the details about a chosen expense
      * @param data
      */
     private void handleActionViewExpenseDetails( Object data ) {
@@ -280,11 +295,20 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
 
 
     /**
-     * Shows the fragment for either add a new or modifying an existing expense
+     * Shows the fragment for adding a new expense
+     * @param data
+     */
+    private void handleActionAddNewExpense( Object data ) {
+        mFragmentsList[ AppFragment.EXPENSE_EDITING_FRAGMENT.ordinal() ].setData( AppConstants.SHARING_ACTIVITY_KEY, data );
+        showAppFragment( AppFragment.EXPENSE_EDITING_FRAGMENT, true );
+    }
+
+    /**
+     * Shows the fragment for modifying an existing expense
      * @param data
      */
     private void handleActionEditExpense( Object data ) {
-        mFragmentsList[ AppFragment.EXPENSE_EDITING_FRAGMENT.ordinal() ].setData( data );
+        mFragmentsList[ AppFragment.EXPENSE_EDITING_FRAGMENT.ordinal() ].setData( AppConstants.EXPENSE_KEY, data );
         showAppFragment( AppFragment.EXPENSE_EDITING_FRAGMENT, true );
     }
 

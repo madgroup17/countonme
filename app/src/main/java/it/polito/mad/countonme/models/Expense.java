@@ -19,19 +19,20 @@ public class Expense {
     private String mImageUrl;
     private String mParentSharingActivityId;
     private Boolean mIsSurvey;
+    private Boolean mIsSharedEvenly;
     private Boolean mIsMoneyTransfer;
-    private String mSubmitterId;
+    private User mCreatedBy;
     private Date mDate;
     private User mPayer;
-    private List<User> mInvolved; // TODO must be changed we need a new model for saving this information
+    private List<Share> mShares;
 
     public Expense() {
-        this( null, null, null, null, 0.0, 0.0, null, null, null, null, false );
+        this( null, null, null, null, 0.0, 0.0, null, null, null, null, false, false );
     }
 
 
     public Expense(String mName, String mDescription, String mSharingActivityCurrency, String mExpenseCurrency,
-                   Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Date date, User payer, Boolean mIsSurvey) {
+                   Double mAmount, Double mConvertedAmount, String mImageUrl, String mParentSharingActivityId, Date date, User payer, Boolean mIsSurvey, Boolean mIsSharedEvenly ) {
         this.mName = mName;
         this.mDescription = mDescription;
         this.mSharingActivityCurrency = mSharingActivityCurrency;
@@ -42,6 +43,7 @@ public class Expense {
         this.mParentSharingActivityId = mParentSharingActivityId;
         this.mDate = date;
         this.mIsSurvey = mIsSurvey;
+        this.mIsSharedEvenly = mIsSharedEvenly;
     }
 
     public String getKey() {
@@ -116,10 +118,6 @@ public class Expense {
 
     public void setPayer( User payer ) { mPayer = payer; }
 
-    public List<User> getInvolved() { return mInvolved; }
-
-    public void setInvolved( List<User> Involved ) { mInvolved = Involved; }
-
     public Boolean getIsSurvey() {
         return mIsSurvey;
     }
@@ -128,13 +126,21 @@ public class Expense {
         mIsSurvey = isSurvey;
     }
 
+    public Boolean getIsSharedEvenly() {
+        return mIsSharedEvenly;
+    }
+
+    public void setIsSharedEvenly( Boolean isSharedEvenly ) {
+        mIsSharedEvenly = isSharedEvenly;
+    }
+
     public Boolean getIsMoneyTransfer(  ) { return mIsMoneyTransfer; }
 
     public void setIsMoneyTransfer(Boolean isMoneyTransfer) { mIsMoneyTransfer = isMoneyTransfer; }
 
-    public String getSubmitterId() { return mSubmitterId; }
+    public User getCreatedBy() { return mCreatedBy; }
 
-    public void setSubmitterId( String submitterId) { mSubmitterId = submitterId; }
+    public void setCreatedBy( User createdBy ) { mCreatedBy = createdBy; }
 
     public String getParentSharingActivityId() {
         return mParentSharingActivityId;
@@ -143,5 +149,11 @@ public class Expense {
     public void setParentSharingActivityId(String mParentSharingActivityId) {
         this.mParentSharingActivityId = mParentSharingActivityId;
     }
+
+    public void setShares( List<Share> shares ) {
+        mShares = shares;
+    }
+
+    public List<Share> getShares() { return mShares; }
 }
 

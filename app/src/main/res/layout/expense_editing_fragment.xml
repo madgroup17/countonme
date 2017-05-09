@@ -154,6 +154,7 @@
             android:textSize="@dimen/interface_text_size" />
 
         <LinearLayout
+            android:id="@+id/ll_money_transfer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lbl_margin_10"
@@ -179,10 +180,37 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_users_list"
+            android:id="@+id/ll_sharing_equally"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lbl_margin_10"
+            android:orientation="horizontal"
+            android:layout_below="@id/ll_money_transfer">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/interface_text_size_small"
+                android:text="@string/lbl_share_evenly"
+                android:layout_gravity="center_vertical"/>
+
+            <Switch
+                android:id="@+id/sw_share_evenly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textOff="@string/lbl_no"
+                android:textOn="@string/lbl_yes"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_sharing_info"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_sharing_equally">
 
         </LinearLayout>
 

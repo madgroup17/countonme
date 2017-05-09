@@ -9,6 +9,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.models.Expense;
@@ -26,6 +28,7 @@ public class DataManager {
     private static final String CHILD_SHARING_ACTIVITIES_USERS = "users";
     private static final String CHILD_EXPENSES = "expenses";
     private static final String CHILD_USERS = "users";
+    private static final String CHILD_USER_BELONGS_SHARING_ACTIVITIES = "belongsSharingActivities";
 
     ArrayList<SharingActivity> salist = new ArrayList<>();
 
@@ -77,7 +80,7 @@ public class DataManager {
 
 
     // Users management
-    public void addNewUser(User user, DatabaseReference.CompletionListener completionListener ) throws InvalidDataException
+    public void addNewUser( User user, DatabaseReference.CompletionListener completionListener ) throws InvalidDataException
     {
         try {
             addNewDataWithId( user, CHILD_USERS, user.getId(), completionListener );
@@ -89,13 +92,18 @@ public class DataManager {
     // Sharing activities management
 
     public void addNewSharingActivity(SharingActivity activity, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
-        try {
-            addNewData(activity, CHILD_SHARING_ACTIVITIES, completionListener);
-        } catch( InvalidDataException ex ) {
-            throw new InvalidDataException("Invalid Sharing Activity has been provided" );
-        }
-    }
+        DatabaseReference reference = mDatabase.getReference();
+        if( activity == null ) throw new InvalidDataException("Invalid Sharing Activity has been provided" );
+        // create a new sharing activity and add the data in the user simultaneusly
+        String shaActKey = reference.child(CHILD_SHARING_ACTIVITIES).push().getKey();
+        String belongSaKey = reference.child( CHILD_USER_BELONGS_SHARING_ACTIVITIES + "/" + activity.getCreatedBy().getId()).push().getKey();
+        Map<String, Object> updates = new HashMap<>();
+        activity.setKey( shaActKey );
+        updates.put( "/" + CHILD_SHARING_ACTIVITIES + "/" + shaActKey + "/", activity );
+        updates.put( "/" + CHILD_USER_BELONGS_SHARING_ACTIVITIES + "/" + activity.getCreatedBy().getId() + "/" + belongSaKey + "/",  true );
+        reference.updateChildren( updates, completionListener );
 
+    }
 
     // Expenses management
 
@@ -137,7 +145,7 @@ public class DataManager {
         }
     }
 
-    public ArrayList<SharingActivity> retreive(){
+    public ArrayList<SharingActivity> retrieve(){
         getDbReference().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
