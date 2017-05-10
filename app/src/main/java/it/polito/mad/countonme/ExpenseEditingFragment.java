@@ -363,9 +363,15 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             if( eeData.isSharedEvenly == false ) {
                 for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
                     View view = mLlSharingInfo.getChildAt(idx);
-                    EditText edAmount  =  (EditText) view.findViewById( R.id.ed_amount );
+                    String strAmount  =  ( (EditText) view.findViewById( R.id.ed_amount ) ).getText().toString();
+                    Double amount;
+                    try {
+                        amount = Double.parseDouble(strAmount);
+                    } catch ( NumberFormatException e ) {
+                        amount = 0.0;
+                    }
                     User user = ( User ) view.getTag( R.id.id_user );
-                    newExpense.addShare( user.getId(), new Share(user, Double.parseDouble( edAmount.getText().toString() )));
+                    newExpense.addShare( user.getId(), new Share(user, amount ) );
                 }
             }
 
