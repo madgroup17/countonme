@@ -5,4 +5,7 @@
     <item name="menu_settings" type="id"/>
     <item name="menu_logout" type="id"/>
 
+    <!-- View tag ids -->
+    <item name="id_user" type="id" />
+
 </resources>

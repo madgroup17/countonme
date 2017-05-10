@@ -163,8 +163,13 @@ public class Expense {
     public Map<String, Share> getShares() { return mShares; }
 
     @Exclude
+    public void clearShare() {
+        mShares.clear();;
+    }
+
+    @Exclude
     public void addShare( String id, Share share ) {
-        if( share != null ) return;
+        if( id == null || share == null ) return;
         mShares.put( id, share );
     }
 }

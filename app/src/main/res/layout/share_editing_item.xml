@@ -5,7 +5,7 @@
     android:padding="@dimen/btn_padding_10">
 
     <EditText
-        android:id="@+id/tv_amount"
+        android:id="@+id/ed_amount"
         android:layout_width="@dimen/share_ed_width"
         android:gravity="end"
         android:layout_height="wrap_content"

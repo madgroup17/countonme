@@ -55,7 +55,6 @@ import it.polito.mad.countonme.networking.ImageFromUrlTask;
 
 public class ExpenseEditingFragment extends BaseFragment implements DatabaseReference.CompletionListener,
        DatePickerDialog.OnDateSetListener, IOnDataListener {
-    private static final int USER = 1;
 
     public static class ExpenseEditingData {
 
@@ -308,7 +307,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             TextView userName = (TextView) child.findViewById( R.id.tv_name );
             new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
             userName.setText( user.getName() );
-            child.setTag( USER, user );
+            child.setTag( R.id.id_user, user );
             mLlSharingInfo.addView( child );
         }
         mUsersAdapter.notifyDataSetChanged();
@@ -338,7 +337,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     }
 
-
     private void createDatePickerDialog() {
         mDateFormat = new SimpleDateFormat( getString( R.string.fmt_date ) );
         mDatePickerDialog = new DatePicker();
@@ -361,6 +359,16 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             newExpense.setIsSharedEvenly( eeData.isSharedEvenly );
             newExpense.setDate( eeData.expenseDate );
             newExpense.setParentSharingActivityId( eeData.shaActKey );
+
+            if( eeData.isSharedEvenly == false ) {
+                for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                    View view = mLlSharingInfo.getChildAt(idx);
+                    EditText edAmount  =  (EditText) view.findViewById( R.id.ed_amount );
+                    User user = ( User ) view.getTag( R.id.id_user );
+                    newExpense.addShare( user.getId(), new Share(user, Double.parseDouble( edAmount.getText().toString() )));
+                }
+            }
+
             try {
 
                 mProgressDialog.setTitle( R.string.lbl_saving_expense);
