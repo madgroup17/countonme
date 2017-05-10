@@ -30,6 +30,8 @@ import it.polito.mad.countonme.models.User;
 
 public class SharingActivityEditingFragment extends BaseFragment implements IOnDataListener, DatabaseReference.CompletionListener
 {
+    private static final String SAVE_STATE_NEW_DATA = "New_Data";
+
     @BindView( R.id.ed_sharing_activity_name ) EditText txtName;
     @BindView( R.id.ed_sharing_activity_description) EditText txtDescription;
     @BindView( R.id.spin_sharing_activity_currency ) Spinner spnCurrency;
@@ -47,7 +49,7 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
         View view = inflater.inflate(R.layout.sharing_activity_editing_fragment, container, false);
         ButterKnife.bind( this, view );
         if( savedInstanceState != null ) {
-            isAddNewSharing = savedInstanceState.getBoolean( AppConstants.SAVE_STATE_NEW_DATA );
+            isAddNewSharing = savedInstanceState.getBoolean( SAVE_STATE_NEW_DATA );
         }
 
         isAddNewSharing  = ( getData() == null );
@@ -133,6 +135,13 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
             getFragmentManager().popBackStack();
             Toast.makeText(getActivity(), R.string.succ_save, Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+
+    @Override
+    public void onData(Object data) {
+
     }
 
     /******************************************************************************************/

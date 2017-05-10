@@ -16,6 +16,8 @@ import it.polito.mad.countonme.AppConstants;
 
 public class DatePicker extends DialogFragment {
 
+    private static final String SAVE_STATE_KEY_DATE = "Date";
+
     DatePickerDialog.OnDateSetListener mListener;
     Date mCurrentDate;
 
@@ -27,7 +29,7 @@ public class DatePicker extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
         if( savedInstanceState != null )
-            mCurrentDate = ( Date ) savedInstanceState.getSerializable( AppConstants.SAVE_STATE_KEY_DATE );
+            mCurrentDate = ( Date ) savedInstanceState.getSerializable( SAVE_STATE_KEY_DATE );
         c.setTime( mCurrentDate );
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
@@ -39,7 +41,7 @@ public class DatePicker extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(AppConstants.SAVE_STATE_KEY_DATE, mCurrentDate );
+        outState.putSerializable( SAVE_STATE_KEY_DATE, mCurrentDate );
     }
 
     public void setDateSetListener(DatePickerDialog.OnDateSetListener listener ) {

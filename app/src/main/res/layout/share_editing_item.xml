@@ -12,15 +12,14 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:paddingLeft="@dimen/list_item_view_spacing"
+        android:inputType="numberDecimal"
         android:textSize="@dimen/list_item_text_size_20"
-        android:textColor="@android:color/black"
-        android:text="100"/>
+        android:textColor="@android:color/black"/>
 
     <ImageView
         android:id="@+id/iv_user"
         android:layout_width="@dimen/list_item_height_small"
         android:layout_height="@dimen/list_item_height_small"
-        android:src="@drawable/default_user_photo"
         android:scaleType="fitCenter"
         android:layout_alignParentLeft="true"/>
 

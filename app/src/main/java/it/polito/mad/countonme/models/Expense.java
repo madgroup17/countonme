@@ -1,13 +1,19 @@
 package it.polito.mad.countonme.models;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The expense data model
  * Created by francescobruno on 03/04/17.
  */
 
+@IgnoreExtraProperties
 public class Expense {
     private String mKey;
     private String mName;
@@ -24,7 +30,7 @@ public class Expense {
     private User mCreatedBy;
     private Date mDate;
     private User mPayer;
-    private List<Share> mShares;
+    private Map<String, Share> mShares = new HashMap<>();
 
     public Expense() {
         this( null, null, null, null, 0.0, 0.0, null, null, null, null, false, false );
@@ -150,10 +156,16 @@ public class Expense {
         this.mParentSharingActivityId = mParentSharingActivityId;
     }
 
-    public void setShares( List<Share> shares ) {
+    public void setShares( Map<String, Share> shares ) {
         mShares = shares;
     }
 
-    public List<Share> getShares() { return mShares; }
+    public Map<String, Share> getShares() { return mShares; }
+
+    @Exclude
+    public void addShare( String id, Share share ) {
+        if( share != null ) return;
+        mShares.put( id, share );
+    }
 }
 
