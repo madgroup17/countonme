@@ -55,6 +55,7 @@ import it.polito.mad.countonme.networking.ImageFromUrlTask;
 
 public class ExpenseEditingFragment extends BaseFragment implements DatabaseReference.CompletionListener,
        DatePickerDialog.OnDateSetListener, IOnDataListener {
+    private static final int USER = 1;
 
     public static class ExpenseEditingData {
 
@@ -307,6 +308,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             TextView userName = (TextView) child.findViewById( R.id.tv_name );
             new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
             userName.setText( user.getName() );
+            child.setTag( USER, user );
             mLlSharingInfo.addView( child );
         }
         mUsersAdapter.notifyDataSetChanged();

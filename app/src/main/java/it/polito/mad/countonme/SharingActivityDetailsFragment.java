@@ -161,6 +161,8 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
 
         LayoutInflater myInflater = LayoutInflater.from( getActivity() );
 
+        mLlUsers.removeAllViews();
+
         for (Map.Entry<String, User> entry : activity.getUsers().entrySet()) {
             User user = entry.getValue();
             View child = myInflater.inflate( R.layout.user_list_item, null );
