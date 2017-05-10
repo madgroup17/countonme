@@ -78,6 +78,10 @@ public class DataManager {
         return mDatabase.getReference( CHILD_USERS + "/" + userKey );
     }
 
+    public DatabaseReference getUserBelongsSharingActivitiesReference( String userKey ) {
+        return mDatabase.getReference( CHILD_USER_BELONGS_SHARING_ACTIVITIES + "/" + userKey );
+    }
+
 
     // Users management
     public void addNewUser( User user, DatabaseReference.CompletionListener completionListener ) throws InvalidDataException

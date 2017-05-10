@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,6 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import it.polito.mad.countonme.Graphics.SimpleDividerItemDecoration;
 import it.polito.mad.countonme.database.DataManager;
@@ -26,6 +26,7 @@ import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
+import it.polito.mad.countonme.models.User;
 
 public class SharingActivitiesListFragment extends BaseFragment implements ValueEventListener, IOnListItemClickListener, View.OnClickListener {
     private RecyclerView mSharActsRv;
@@ -76,10 +77,14 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     @Override
     public void onDataChange( DataSnapshot dataSnapshot ) {
         SharingActivity tmp;
+        String userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
         mSharActsList.clear();
         for ( DataSnapshot data : dataSnapshot.getChildren() ) {
             tmp = (SharingActivity) data.getValue( SharingActivity.class );
-            mSharActsList.add( tmp );
+            for( Map.Entry<String, User> entry : tmp.getUsers().entrySet() ) {
+                if( entry.getKey().equals( userId ) )
+                    mSharActsList.add(tmp);
+            }
         }
         mSharActsAdapter.notifyDataSetChanged();
         ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();

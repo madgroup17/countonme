@@ -130,4 +130,10 @@
     <string name="fmt_date">yyyy/MM/dd</string>
 
 
+    <!-- Error strings -->
+    <string name="lbl_error_could_not_save">Could not save</string>
+
+    <string name="lbl_error_wrong_expense_sharing">Plese check the expense amount sharing</string>
+
+
 </resources>
