@@ -64,6 +64,7 @@ public class ImageFromUrlTask extends AsyncTask<String, Void, Bitmap> {
 
     private Bitmap downloadBitmap( String url ) {
         HttpURLConnection urlConnection = null;
+        if( url == null ) return null;
         try {
             URL uri = new URL(url);
             urlConnection = (HttpURLConnection) uri.openConnection();
