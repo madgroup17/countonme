@@ -339,12 +339,9 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
 
     private void handleActionAcceptRejectSAFragment(Object actionData) {
         Intent intent = this.getIntent();
-      String  path = intent.getData().getPath();
+        String  path = intent.getData().getPath();
         path = path.substring(1);
         mFragmentsList[ AppFragment.ACCEPT_REJECT_SA_FRAGMENT.ordinal() ].setData( path );
-        showAppFragment( AppFragment.ACCEPT_REJECT_SA_FRAGMENT, true );
+        showAppFragment( AppFragment.ACCEPT_REJECT_SA_FRAGMENT, false );
     }
-
-
-
 }
