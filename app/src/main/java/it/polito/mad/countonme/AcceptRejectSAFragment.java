@@ -3,17 +3,21 @@ package it.polito.mad.countonme;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.FragmentManager;
+import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,13 +84,13 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
         path = path.substring(1);
         DataManager.getsInstance().getSharingActivityReference(path).addListenerForSingleValueEvent(this);
 
-        mNameSADetails = (TextView) view.findViewById(R.id.sharing_activity_name_sa);
-        mDetailsSADetails = (TextView) view.findViewById(R.id.sharing_activity_description_sa);
-        mCurrencySADetails = (TextView) view.findViewById(R.id.sharing_activity_currency_sa);
+        mNameSADetails = (TextView) view.findViewById(R.id.tv_name);
+        mDetailsSADetails = (TextView) view.findViewById(R.id.tv_description);
+        mCurrencySADetails = (TextView) view.findViewById(R.id.tv_currency);
 
         SharingActivity model = new SharingActivity();
 
-        final Button buttonAccept = (Button) view.findViewById(R.id.accept_sa);
+        final ImageView buttonAccept = (ImageView) view.findViewById(R.id.iv_accept);
 
         buttonAccept.setOnClickListener(new View.OnClickListener() {
 
@@ -114,17 +118,30 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
                 }
             }
         });
-        final Button buttonReject = (Button) view.findViewById(R.id.reject_sa);
-        buttonReject.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.thanks), Toast.LENGTH_LONG).show();
-                getActivity().finish();
+
+
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener()
+        {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if( keyCode == KeyEvent.KEYCODE_BACK ) {
+                    getActivity().finish();
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
+
         return view;
     }
 
+    @Override
+    public void setEnterSharedElementCallback(SharedElementCallback callback) {
+        super.setEnterSharedElementCallback(callback);
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -135,6 +152,8 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
     @Override
     public void onResume() {
         super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.invitation_title );
+
         DataManager.getsInstance().getSharingActivityReference(( String ) getData()).addValueEventListener( this );
     }
 

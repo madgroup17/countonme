@@ -5,6 +5,8 @@
     <string name="app_name" translatable="false">CountOnMe</string>
     <string name="login_title" translatable="false">Login</string>
 
+    <string name="invitation_title">Join sharing activity</string>
+
     <string name="sharing_activities_title">Sharing activities</string>
     <string name="sharing_activity_add_new_title">New Sharing activity</string>
     <string name="sharing_activity_details_title">Details</string>
