@@ -161,28 +161,32 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
 
     private void fillUi( SharingActivity activity ) {
         if( activity == null ) return;
-        mTvName.setText( activity.getName() );
-        Resources res = getResources();
-        String createdBy = String.format( res.getString(R.string.lbl_created_by ), activity.getCreatedBy().getName() );
-        mTvCreatedBy.setText( createdBy );
-        mTvDescription.setText( activity.getDescription() );
-        mTvCurrency.setText( activity.getCurrency() );
+        try {
+            mTvName.setText(activity.getName());
+            Resources res = getResources();
+            String createdBy = String.format(res.getString(R.string.lbl_created_by), activity.getCreatedBy().getName());
+            mTvCreatedBy.setText(createdBy);
+            mTvDescription.setText(activity.getDescription());
+            mTvCurrency.setText(activity.getCurrency());
 
-        LayoutInflater myInflater = LayoutInflater.from( getActivity() );
+            LayoutInflater myInflater = LayoutInflater.from(getActivity());
 
-        mLlUsers.removeAllViews();
+            mLlUsers.removeAllViews();
 
-        for (Map.Entry<String, User> entry : activity.getUsers().entrySet()) {
-            User user = entry.getValue();
-            View child = myInflater.inflate( R.layout.user_list_item, null );
-            ImageView userPhoto = ( ImageView ) child.findViewById( R.id.user_img );
-            TextView userName = (TextView) child.findViewById( R.id.user_name );
-            TextView userEmail = ( TextView ) child.findViewById( R.id.user_email );
-            new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
-            userName.setText( user.getName() );
-            userEmail.setText( user.getEmail() );
+            for (Map.Entry<String, User> entry : activity.getUsers().entrySet()) {
+                User user = entry.getValue();
+                View child = myInflater.inflate(R.layout.user_list_item, null);
+                ImageView userPhoto = (ImageView) child.findViewById(R.id.user_img);
+                TextView userName = (TextView) child.findViewById(R.id.user_name);
+                TextView userEmail = (TextView) child.findViewById(R.id.user_email);
+                new ImageFromUrlTask(userPhoto, R.drawable.default_user_photo, true).execute(user.getPhotoUrl());
+                userName.setText(user.getName());
+                userEmail.setText(user.getEmail());
 
-            mLlUsers.addView( child );
+                mLlUsers.addView(child);
+            }
+        } catch(Exception ex ) {
+            // ignore
         }
     }
 
