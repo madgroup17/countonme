@@ -67,5 +67,7 @@
     <string name="my_spend_lbl">Speso:</string>
     <string name="my_status_lbl">Il mio stato</string>
     <string name="notificationDetail">Nuova spesa</string>
+    <string name="thanks">Grazie per aver utilizzato CountOnMe</string>
+    <string name="usernologged">il utente non ha fatto il log in</string>
 
 </resources>
