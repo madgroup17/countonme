@@ -65,4 +65,11 @@
         android:text="Francesco"
         android:ellipsize="end"/>
 
+    <View android:id="@+id/separator"
+        android:background="@color/colorListItemDivider"
+        android:layout_width = "fill_parent"
+        android:layout_height="1dip"
+        android:layout_centerVertical ="true"
+        android:layout_alignParentTop="true"/>
+
 </RelativeLayout>

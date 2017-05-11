@@ -164,13 +164,22 @@ public class Expense {
 
     @Exclude
     public void clearShare() {
-        mShares.clear();;
+        mShares.clear();
     }
 
     @Exclude
     public void addShare( String id, Share share ) {
         if( id == null || share == null ) return;
         mShares.put( id, share );
+    }
+
+    @Exclude
+    public boolean checkSharing() {
+        Double totalShare = 0.0;
+        for( Map.Entry<String, Share> entry : mShares.entrySet() ) {
+            totalShare += entry.getValue().getAmount();
+        }
+        return( totalShare.compareTo( mAmount ) == 0 );
     }
 }
 
