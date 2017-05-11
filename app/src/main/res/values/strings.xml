@@ -30,6 +30,7 @@
     <string name="lbl_share_evenly">Share evenly</string>
     <string name="lbl_yes">YES</string>
     <string name="lbl_no">NO</string>
+    <string name="lbl_ok">OK</string>
 
     <string name="lbl_created_by">Created by: %1$s</string>
 

@@ -84,6 +84,7 @@
             android:id="@+id/ed_expense_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="right"
             android:inputType="numberDecimal"
             android:layout_below="@id/rtv_expense_amount"/>
 

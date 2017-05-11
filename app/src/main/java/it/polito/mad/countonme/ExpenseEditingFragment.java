@@ -38,6 +38,7 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import it.polito.mad.countonme.UI.DatePicker;
+import it.polito.mad.countonme.UI.ErrorDialog;
 import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.database.ExpenseLoader;
@@ -136,6 +137,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     private Expense mExpense;
 
     private ProgressDialog mProgressDialog;
+    private ErrorDialog mErrorDialog;
     private DatePicker mDatePickerDialog;
     private DateFormat mDateFormat;
 
@@ -168,9 +170,13 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mUsersAdapter = new UsersAdapter( getActivity(), mUsersList );
         mPaidBySpinner.setAdapter( mUsersAdapter );
 
+
         mProgressDialog = new ProgressDialog( getActivity() );
+        mErrorDialog = new ErrorDialog();
+        mErrorDialog.setDialogContent( R.string.lbl_error_could_not_save, R.string.lbl_error_wrong_expense_sharing );
         createDatePickerDialog();
         initializeViewContent();
+
 
         if( eeData.isNew ) {
             mSharingActivityLoader = new SharingActivityLoader();
@@ -361,6 +367,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             newExpense.setParentSharingActivityId( eeData.shaActKey );
 
             if( eeData.isSharedEvenly == false ) {
+                newExpense.clearShare();
                 for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
                     View view = mLlSharingInfo.getChildAt(idx);
                     String strAmount  =  ( (EditText) view.findViewById( R.id.ed_amount ) ).getText().toString();
@@ -372,6 +379,10 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
                     }
                     User user = ( User ) view.getTag( R.id.id_user );
                     newExpense.addShare( user.getId(), new Share(user, amount ) );
+                }
+                if( false == newExpense.checkSharing() ) {
+                    mErrorDialog.show( getFragmentManager(), "error" );
+                    return;
                 }
             }
 
