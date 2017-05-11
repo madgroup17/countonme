@@ -100,9 +100,11 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener {
             } catch (DataLoaderException e) {
                 e.printStackTrace();
             }
+            catch (Exception exp)
+            {}
         } else {
             mExpenseList = ( ArrayList<Expense> ) data;
-            FillBalanceUi();
+            FillChart();
         }
     }
 
@@ -137,14 +139,6 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener {
 
     /******************************************************************************************/
 
-    private void FillBalanceUi() {
-        // fills the chart data
-        FillChart();
-        // fills the owes
-        fillOwes();
-    }
-
-
     private void FillChart() {
         BARENTRY = new ArrayList<>();
         BarEntryLabels = new ArrayList<String>();
@@ -174,6 +168,8 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener {
             AddDebtsToBARENTRY();
 
             mDebtValueList = BalanceClass.GetOwsList(DebtList);
+
+            fillOwes();
         }
     }
 
@@ -215,9 +211,6 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener {
             tvAmout.setText( mFormatter.format( debt.getAmount() ) + "" );
             
             mOwesLayout.addView( child );
-
-
-
         }
     }
 }
