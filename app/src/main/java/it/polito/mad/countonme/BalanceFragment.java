@@ -33,7 +33,9 @@ import it.polito.mad.countonme.models.*;
  * Created by Khatereh on 4/18/2017.
  */
 
-public class BalanceFragment extends BaseFragment implements IOnDataListener {
+public class BalanceFragment extends BaseFragment implements IOnDataListener
+{
+
     private static NumberFormat mFormatter = new DecimalFormat("#0.00");
 
     BarChart barChart;
@@ -160,9 +162,9 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener {
         if ( mExpenseList != null && mUsers != null && mExpenseList.size() != 0 && mUsers.size() != 0) {
             Balance BalanceClass = new Balance(mExpenseList, mUsers);
 
-            tvMySpend.setText(String.valueOf(BalanceClass.GetMySpend()));
-            tvMyCredit.setText(String.valueOf(BalanceClass.GetMyCredit()));
-            tvMyDebt.setText(String.valueOf(BalanceClass.GetMyDept()));
+            tvMySpend.setText(mFormatter.format((BalanceClass.GetMySpend())) + "");
+            tvMyCredit.setText(mFormatter.format((BalanceClass.GetMyCredit())) + "");
+            tvMyDebt.setText(mFormatter.format((BalanceClass.GetMyDept())) + "");
 
             DebtList = BalanceClass.getDebtList();
             AddDebtsToBARENTRY();
@@ -211,6 +213,8 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener {
             tvAmout.setText( mFormatter.format( debt.getAmount() ) + "" );
             
             mOwesLayout.addView( child );
+
+
         }
     }
 }
