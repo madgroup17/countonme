@@ -40,7 +40,7 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
         EXPENSE_DETAILS_FRAGMENT,               // show the details if an expense
         EXPENSE_EDITING_FRAGMENT,               // show the UI for insert/modify an expense
         EXPENSE_SURVEY_FRAGMENT,                // show the UI for an expense survey
-
+        ACCEPT_REJECT_SA_FRAGMENT,              // show the UI for accept or reject
         NUM_OF_FRAGMENTS                        // NOTE: must be always the last entry
     };
 
@@ -91,9 +91,16 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
         loadAppFragments();
 
         if( mIsLoadingUser == false ) {
-            if( mShowShalist == true )
-                showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
-            manageCallingIntent();
+            if( mShowShalist == true ){
+                Intent intentback = getIntent();
+                if(intentback.getData()==null){
+                    showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
+                }else{
+                    //showAppFragment(AppFragment.ACCEPT_REJECT_SA_FRAGMENT,false);
+                    handleActionAcceptRejectSAFragment(intentback.getData());
+                }
+            }
+                manageCallingIntent();
         }
     }
 
@@ -149,11 +156,15 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
             case ACTION_ACCEPT_EXPENSE_SURVEY:
                 handleActionAcceptExpenseSurvey( action.getActionData() );
                 break;
+            case ACCEPT_REJECT_SA_FRAGMENT:
+                handleActionAcceptRejectSAFragment(action.getActionData());
+                break;
             default:
                 Log.w( TAG, "Unknown/Not implemented action: " + action.getAction().name() );
                 break;
         }
     }
+
 
 
     @Override
@@ -202,6 +213,7 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
         mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ] = new ExpenseDetailsFragment();
         mFragmentsList[ AppFragment.EXPENSE_EDITING_FRAGMENT.ordinal() ] = new ExpenseEditingFragment();
         mFragmentsList[ AppFragment.EXPENSE_SURVEY_FRAGMENT.ordinal() ] = null; // TODO: add it if really needed otherwise remove all
+        mFragmentsList[ AppFragment.ACCEPT_REJECT_SA_FRAGMENT.ordinal()] = new AcceptRejectSAFragment();
     }
 
     private void setUpDrawer() {
@@ -321,6 +333,15 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
     private void handleActionAcceptExpenseSurvey( Object data ) {
         Toast.makeText(this, R.string.temp_not_implemeted_lbl, Toast.LENGTH_SHORT).show();
     }
+
+    private void handleActionAcceptRejectSAFragment(Object actionData) {
+        Intent intent = this.getIntent();
+      String  path = intent.getData().getPath();
+        path = path.substring(1);
+        mFragmentsList[ AppFragment.ACCEPT_REJECT_SA_FRAGMENT.ordinal() ].setData( path );
+        showAppFragment( AppFragment.ACCEPT_REJECT_SA_FRAGMENT, true );
+    }
+
 
 
 }

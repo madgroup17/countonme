@@ -71,5 +71,8 @@
 
     <string name="fmt_date">dd/MM/yyyy</string>
     <string name="login_title" translatable="false"></string>
+    <string name="thanks">Gracias por haber usado CountOnMe</string>
+    <string name="usernologged">El usuario no hizo el log in</string>
+    <string name="noexistactivity">La actividad compartida no ya no existe, Gracias por haber usado CountOnMe</string>
 
 </resources>

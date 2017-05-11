@@ -2,6 +2,7 @@ package it.polito.mad.countonme;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,14 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        Intent intentback = getActivity().getIntent();
+        if(intentback.getData()!=null) {
+            Activity parentActivity  = getActivity();
+            if( parentActivity instanceof IActionReportBack ) {
+                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACCEPT_REJECT_SA_FRAGMENT,intentback.getData()));
+            }
+        }
         View view = inflater.inflate(R.layout.sharing_activities_list_fragment, container, false);
 
         mActionButton = ( FloatingActionButton ) view.findViewById( R.id.fab );
