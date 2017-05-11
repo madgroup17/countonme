@@ -23,7 +23,7 @@
     <string name="err_amount_range">El valor debe ser mayor a 0</string>
     <string name="err_description">Ingrese la descripciòn</string>
     <string name="err_name">Ingrese el nombre</string>
-    <string name="message_to_share">Hey mira mi  app aqui:</string>
+    <string name="message_to_share">Has sido invitado a una actividad para compartir los gastos:</string>
     <string name="sharing_activity_add_new_title">Nueva Actividad a compartir</string>
     <string name="succ_save">Guardado satisfactoriamente</string>
     <string name="lbl_error_sharing_link">Error al compartir el link</string>
