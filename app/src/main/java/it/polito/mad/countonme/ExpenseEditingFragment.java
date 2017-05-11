@@ -304,6 +304,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         User user;
         LayoutInflater inflater = LayoutInflater.from( getActivity() );
         mUsersList.clear();
+        mLlSharingInfo.removeAllViews();
         for(Map.Entry<String, User> entry : activity.getUsers().entrySet() ) {
             user = entry.getValue();
             mUsersList.add( user );
