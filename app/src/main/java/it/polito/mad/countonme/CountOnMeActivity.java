@@ -214,7 +214,7 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
         mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ] = new ExpenseDetailsFragment();
         mFragmentsList[ AppFragment.EXPENSE_EDITING_FRAGMENT.ordinal() ] = new ExpenseEditingFragment();
         mFragmentsList[ AppFragment.EXPENSE_SURVEY_FRAGMENT.ordinal() ] = null; // TODO: add it if really needed otherwise remove all
-        mFragmentsList[ AppFragment.ACCEPT_REJECT_SA_FRAGMENT.ordinal()] = new Accept_Reject_SA_Fragment();
+        mFragmentsList[ AppFragment.ACCEPT_REJECT_SA_FRAGMENT.ordinal()] = new AcceptRejectSAFragment();
     }
 
     private void setUpDrawer() {

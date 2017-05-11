@@ -135,6 +135,9 @@
     <string name="lbl_error_could_not_save">Could not save</string>
 
     <string name="lbl_error_wrong_expense_sharing">Plese check the expense amount sharing</string>
+    <string name="thanks">Thanks for using CountOnMe</string>
+    <string name="usernologged">User did not do log in</string>
+    <string name="noexistactivity">The activity shared does not exist any more. Thanks for use CountOnMe</string>
 
 
 </resources>

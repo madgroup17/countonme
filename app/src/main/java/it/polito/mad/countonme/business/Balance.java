@@ -15,6 +15,7 @@ import java.util.Map;
 import it.polito.mad.countonme.models.Debt;
 import it.polito.mad.countonme.models.DebtValue;
 import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.Share;
 import it.polito.mad.countonme.models.User;
 
 import static java.lang.Math.abs;
@@ -42,23 +43,10 @@ public class Balance {
         for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
             Expense item = i.next();
 
-            if (new String(item.getPayer().getId()).equals(UserId)) {
-                Amount += item.getAmount();
-            }
-        }
-
-        return Amount;
-    }
-
-    public Double GetOthersSpend(String UserId) {
-        Double Amount = 0.0;
-
-        for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
-            Expense item = i.next();
-
-            if (!new String(item.getPayer().getId()).equals(UserId)) {
-                Amount += item.getAmount();
-            }
+            if (!item.getIsSurvey())
+                if (new String(item.getPayer().getId()).equals(UserId)) {
+                    Amount += item.getAmount();
+                }
         }
 
         return Amount;
@@ -70,12 +58,52 @@ public class Balance {
         for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
             Expense item = i.next();
 
-            /*if(isIinvolved(UserId,item))
+            if (!item.getIsSurvey())
             {
-                Amount+=(item.getAmount()/ item.getInvolved().size());
-            }*/
+                int Num;
+                if (!item.getIsMoneyTransfer())
+                {
+                    if (item.getIsSharedEvenly())
+                    {
+                        Amount += (item.getAmount() / mUsers.size());
+                    }
+                    else
+                    {
+                        Amount += GetSharesAmount(item , UserId);
+                    }
+                }
+                else
+                {
+                    if(!(item.getPayer().getId()).equals( UserId))
+                    {
+                        if (item.getIsSharedEvenly())
+                        {
+                            Amount += (item.getAmount() / (mUsers.size() - 1));
+                        }
+                        else
+                        {
+                            Amount += GetSharesAmount(item , UserId);
+                        }
+                    }
+                }
+            }
+        }
 
-            Amount += (item.getAmount() / mUsers.size());
+        return Amount;
+    }
+
+    private double GetSharesAmount(Expense model,String UserId)
+    {
+        Double Amount = 0.0;
+
+        Map<String, Share> ShareList = model.getShares();
+        for (Map.Entry<String, Share> entry : ShareList.entrySet())
+        {
+            String key = entry.getKey();
+            Share value = entry.getValue();
+
+            if((value.getUser().getId()).equals(UserId))
+               return value.getAmount();
         }
 
         return Amount;
@@ -97,20 +125,6 @@ public class Balance {
             return Credit;
     }
 
-    /*public boolean isInvolved(String UserId, Expense model) {
-        boolean IsExist = false;
-
-        for (Iterator<User> i = model.getInvolved().iterator(); i.hasNext(); ) {
-            User item = i.next();
-
-            if (item.getId() == UserId) {
-                return true;
-            }
-        }
-
-        return IsExist;
-    }*/
-
 
     /******************************************************************************************/
 
@@ -121,13 +135,6 @@ public class Balance {
         com.google.firebase.auth.FirebaseUser currentUser = mFirebaseAuth.getInstance().getCurrentUser();
 
         return GetSpend(currentUser.getUid());
-    }
-
-    public Double GetMyOthersSpend() {
-        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-        com.google.firebase.auth.FirebaseUser currentUser = mFirebaseAuth.getInstance().getCurrentUser();
-
-        return GetOthersSpend(currentUser.getUid());
     }
 
     public Double GetMyDept() {
@@ -155,19 +162,14 @@ public class Balance {
 
         GetPosNegCredit(DebtList, PositiveCredit, NegetiveCredit);
 
-        for (Iterator<Debt> i = DebtList.iterator(); i.hasNext(); )
-        {
+        for (Iterator<Debt> i = DebtList.iterator(); i.hasNext(); ) {
             Debt NegetiveItem = i.next();
-            if (NegetiveItem.getCredit() < 0)
-            {
+            if (NegetiveItem.getCredit() < 0) {
                 int j = 0;
                 int Size = PositiveCredit.size();
-                while (j < Size && NegetiveItem.getTempCredit() < 0)
-                {
-                    if(PositiveCredit.get(j).getTempCredit()!= 0)
-                    {
-                        if (abs(NegetiveItem.getTempCredit()) <= PositiveCredit.get(j).getTempCredit())
-                        {
+                while (j < Size && NegetiveItem.getTempCredit() < 0) {
+                    if (PositiveCredit.get(j).getTempCredit() != 0) {
+                        if (abs(NegetiveItem.getTempCredit()) <= PositiveCredit.get(j).getTempCredit()) {
                             Double NegCredit = NegetiveItem.getTempCredit();
                             Double PosCredit = PositiveCredit.get(j).getTempCredit();
                             Double Debt = abs(NegCredit);
@@ -180,9 +182,7 @@ public class Balance {
 
                             NegetiveItem.setTempCredit(0.0);
                             PositiveCredit.get(j).setTempCredit(PosCredit - Debt);
-                        }
-                        else
-                        {
+                        } else {
                             Double NegCredit = NegetiveItem.getTempCredit();
                             Double PosCredit = PositiveCredit.get(j).getTempCredit();
                             Double Debt = PosCredit;
@@ -196,9 +196,7 @@ public class Balance {
                             NegetiveItem.setTempCredit(NegCredit + PosCredit);
                             PositiveCredit.get(j).setTempCredit(0.0);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         j++;
                     }
                 }
@@ -209,18 +207,15 @@ public class Balance {
         return DebtList;
     }
 
-    public List<DebtValue> GetOwsList(List<Debt> DebtList)
-    {
+    public List<DebtValue> GetOwsList(List<Debt> DebtList) {
         List<DebtValue> DebtValueList = new ArrayList<DebtValue>();
 
         for (Iterator<Debt> i = DebtList.iterator(); i.hasNext(); ) {
             Debt NegetiveItem = i.next();
 
-            if (NegetiveItem.getCredit() < 0)
-            {
+            if (NegetiveItem.getCredit() < 0) {
 
-                for (Iterator<DebtValue> j = NegetiveItem.getDebts().iterator(); j.hasNext(); )
-                {
+                for (Iterator<DebtValue> j = NegetiveItem.getDebts().iterator(); j.hasNext(); ) {
                     DebtValue DebtValueItem = j.next();
                     DebtValueList.add(DebtValueItem);
                 }

@@ -43,7 +43,7 @@ import it.polito.mad.countonme.models.User;
  */
 
 
-public class Accept_Reject_SA_Fragment extends BaseFragment implements ValueEventListener {
+public class AcceptRejectSAFragment extends BaseFragment implements ValueEventListener {
 
     private FragmentManager mFragmentManager;
     private FirebaseAuth mFirebaseAuth;
@@ -74,10 +74,7 @@ public class Accept_Reject_SA_Fragment extends BaseFragment implements ValueEven
             if (args != null) setData(args.getString(AppConstants.SHARING_ACTIVITY_KEY));
         }
         View view = inflater.inflate(R.layout.accept_reject_sa, container, false);
-        //mUnbinder = ButterKnife.bind(this, view);
-        //setContentView(R.layout.accept_reject_sa);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        // I can assume that the sharing activty key arrives here as intent's data
         Intent intent = getActivity().getIntent();
         path = intent.getData().getPath();
         path = path.substring(1);
@@ -96,18 +93,10 @@ public class Accept_Reject_SA_Fragment extends BaseFragment implements ValueEven
             public void onClick(View v) {
                 // Perform action on click
                 if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-                    Toast.makeText(getActivity(), "User didnt do log in", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.usernologged), Toast.LENGTH_LONG).show();
                     getActivity().finish();
                 } else {
                     // the user is logged in so we will show the application first screen
-                   // Intent llave = new Intent(Intent.ACTION_SEND);
-                    /*
-
-                    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                    String mostrar = "   " + currentFirebaseUser.getUid() + "    " + path+"  "+vacio;
-                    DataManager.getsInstance().getSharingActivityReference(path).child("users").addListenerForSingleValueEvent((ValueEventListener) getActivity());
-
-                    */
                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
                     DatabaseReference actuserref = ref.child("shareacts").child(path).child("users");
                     User userapplevel = ((CountOnMeApp)getActivity().getApplication()).getCurrentUser();
@@ -129,7 +118,7 @@ public class Accept_Reject_SA_Fragment extends BaseFragment implements ValueEven
         buttonReject.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                Toast.makeText(getActivity(), "click on reject", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.thanks), Toast.LENGTH_LONG).show();
                 getActivity().finish();
             }
         });
@@ -159,19 +148,13 @@ public class Accept_Reject_SA_Fragment extends BaseFragment implements ValueEven
     public void onDataChange(DataSnapshot dataSnapshot) {
         // Here the data arrives
         //Log.d("Hello", "ello"); // here are your data as you can see
+        if(dataSnapshot.getValue() != null){
         SharingActivity myActivity = (SharingActivity) dataSnapshot.getValue(SharingActivity.class);
         mNameSADetails.setText(myActivity.getName());
         mDetailsSADetails.setText(myActivity.getDescription());
         mCurrencySADetails.setText(myActivity.getCurrency());
-        //DataManager.getsInstance().getSharingActivityReference(path).child("users").addListenerForSingleValueEvent(this);
-
-//TODO: Si no existe ningun usuario atado (puedo controlarlo con un booleano si ya recorrio todo el datasnashot), debe inicializar el user con los datos de la busqueda del user en la rama de user no en la rama de sharing
-        //  HashMap<String, String> UserMap =  new HashMap<String,User>();
         for(DataSnapshot userDataSnapshot : dataSnapshot.getChildren()){
             if(userDataSnapshot.getKey().equals("users")){
-                //Log.d("value: ", String.valueOf((HashMap<String,User>)userDataSnapshot.getValue()));
-                //UserMap = (HashMap<String,User>)userDataSnapshot.getValue();
-
                 HashMap<String,HashMap<String,String>> aux = (HashMap<String,HashMap<String,String>>)userDataSnapshot.getValue();
                 Iterator it = aux.keySet().iterator();
                 while(it.hasNext()){
@@ -202,7 +185,10 @@ public class Accept_Reject_SA_Fragment extends BaseFragment implements ValueEven
                 Log.d("value: ","lo tengo");
             }
         }
-        //vacio=UserMap.isEmpty();
+        }else{
+            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.noexistactivity), Toast.LENGTH_LONG).show();
+            getActivity().finish();
+        }
     }
 
     @Override
