@@ -12,7 +12,7 @@
             android:id="@+id/iv_shact_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/fruits"/>
+            android:background="@color/colorPrimaryDark"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,8 +27,7 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="2"
-                android:text="Created by Francesco"
-                android:textSize="@dimen/details_text_size_small"/>
+                android:textSize="@dimen/details_over_image_text_size_medium"/>
 
             <TextView
                 android:id="@+id/tv_name"
@@ -39,9 +38,8 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="2"
-                android:text="Fruit salad"
                 android:layout_above="@id/tv_created_by"
-                android:textSize="@dimen/details_text_size_big"/>
+                android:textSize="@dimen/details_over_image_text_size_big"/>
 
         </RelativeLayout>
     </FrameLayout>

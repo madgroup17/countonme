@@ -5,11 +5,4 @@
         android:icon="@drawable/ic_share"
         android:actionProviderClass="android.widget.ShareActionProvider"
         app:showAsAction="always"/>
-    <item android:id="@+id/edit_sharing_activity"
-        android:icon="@drawable/ic_edit"
-        app:showAsAction="always"/>
-    <item android:id="@+id/delete_sharing_activity"
-        android:icon="@drawable/ic_delete"
-        app:showAsAction="always"/>
-
 </menu>

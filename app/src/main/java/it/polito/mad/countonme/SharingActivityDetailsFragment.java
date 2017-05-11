@@ -124,7 +124,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
                     Toast.makeText(getActivity(), getResources().getString(R.string.lbl_error_sharing_link), Toast.LENGTH_SHORT).show();
                 }
                 return true;
-            case R.id.edit_sharing_activity:
+           /* case R.id.edit_sharing_activity:
                 Activity parentActivity  = getActivity();
                 if( parentActivity instanceof IActionReportBack) {
                     ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_EDIT_SHARING_ACTIVITY, getData() ) );
@@ -132,7 +132,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
                 return true;
             case R.id.delete_sharing_activity:
                 Toast.makeText(getActivity(), getResources().getString( R.string.temp_not_implemeted_lbl ), Toast.LENGTH_SHORT).show();
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
