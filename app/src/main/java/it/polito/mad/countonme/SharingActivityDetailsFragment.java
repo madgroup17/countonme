@@ -31,6 +31,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import it.polito.mad.countonme.business.LinkSharing;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.database.SharingActivityLoader;
@@ -56,6 +57,8 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
 
     @BindView(R.id.ll_users) LinearLayout mLlUsers;
 
+    private Unbinder mUnbinder;
+
 
     private SharingActivityLoader mSharingActivityLoader;
 
@@ -67,7 +70,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sharing_activity_details_fragment, container, false);
-        ButterKnife.bind( this, view );
+        mUnbinder = ButterKnife.bind( this, view );
 
         if (savedInstanceState != null)
             setData( savedInstanceState.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
@@ -93,6 +96,12 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
         if( data instanceof SharingActivity) {
             fillUi( ( SharingActivity ) data );
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     @Override

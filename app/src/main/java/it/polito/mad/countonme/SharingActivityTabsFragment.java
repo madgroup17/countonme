@@ -42,7 +42,7 @@ public class SharingActivityTabsFragment extends BaseFragment
         Bundle bundle = new Bundle();
         bundle.putString( AppConstants.SHARING_ACTIVITY_KEY, (String) getData() );
         mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_SHARING_ACTIVITY_DETAILS ).setIndicator( getResources().getString(R.string.sharing_activity_details_title) ), SharingActivityDetailsFragment.class, bundle);
-        mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_EXPENSES_LIST ).setIndicator( getResources().getString(R.string.expenses_title) ), ExpensesListFragmentI.class, bundle);
+        mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_EXPENSES_LIST ).setIndicator( getResources().getString(R.string.expenses_title) ), ExpensesListFragment.class, bundle);
         mTabHost.addTab(mTabHost.newTabSpec( TAB_TAG_BALANCE_DETAILS ).setIndicator( getResources().getString(R.string.balance_title) ), BalanceFragment.class, bundle);
 
         mTabHost.setCurrentTabByTag( TAB_TAG_SHARING_ACTIVITY_DETAILS );

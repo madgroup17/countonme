@@ -365,6 +365,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             newExpense.setIsSharedEvenly( eeData.isSharedEvenly );
             newExpense.setDate( eeData.expenseDate );
             newExpense.setParentSharingActivityId( eeData.shaActKey );
+            newExpense.setCreatedBy( ( ( CountOnMeApp ) getActivity().getApplication()).getCurrentUser() );
 
             if( eeData.isSharedEvenly == false ) {
                 newExpense.clearShare();
@@ -391,7 +392,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
                 mProgressDialog.setTitle( R.string.lbl_saving_expense);
                 mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
                 mProgressDialog.show();
-                DataManager.getsInstance().addNewExpense(eeData.shaActKey, newExpense, this);//fragment
+                DataManager.getsInstance().addNewExpense(eeData.shaActKey, newExpense, this);
 
             } catch (InvalidDataException ex) {
                 mProgressDialog.dismiss();

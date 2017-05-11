@@ -112,12 +112,13 @@ public class DataManager {
     // Expenses management
 
     public void addNewExpense(String parentKey, Expense expense, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
-        try {
-            if( parentKey == null || parentKey.length() == 0) throw new InvalidDataException();
-            addNewData( expense, CHILD_EXPENSES + "/" + parentKey, completionListener );
-        } catch( InvalidDataException ex ) {
-            throw new InvalidDataException("addNewExpense: Invalid parameters has been provided" );
-        }
+        if( parentKey == null || parentKey.length() == 0) throw new InvalidDataException("Invalid data has been provided");
+        DatabaseReference reference = mDatabase.getReference( CHILD_EXPENSES + "/" + parentKey );
+        String expenseKey = reference.push().getKey();
+        expense.setKey( expenseKey );
+        Map<String, Object> updates = new HashMap<>();
+        updates.put( "/" + expenseKey + "/", expense );
+        reference.updateChildren( updates, completionListener);
     }
 
 

@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
                 android:text="@string/lbl_description"
-                android:textSize="@dimen/details_text_size_big"/>
+                android:textSize="@dimen/details_text_size_medium"/>
 
             <TextView
                 android:id="@+id/tv_description"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
                 android:text="@string/lbl_currency"
-                android:textSize="@dimen/details_text_size_big"/>
+                android:textSize="@dimen/details_text_size_medium"/>
 
             <TextView
                 android:id="@+id/tv_currency"
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_users"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/details_text_size_big"/>
+                android:textSize="@dimen/details_text_size_medium"/>
 
             <LinearLayout
                 android:id="@+id/ll_users"

@@ -33,7 +33,7 @@ import it.polito.mad.countonme.models.*;
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpensesListFragmentI extends BaseFragment implements  View.OnClickListener, ValueEventListener, IOnListItemClickListener {
+public class ExpensesListFragment extends BaseFragment implements  View.OnClickListener, ValueEventListener, IOnListItemClickListener {
     private FloatingActionButton mActionButton;
     private RecyclerView mExpensesRv;
     private ExpenseAdapter mExpensesAdapter;
@@ -100,9 +100,8 @@ public class ExpensesListFragmentI extends BaseFragment implements  View.OnClick
 
     @Override
     public void onItemClick( Object clickedItem ) {
-        Expense model = (Expense) clickedItem;
         Activity parentActivity  = getActivity();
-        ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, ( ( Expense ) clickedItem).getKey() ) );
+        ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, clickedItem ));
 
     }
 

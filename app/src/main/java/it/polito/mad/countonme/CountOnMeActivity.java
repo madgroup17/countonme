@@ -25,6 +25,7 @@ import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.interfaces.IOnDrawerItemListener;
+import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.User;
 
@@ -301,7 +302,9 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
      * @param data
      */
     private void handleActionViewExpenseDetails( Object data ) {
-        mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( data );
+        Expense expense = (Expense ) data;
+        mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.SHARING_ACTIVITY_KEY, ((Expense) data).getParentSharingActivityId() );
+        mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.EXPENSE_KEY, ((Expense) data).getKey() );
         showAppFragment( AppFragment.EXPENSE_DETAILS_FRAGMENT, true );
     }
 
