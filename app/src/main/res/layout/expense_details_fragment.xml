@@ -27,6 +27,8 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="2"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textSize="@dimen/details_over_image_text_size_medium"/>
 
             <TextView
@@ -38,6 +40,8 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="2"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:layout_above="@id/tv_created_by"
                 android:textSize="@dimen/details_over_image_text_size_big"/>
 

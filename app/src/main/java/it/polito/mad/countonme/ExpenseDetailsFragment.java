@@ -1,7 +1,6 @@
 package it.polito.mad.countonme;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -11,6 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -20,8 +23,8 @@ import it.polito.mad.countonme.database.ExpenseLoader;
 import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.models.Expense;
-import it.polito.mad.countonme.models.SharingActivity;
-import it.polito.mad.countonme.models.User;
+import it.polito.mad.countonme.models.Share;
+import it.polito.mad.countonme.networking.ImageFromUrlTask;
 
 public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListener {
 
@@ -73,6 +76,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         if( data instanceof Expense) {
             fillUi( ( Expense ) data );
         }
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
     }
 
 
@@ -86,6 +90,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
     public void onResume() {
         super.onResume();
         adjustActionBar();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).showLoadingDialog();
         try {
             mExpenseLoader.loadExpense( ( String ) getData( AppConstants.SHARING_ACTIVITY_KEY ),
                     ( String ) getData( AppConstants.EXPENSE_KEY ) );
@@ -94,6 +99,11 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
+    }
 
     private void adjustActionBar()
     {
@@ -105,41 +115,38 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
     private void fillUi( Expense expense ) {
         if( expense == null ) return;
 
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        DateFormat dateFormat = new SimpleDateFormat( getString( R.string.fmt_date ) );
+
         mTvCreatedBy.setText( String.format( getResources().getString(R.string.lbl_created_by ), expense.getCreatedBy().getName() ) );
-        /*mTvName;
-        mTvDescription;
-        mTvCurrency;
-        mTvAmount;
-        mTvDate;
-        mTvMoneyTransfer;
-        mTvSharedEvenly;*/
+        mTvName.setText( expense.getName() );
+        mTvDescription.setText( expense.getDescription() );
+        mTvCurrency.setText( expense.getExpenseCurrency() );
+        mTvAmount.setText( formatter.format( expense.getAmount() ) );
+        mTvDate.setText( dateFormat.format( expense.getDate() ) );
+        mTvMoneyTransfer.setText( expense.getIsMoneyTransfer() ? R.string.lbl_yes : R.string.lbl_no );
+        mTvSharedEvenly.setText( expense.getIsSharedEvenly() ? R.string.lbl_yes : R.string.lbl_no );
 
+        mLlShareInfo.removeAllViews();
+        if( expense.getIsSharedEvenly() == false ) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
 
+            for (Map.Entry<String, Share> entry : expense.getShares().entrySet()) {
+                Share share = entry.getValue();
+                // set the views for expenses sharing
+                View child = inflater.inflate(R.layout.share_details_item, null);
+                ImageView userPhoto = (ImageView) child.findViewById(R.id.iv_user);
+                TextView userName = (TextView) child.findViewById(R.id.tv_name);
+                TextView amount = (TextView) child.findViewById(R.id.tv_amount);
+                new ImageFromUrlTask(userPhoto, R.drawable.default_user_photo, true).execute(share.getUser().getPhotoUrl());
+                userName.setText(share.getUser().getName());
+                amount.setText(formatter.format(share.getAmount()));
 
+                mLlShareInfo.addView(child);
 
-    /*    mTvName.setText( activity.getName() );
-        Resources res = getResources();
-        String createdBy = String.format( res.getString(R.string.lbl_created_by ), activity.getCreatedBy().getName() );
-        mTvCreatedBy.setText( createdBy );
-        mTvDescription.setText( activity.getDescription() );
-        mTvCurrency.setText( activity.getCurrency() );
+            }
+        }
 
-        LayoutInflater myInflater = LayoutInflater.from( getActivity() );
-
-        mLlUsers.removeAllViews();
-
-        for (Map.Entry<String, User> entry : activity.getUsers().entrySet()) {
-            User user = entry.getValue();
-            View child = myInflater.inflate( R.layout.user_list_item, null );
-            ImageView userPhoto = ( ImageView ) child.findViewById( R.id.user_img );
-            TextView userName = (TextView) child.findViewById( R.id.user_name );
-            TextView userEmail = ( TextView ) child.findViewById( R.id.user_email );
-            //new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
-            userName.setText( user.getName() );
-            userEmail.setText( user.getEmail() );
-
-            mLlUsers.addView( child );
-        }*/
     }
 
 }
