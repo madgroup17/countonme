@@ -13,7 +13,7 @@ public class ReportBackAction {
         ACTION_VIEW_EXPENSE_DETAILS,
         ACTION_ADD_NEW_EXPENSE,
         ACTION_EDIT_EXPENSE,
-        ACTION_ACCEPT_EXPENSE_SURVEY
+        ACCEPT_REJECT_SA_FRAGMENT, ACTION_ACCEPT_EXPENSE_SURVEY
     }
 
     private ActionEnum mAction;

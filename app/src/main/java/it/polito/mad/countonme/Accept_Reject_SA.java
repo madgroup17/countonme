@@ -1,6 +1,7 @@
 package it.polito.mad.countonme;
 
 import android.app.FragmentManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -127,6 +128,12 @@ public class Accept_Reject_SA extends AppCompatActivity  implements  ValueEventL
                     DataManager.getsInstance().getSharingActivityReference(path).child("users").addListenerForSingleValueEvent(Accept_Reject_SA.this);
                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference();
                     DatabaseReference actuserref = ref.child("shareacts").child(path).child("users");
+                    User userapplevel = ((CountOnMeApp)Accept_Reject_SA.this.getApplication()).getCurrentUser();
+                    String id=userapplevel.getId();
+                    String correo =userapplevel.getEmail();
+                    String nombre = userapplevel.getName();
+                    String urlphoto= userapplevel.getPhotoUrl();
+
                     User current = new User(currentFirebaseUser.getUid(),currentFirebaseUser.getDisplayName(),currentFirebaseUser.getEmail(),null);//(idUser,nUser,emailUser,urlUser);
                     actuserref.child(currentFirebaseUser.getUid()).setValue(current);
 

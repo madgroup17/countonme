@@ -169,7 +169,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
             ImageView userPhoto = ( ImageView ) child.findViewById( R.id.user_img );
             TextView userName = (TextView) child.findViewById( R.id.user_name );
             TextView userEmail = ( TextView ) child.findViewById( R.id.user_email );
-            new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
+            //new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
             userName.setText( user.getName() );
             userEmail.setText( user.getEmail() );
 
