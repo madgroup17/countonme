@@ -146,6 +146,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
 
             }
         }
+        mLlShareInfo.setVisibility( expense.getIsSharedEvenly() ? View.GONE : View.VISIBLE );
 
     }
 
