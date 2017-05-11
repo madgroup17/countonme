@@ -78,7 +78,14 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
     public void onResume() {
         super.onResume();
         adjustActionBar();
+
+        Bundle args = getArguments();
+        if(args != null ) setData( args.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
+
         DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).addValueEventListener( this );
+
+
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).showLoadingDialog();
     }
 
     @Override
@@ -96,6 +103,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
             mExpensesList.add( (it.polito.mad.countonme.models.Expense) data.getValue( Expense.class ) );
         }
         mExpensesAdapter.notifyDataSetChanged();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
     }
 
     @Override
