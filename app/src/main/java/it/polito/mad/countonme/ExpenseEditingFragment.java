@@ -4,7 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,9 +26,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +48,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import it.polito.mad.countonme.UI.DatePicker;
 import it.polito.mad.countonme.UI.ErrorDialog;
+import it.polito.mad.countonme.business.ImageManagement;
 import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.database.ExpenseLoader;
@@ -49,6 +59,14 @@ import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.lists.UsersAdapter;
 import it.polito.mad.countonme.models.*;
 import it.polito.mad.countonme.networking.ImageFromUrlTask;
+
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * Created by francescobruno on 04/04/17.
@@ -111,6 +129,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
 
     private static final String DATE_PICKER_TAG = "date_picker";
+    private static final int PICK_IMAGE_REQUEST = 2;
 
     @BindView( R.id.rtv_expense_name )  RequiredInputTextView mRtvExpenseName;
     @BindView( R.id.rtv_expense_description ) RequiredInputTextView mRtvExpenseDescription;
@@ -134,7 +153,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     private UsersAdapter mUsersAdapter;
     private SharingActivity mSharingActivity;
-    private Expense mExpense;
+    private Expense newExpense;
+    private ProgressDialog mProgressDialog1;
 
     private ProgressDialog mProgressDialog;
     private ErrorDialog mErrorDialog;
@@ -147,11 +167,17 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     private ArrayList<User> mUsersList;
 
     private ExpenseEditingFragment.ExpenseEditingData eeData = new ExpenseEditingFragment.ExpenseEditingData();
+    private Uri filePath;
+    private StorageReference riversRef;
+    private StorageReference mStorageRef;
+    private String generatedFilePath;
+    private String expKey;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
@@ -174,6 +200,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mProgressDialog = new ProgressDialog( getActivity() );
         mErrorDialog = new ErrorDialog();
         mErrorDialog.setDialogContent( R.string.lbl_error_could_not_save, R.string.lbl_error_wrong_expense_sharing );
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         createDatePickerDialog();
         initializeViewContent();
 
@@ -242,7 +269,63 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         {
             ClearForm();
             getFragmentManager().popBackStack();
+            String curShaActKey= databaseReference.getKey();
+            //expKey= ""+getData();
+            //ImageManagement.saveImage(key,curShaActKey);
+            saveImage(curShaActKey,expKey);
             Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode==PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null){
+            //filePath = data.getData();
+            filePath = data.getData();
+            mImage.setImageURI(filePath);
+/*
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(),filePath);
+                mImage.setImageBitmap(bitmap);
+
+            }catch (IOException e){
+                //ignore
+            }
+*/
+        }
+    }
+    public void saveImage(final String activiyKey,final String expKey){//curShaActKey,expKey
+        if(filePath!=null && expKey !=null && activiyKey!=null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                mProgressDialog1 = new ProgressDialog(this.getContext());
+                mProgressDialog1.setTitle("Uploading...");
+                mProgressDialog1.show();
+            }
+            final String namePhoto = "expenses/"+expKey+".jpg";
+            riversRef = mStorageRef.child(namePhoto);
+            riversRef.putFile(filePath)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            //taskSnapshot.getDownloadUrl();
+                            FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                            String mostrar = ""+ currentFirebaseUser.getUid();
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                            DatabaseReference actexpref = ref.child("expenses").child(activiyKey).child(expKey);
+                            String urlExpense = filePath + namePhoto;
+                            newExpense.setImageUrl(urlExpense);
+                            actexpref.setValue(newExpense);
+                            // mostrar= actexpref.toString();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Toast.makeText(getActivity(),exception.getMessage(),Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }else{
+            //user doesnt selected a photo
         }
     }
 
@@ -264,10 +347,11 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     @OnClick( R.id.img_expense_photo )
     public void pickExpensePhoto() {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType( "image/*" );
-        intent.setAction( Intent.ACTION_GET_CONTENT );
-        startActivityForResult( Intent.createChooser( intent, "Select Picture"), AppConstants.GET_IMAGE_REQUEST);
+        //intent.setAction( Intent.ACTION_GET_CONTENT );
+        //startActivityForResult( Intent.createChooser( intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult( intent,PICK_IMAGE_REQUEST);//.createChooser( intent, "Select Picture"), AppConstants.GET_IMAGE_REQUEST);
     }
 
     @OnClick( R.id.tv_expense_date )
@@ -340,7 +424,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
                 break;
             }
         }
-
     }
 
     private void createDatePickerDialog() {
@@ -355,7 +438,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         //TODO need to distinguish between save and update
         if( checkData() )
         {
-            Expense newExpense = new Expense();
+            newExpense = new Expense();
             newExpense.setName(mName.getText().toString());
             newExpense.setDescription(mDescription.getText().toString());
             newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
@@ -392,7 +475,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
                 mProgressDialog.setTitle( R.string.lbl_saving_expense);
                 mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
                 mProgressDialog.show();
-                DataManager.getsInstance().addNewExpense(eeData.shaActKey, newExpense, this);
+                expKey = DataManager.getsInstance().addNewExpense(eeData.shaActKey, newExpense, this);
 
             } catch (InvalidDataException ex) {
                 mProgressDialog.dismiss();

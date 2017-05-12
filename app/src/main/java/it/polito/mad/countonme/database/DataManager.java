@@ -29,6 +29,15 @@ public class DataManager {
     private static final String CHILD_EXPENSES = "expenses";
     private static final String CHILD_USERS = "users";
     private static final String CHILD_USER_BELONGS_SHARING_ACTIVITIES = "belongsSharingActivities";
+    private String expenseKey;
+
+    public String getExpenseKey() {
+        return expenseKey;
+    }
+
+    public void setExpenseKey(String expenseKey) {
+        this.expenseKey = expenseKey;
+    }
 
     ArrayList<SharingActivity> salist = new ArrayList<>();
 
@@ -111,14 +120,15 @@ public class DataManager {
 
     // Expenses management
 
-    public void addNewExpense(String parentKey, Expense expense, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
+    public String addNewExpense(String parentKey, Expense expense, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
         if( parentKey == null || parentKey.length() == 0) throw new InvalidDataException("Invalid data has been provided");
         DatabaseReference reference = mDatabase.getReference( CHILD_EXPENSES + "/" + parentKey );
-        String expenseKey = reference.push().getKey();
+        expenseKey = reference.push().getKey();
         expense.setKey( expenseKey );
         Map<String, Object> updates = new HashMap<>();
         updates.put( "/" + expenseKey + "/", expense );
         reference.updateChildren( updates, completionListener);
+        return expenseKey;
     }
 
 
