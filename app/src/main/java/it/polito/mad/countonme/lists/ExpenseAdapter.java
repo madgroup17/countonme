@@ -50,7 +50,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
         public void setData(final Expense expense, final IOnListItemClickListener listener ) {
             mStorageRef = FirebaseStorage.getInstance().getReference();
-
+//
             String imgUrl = expense.getImageUrl();
             String namePhoto;
 
