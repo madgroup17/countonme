@@ -125,12 +125,14 @@
     <string name="lbl_invalid_value">Invalid value</string>
 
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <!-- Image management -->
+    <string name="lbl_add_picture_from">Add picture from</string>
+    <string name="lbl_picture_from_gallery">Gallery and other sources</string>
+    <string name="lbl_picture_from_camera">Camera</string>
 
     <!-- formatting and parametric string -->
     <string name="fmt_date">yyyy/MM/dd</string>
+
 
 
     <!-- Error strings -->

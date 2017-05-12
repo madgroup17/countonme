@@ -8,6 +8,7 @@
 
     <ImageView
         android:id="@+id/expense_img"
+        android:src="@drawable/img_sharing_default"
         android:layout_width="@dimen/list_item_height"
         android:layout_height="@dimen/list_item_height"/>
 

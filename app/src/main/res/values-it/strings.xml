@@ -69,5 +69,13 @@
     <string name="notificationDetail">Nuova spesa</string>
     <string name="thanks">Grazie per aver utilizzato CountOnMe</string>
     <string name="usernologged">il utente non ha fatto il log in</string>
+    <string name="lbl_users">Utenti</string>
+    <string name="lbl_share_evenly">Dividi equamente</string>
+    <string name="lbl_picture_from_camera">Camera</string>
+    <string name="lbl_picture_from_gallery">Galleria ed altre sorgenti</string>
+    <string name="lbl_ok">OK</string>
+    <string name="lbl_login_instr_2">Iscriviti qui</string>
+    <string name="lbl_created_by">Creata da: %1$s</string>
+    <string name="lbl_login_instr_1">Already Registered?&#032;</string>
 
 </resources>

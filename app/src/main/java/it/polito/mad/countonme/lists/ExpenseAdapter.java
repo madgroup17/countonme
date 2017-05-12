@@ -1,13 +1,19 @@
 package it.polito.mad.countonme.lists;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -41,9 +47,17 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
             String imgUrl = expense.getImageUrl();
 
             if( imgUrl != null && imgUrl.length() > 0 )
-                mImgView.setImageURI( Uri.parse( imgUrl ) );
+                Glide.with( mImgView.getContext()).load( expense.getImageUrl() ).asBitmap().centerCrop().into(new BitmapImageViewTarget(mImgView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create( mImgView.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        mImgView.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
             else
-                mImgView.setImageResource(R.drawable.img_sharing_default);
+                mImgView.setImageResource( R.drawable.img_sharing_default );
 
             mTvName.setText( expense.getName() );
             mTvAmount.setText( mFormatter.format( expense.getAmount() ) + "" );

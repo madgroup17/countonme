@@ -10,15 +10,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
@@ -30,11 +32,15 @@ import it.polito.mad.countonme.models.User;
 
 public class SharingActivityEditingFragment extends BaseFragment implements IOnDataListener, DatabaseReference.CompletionListener
 {
+    private static final String PICTURE_SELECTION_DIALOG = "Picture_Selection";
     private static final String SAVE_STATE_NEW_DATA = "New_Data";
 
+    @BindView( R.id.img_sharing_activity_photo ) ImageView mIvPhoto;
     @BindView( R.id.ed_sharing_activity_name ) EditText txtName;
     @BindView( R.id.ed_sharing_activity_description) EditText txtDescription;
     @BindView( R.id.spin_sharing_activity_currency ) Spinner spnCurrency;
+
+    private Unbinder mUnbinder;
 
     private boolean isAddNewSharing;
 
@@ -47,7 +53,7 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
     {
         View view = inflater.inflate(R.layout.sharing_activity_editing_fragment, container, false);
-        ButterKnife.bind( this, view );
+        mUnbinder = ButterKnife.bind( this, view );
         if( savedInstanceState != null ) {
             isAddNewSharing = savedInstanceState.getBoolean( SAVE_STATE_NEW_DATA );
         }
@@ -55,6 +61,16 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
         isAddNewSharing  = ( getData() == null );
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
+    }
+
+    @OnClick( R.id.img_sharing_activity_photo )
+    public void onShareActivityPhotoClick() {
     }
 
     /******************************************************************************************/

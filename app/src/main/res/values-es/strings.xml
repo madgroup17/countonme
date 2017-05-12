@@ -74,5 +74,7 @@
     <string name="thanks">Gracias por haber usado CountOnMe</string>
     <string name="usernologged">El usuario no hizo el log in</string>
     <string name="noexistactivity">La actividad compartida no ya no existe, Gracias por haber usado CountOnMe</string>
+    <string name="lbl_users"></string>
+    <string name="lbl_ok">OK</string>
 
 </resources>

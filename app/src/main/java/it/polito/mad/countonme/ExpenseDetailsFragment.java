@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -118,6 +120,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         NumberFormat formatter = new DecimalFormat("#0.00");
         DateFormat dateFormat = new SimpleDateFormat( getString( R.string.fmt_date ) );
 
+        Glide.with( mIvPhoto.getContext()).load( expense.getImageUrl() ).into( mIvPhoto );
         mTvCreatedBy.setText( String.format( getResources().getString(R.string.lbl_created_by ), expense.getCreatedBy().getName() ) );
         mTvName.setText( expense.getName() );
         mTvDescription.setText( expense.getDescription() );

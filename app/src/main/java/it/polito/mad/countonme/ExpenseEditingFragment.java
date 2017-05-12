@@ -195,7 +195,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mUnbinder.unbind();
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
