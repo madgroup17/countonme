@@ -58,31 +58,20 @@ public class Balance {
         for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
             Expense item = i.next();
 
-            if (!item.getIsSurvey())
-            {
+            if (!item.getIsSurvey()) {
                 int Num;
-                if (!item.getIsMoneyTransfer())
-                {
-                    if (item.getIsSharedEvenly())
-                    {
+                if (!item.getIsMoneyTransfer()) {
+                    if (item.getIsSharedEvenly()) {
                         Amount += (item.getAmount() / mUsers.size());
+                    } else {
+                        Amount += GetSharesAmount(item, UserId);
                     }
-                    else
-                    {
-                        Amount += GetSharesAmount(item , UserId);
-                    }
-                }
-                else
-                {
-                    if(!(item.getPayer().getId()).equals( UserId))
-                    {
-                        if (item.getIsSharedEvenly())
-                        {
+                } else {
+                    if (!(item.getPayer().getId()).equals(UserId)) {
+                        if (item.getIsSharedEvenly()) {
                             Amount += (item.getAmount() / (mUsers.size() - 1));
-                        }
-                        else
-                        {
-                            Amount += GetSharesAmount(item , UserId);
+                        } else {
+                            Amount += GetSharesAmount(item, UserId);
                         }
                     }
                 }
@@ -92,18 +81,16 @@ public class Balance {
         return Amount;
     }
 
-    private double GetSharesAmount(Expense model,String UserId)
-    {
+    private double GetSharesAmount(Expense model, String UserId) {
         Double Amount = 0.0;
 
         Map<String, Share> ShareList = model.getShares();
-        for (Map.Entry<String, Share> entry : ShareList.entrySet())
-        {
+        for (Map.Entry<String, Share> entry : ShareList.entrySet()) {
             String key = entry.getKey();
             Share value = entry.getValue();
 
-            if((value.getUser().getId()).equals(UserId))
-               return value.getAmount();
+            if ((value.getUser().getId()).equals(UserId))
+                return value.getAmount();
         }
 
         return Amount;
@@ -123,6 +110,20 @@ public class Balance {
             return 0.0;
         else
             return Credit;
+    }
+
+    public Double GetTotalSpent()
+    {
+        Double Amount = 0.0;
+
+        for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
+            Expense item = i.next();
+
+            if (!item.getIsSurvey())
+                    Amount += item.getAmount();
+        }
+
+        return Amount;
     }
 
 

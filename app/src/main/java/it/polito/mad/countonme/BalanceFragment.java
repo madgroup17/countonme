@@ -46,7 +46,7 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener
 
     TextView tvMySpend;
     TextView tvMyCredit;
-    TextView tvMyDebt;
+    TextView tvTotalSpend;
     
     LinearLayout mOwesLayout;
 
@@ -77,7 +77,7 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener
         }
         tvMySpend = (TextView) view.findViewById(R.id.my_spend);
         tvMyCredit = (TextView) view.findViewById(R.id.my_credit);
-        tvMyDebt = (TextView) view.findViewById(R.id.my_debt);
+        tvTotalSpend = (TextView) view.findViewById(R.id.total_spend);
 
         barChart = (BarChart) view.findViewById(R.id.balance_chart);
         
@@ -164,7 +164,7 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener
 
             tvMySpend.setText(mFormatter.format((BalanceClass.GetMySpend())) + "");
             tvMyCredit.setText(mFormatter.format((BalanceClass.GetMyCredit())) + "");
-            tvMyDebt.setText(mFormatter.format((BalanceClass.GetMyDept())) + "");
+            tvTotalSpend.setText(mFormatter.format((BalanceClass.GetTotalSpent())) + "");
 
             DebtList = BalanceClass.getDebtList();
             AddDebtsToBARENTRY();

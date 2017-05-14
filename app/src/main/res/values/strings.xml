@@ -21,7 +21,7 @@
     <string name="balance_owes">Owes</string>
 
     <string name="empty_sharing_list_lbl">You do not have sharing activities yet</string>
-    <string name="total_balance_lbl">Total balance:</string>
+    <string name="total_balance_lbl">Total balance: &#160;</string>
 
     <string name="lbl_description">Description</string>
     <string name="lbl_name">Name</string>
@@ -99,9 +99,9 @@
     <string name="select_app">Select an application</string>
 
     <string name="my_status_lbl">My Status</string>
-    <string name="my_spend_lbl">Spend : </string>
-    <string name="my_credit_lbl">Credits : </string>
-    <string name="my_debt_lbl">Debts : </string>
+    <string name="my_spend_lbl">Spend: &#160;</string>
+    <string name="my_credit_lbl">Credits: &#160; </string>
+    <string name="my_debt_lbl">Debts: &#160;</string>
 
     <string name="group_status_lbl">Group Status</string>
 
