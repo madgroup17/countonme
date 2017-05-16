@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -22,6 +23,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import it.polito.mad.countonme.R;
 import it.polito.mad.countonme.business.ImageManagement;
+import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.models.Expense;
 
@@ -49,10 +51,13 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         }
 
         public void setData(final Expense expense, final IOnListItemClickListener listener ) {
+            String namePhoto;
             mStorageRef = FirebaseStorage.getInstance().getReference();
+            //mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("");
+            //mStorageRef.getDownloadUrl().addOnSuccessListener();
 //
             String imgUrl = expense.getImageUrl();
-            String namePhoto;
+
 
             if( imgUrl != null && imgUrl.length() > 0 ) {
                 namePhoto = "expenses/" + expense.getKey() + ".jpg";
@@ -88,6 +93,8 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     private List<Expense> mExpense;
     private LayoutInflater mInflater;
     private IOnListItemClickListener mListener;
+    private int currentPosition;
+    private Expense infoData;
 
     public ExpenseAdapter(Context context, List<Expense> data, IOnListItemClickListener listener ) {
         mExpense = data;
@@ -102,13 +109,51 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     }
 
     @Override
-    public void onBindViewHolder(ExpenseAdapter.ExpViewHolder holder, int position) {
+    public void onBindViewHolder(final ExpenseAdapter.ExpViewHolder holder, final int position) {
         holder.setData( mExpense.get( position ), mListener  );
+        infoData = mExpense.get(position);
+        holder.mImgView.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                //Toast.makeText(holder.mImgView.getContext(), "on click called at position "+position,Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.mImgView.setOnLongClickListener(new View.OnLongClickListener(){
+            public boolean onLongClick(View v){
+                //Toast.makeText(holder.mImgView.getContext(), "on LONG click called at position "+position,Toast.LENGTH_SHORT).show();
+                infoData = mExpense.get(position);
+                removeItem(infoData);
+                return false;
+            }
+        });
+        holder.mTvName.setOnLongClickListener(new View.OnLongClickListener(){
+            public boolean onLongClick(View v){
+                //Toast.makeText(holder.mImgView.getContext(), "on LONG click called at position "+position,Toast.LENGTH_SHORT).show();
+                infoData = mExpense.get(position);
+                removeItem(infoData);
+                return false;
+            }
+        });
+        holder.mTvAmount.setOnLongClickListener(new View.OnLongClickListener(){
+            public boolean onLongClick(View v){
+                //Toast.makeText(holder.mImgView.getContext(), "on LONG click called at position "+position,Toast.LENGTH_SHORT).show();
+                infoData = mExpense.get(position);
+                removeItem(infoData);
+                return false;
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return mExpense.size();
+    }
+
+    //remove expense from the list (recycler view) also delete from firebase (expense asociated to the current sharing activity, storage image)
+    private void removeItem(Expense infoData){
+        int currentposition = mExpense.indexOf(infoData);
+        DataManager.getsInstance().deleteExpense(infoData.getParentSharingActivityId(),infoData.getKey());
+        mExpense.remove(currentposition);
+        notifyItemRemoved(currentposition);
     }
 
 }

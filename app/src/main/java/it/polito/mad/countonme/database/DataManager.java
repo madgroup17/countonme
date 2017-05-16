@@ -1,12 +1,19 @@
 package it.polito.mad.countonme.database;
 
 import android.net.UrlQuerySanitizer;
+import android.support.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -190,5 +197,34 @@ public class DataManager {
         return salist;
     }
 
+    public void deleteExpense(String ParentSharingActivityKey, final String ExpenseKey){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(CHILD_EXPENSES + "/" + ParentSharingActivityKey);//mDatabase.getReference( CHILD_EXPENSES + "/" + ParentSharingActivityKey + "/" + ExpenseKey );
+        Query removeExpenseQuery = reference.orderByKey().equalTo(ExpenseKey);
+        removeExpenseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot expenseSnapshot : dataSnapshot.getChildren()){
+                    if(expenseSnapshot.getKey().equals(ExpenseKey)) {
+                        expenseSnapshot.getRef().removeValue();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        final String namePhoto = "expenses/"+ExpenseKey+".jpg";
+        StorageReference riversRef = storageRef.child(namePhoto);
+        riversRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
 
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
 }
