@@ -130,11 +130,13 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     public void onBindViewHolder(final ExpenseAdapter.ExpViewHolder holder, final int position) {
         holder.setData( mExpense.get( position ), mListener  );
         infoData = mExpense.get(position);
+        /*
         holder.mImgView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 //Toast.makeText(holder.mImgView.getContext(), "on click called at position "+position,Toast.LENGTH_SHORT).show();
             }
         });
+
         holder.mImgView.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
                 //Toast.makeText(holder.mImgView.getContext(), "on LONG click called at position "+position,Toast.LENGTH_SHORT).show();
@@ -159,7 +161,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
                 return false;
             }
         });
-
+        */
 
 
     }
