@@ -9,7 +9,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class StorageManager {
 
-    private static final String STORATE_SHAREACTS_FOLDER    = "shareacts";
+    private static final String STORAGE_SHAREACTS_FOLDER    = "shareacts";
     private static final String STORAGE_EXPENSES_FOLDER     = "expenses";
 
     private FirebaseStorage mStorage;
@@ -25,13 +25,13 @@ public class StorageManager {
 
     public StorageReference getSharingActivitiesStorageReference( String id ) {
         if( id != null && id.length() != 0)
-            return mStorage.getReference().child( STORAGE_EXPENSES_FOLDER ).child( id );
+            return mStorage.getReference().child( STORAGE_SHAREACTS_FOLDER ).child( id );
         return null;
     }
 
     public StorageReference getExpensesStorageReference( String id ) {
         if( id != null && id.length() != 0)
-            return mStorage.getReference().child( STORATE_SHAREACTS_FOLDER ).child( id );
+            return mStorage.getReference().child( STORAGE_EXPENSES_FOLDER ).child( id );
         return null;
     }
 

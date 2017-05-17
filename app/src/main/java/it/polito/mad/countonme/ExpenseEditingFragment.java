@@ -263,15 +263,13 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mProgressDialog.dismiss();
         if( databaseError != null )
         {
-            Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
+            mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
+            mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
         }
         else
         {
             ClearForm();
             getFragmentManager().popBackStack();
-            String curShaActKey= databaseReference.getKey();
-            saveImage(curShaActKey,expKey);
-            Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
         }
     }
     @Override
@@ -443,9 +441,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     }
 
     private void saveExpenseData(Uri imageDownloadUrl ) {
+        newExpense = new Expense();
         newExpense.setKey(mExpKey);
-        newExpense = new Expense();
-        newExpense = new Expense();
         newExpense.setName(mName.getText().toString());
         newExpense.setDescription(mDescription.getText().toString());
         newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
@@ -456,6 +453,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         newExpense.setDate(eeData.expenseDate);
         newExpense.setParentSharingActivityId(eeData.shaActKey);
         newExpense.setCreatedBy(((CountOnMeApp) getActivity().getApplication()).getCurrentUser());
+        if( imageDownloadUrl != null )
+            newExpense.setImageUrl( imageDownloadUrl.toString() );
 
         try {
             DataManager.getsInstance().updateExpense( eeData.shaActKey, newExpense, this );
