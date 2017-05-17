@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.lists.ExpenseAdapter;
 import it.polito.mad.countonme.models.*;
+import it.polito.mad.countonme.swiper.SwipeHelperExpenses;
 
 /**
  * Fragment for expenses list visualization
@@ -64,6 +66,12 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         mExpensesRv.setLayoutManager(layoutManager);
         mExpensesRv.setAdapter(mExpensesAdapter);
         mExpensesRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
+
+        ItemTouchHelper.Callback callback = new SwipeHelperExpenses(mExpensesAdapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(mExpensesRv);
+
+
 
         return view;
     }

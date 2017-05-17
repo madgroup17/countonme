@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import it.polito.mad.countonme.business.ImageManagement;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.swiper.SwipeHelperExpenses;
 
 
 /**
@@ -96,6 +98,22 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     private int currentPosition;
     private Expense infoData;
 
+    public List<Expense> getmExpense() {
+        return mExpense;
+    }
+
+    public void setmExpense(List<Expense> mExpense) {
+        this.mExpense = mExpense;
+    }
+
+    public Expense getInfoData() {
+        return infoData;
+    }
+
+    public void setInfoData(Expense infoData) {
+        this.infoData = infoData;
+    }
+
     public ExpenseAdapter(Context context, List<Expense> data, IOnListItemClickListener listener ) {
         mExpense = data;
         mListener = listener;
@@ -141,6 +159,9 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
                 return false;
             }
         });
+
+
+
     }
 
     @Override
@@ -149,11 +170,20 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     }
 
     //remove expense from the list (recycler view) also delete from firebase (expense asociated to the current sharing activity, storage image)
-    private void removeItem(Expense infoData){
+    public void removeItem(Expense infoData){
         int currentposition = mExpense.indexOf(infoData);
         DataManager.getsInstance().deleteExpense(infoData.getParentSharingActivityId(),infoData.getKey());
         mExpense.remove(currentposition);
         notifyItemRemoved(currentposition);
     }
 
+    //DISMISS
+    public void dimissExense(int position){
+        removeItem(mExpense.get(position));
+        if(position==mExpense.size()){
+            position--;
+        }
+        mExpense.remove(position);
+        this.notifyItemRemoved(position);
+    }
 }
