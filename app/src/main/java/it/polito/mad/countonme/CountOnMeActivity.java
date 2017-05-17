@@ -267,11 +267,8 @@ FirebaseAuth.AuthStateListener {
     }
 
     private void doLogout() {
-        FirebaseAuth mFirebaseAuth  = FirebaseAuth.getInstance();
         mFirebaseAuth.signOut();
         ( ( CountOnMeApp ) getApplication()).setCurrentUser( null );
-        finish();
-        startActivity(new Intent(this, LoginActivity.class ) );
     }
 
     private void initProgressDialog() {
