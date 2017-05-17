@@ -77,5 +77,6 @@
     <string name="lbl_login_instr_2">Iscriviti qui</string>
     <string name="lbl_created_by">Creata da: %1$s</string>
     <string name="lbl_login_instr_1">Already Registered?&#032;</string>
+    <string name="lbl_select_picture">Seleziona un\'immagine</string>
 
 </resources>

@@ -1,7 +1,6 @@
 <resources>
     <string name="fb_appid" translatable="false">fb1296087437136481</string>
 
-
     <string name="app_name" translatable="false">CountOnMe</string>
     <string name="login_title" translatable="false">Login</string>
 
@@ -16,6 +15,8 @@
     <string name="expenses_title">Expenses</string>
     <string name="expense_details_title">Expense details</string>
     <string name="expense_add_new_title">New expense</string>
+
+    <string name="lbl_select_picture">Select a picture</string>
 
     <string name="balance_title">Balance</string>
     <string name="balance_owes">Owes</string>
@@ -137,6 +138,7 @@
 
     <!-- Error strings -->
     <string name="lbl_error_could_not_save">Could not save</string>
+    <string name="lbl_error_please_try_again">An error occurred. Please try again</string>
 
     <string name="lbl_error_wrong_expense_sharing">Plese check the expense amount sharing</string>
     <string name="thanks">Thanks for using CountOnMe</string>
