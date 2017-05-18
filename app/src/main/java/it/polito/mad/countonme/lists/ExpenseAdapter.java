@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -94,7 +95,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
     private List<Expense> mExpense;
     private LayoutInflater mInflater;
-    private IOnListItemClickListener mListener;
+    public IOnListItemClickListener mListener;
     private int currentPosition;
     private Expense infoData;
 
