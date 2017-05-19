@@ -145,6 +145,8 @@
     <string name="lbl_deleteExpense">An expense will be delete</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="lbl_confirmationdeleteExpense">Are you sure that you want to delete the expense?</string>
+    <string name="lbl_any_selected">0 item selected</string>
+    <string name="lbl_item_selected">item selected</string>
 
 
 </resources>

@@ -86,5 +86,7 @@
     <string name="drawer_close">Cierre el cajón de navegación</string>
     <string name="drawer_open">Abra el cajón de navegación</string>
     <string name="lbl_confirmationdeleteExpense">Esta seguro que quiere eliminar este gasto?</string>
+    <string name="lbl_any_selected">0 elemento seleccionados</string>
+    <string name="lbl_item_selected">elementos seleccionados</string>
 
 </resources>
