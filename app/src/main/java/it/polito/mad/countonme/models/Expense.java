@@ -173,13 +173,5 @@ public class Expense {
         mShares.put( id, share );
     }
 
-    @Exclude
-    public boolean checkSharing() {
-        Double totalShare = 0.0;
-        for( Map.Entry<String, Share> entry : mShares.entrySet() ) {
-            totalShare += entry.getValue().getAmount();
-        }
-        return( totalShare.compareTo( mAmount ) == 0 );
-    }
 }
 

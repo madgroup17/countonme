@@ -107,6 +107,7 @@
     <string name="group_status_lbl">Group Status</string>
 
     <string name="lbl_paid_by">Paid by</string>
+    <string name="lbl_amount_sharing">Amount sharing:</string>
 
     <!-- Navigation drawer entries -->
     <string name="drawer_open">Open navigation drawer</string>
@@ -124,7 +125,7 @@
     <string name="asset_statements" translatable="false">[{\n  \"relation\": [\"delegate_permission/common.handle_all_urls\"],\n  \"target\": {\n    \"namespace\": \"web\",\n    \"site\": \"http://play.google.com\",\n  }\n}]</string>
 
     <string name="lbl_invalid_value">Invalid value</string>
-
+    <string name="lbl_invalid_amount_sharing">Invalid amount sharing</string>
 
     <!-- Image management -->
     <string name="lbl_add_picture_from">Add picture from</string>

@@ -23,10 +23,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -61,7 +59,6 @@ import it.polito.mad.countonme.networking.ImageFromUrlTask;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import static android.app.Activity.RESULT_OK;
@@ -137,6 +134,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @BindView( R.id.rtv_expense_amount ) RequiredInputTextView mRtvExpenseAmount;
     @BindView( R.id.rtv_expense_currency ) RequiredInputTextView mRtvExpenseCurrency;
     @BindView( R.id.rtv_expense_payer ) RequiredInputTextView mRtvExpensePayer;
+    @BindView( R.id.rtv_amount_sharing ) RequiredInputTextView mRtvAmountSharing;
 
     @BindView( R.id.img_expense_photo ) ImageView mImage;
     @BindView( R.id.ed_expense_name ) EditText mName;
@@ -148,6 +146,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @BindView( R.id.sw_money_transfer ) Switch mSwMoneyTransfer;
     @BindView( R.id.sw_share_evenly ) Switch mSwShareEvenly;
 
+    @BindView( R.id.ll_sharing_section) LinearLayout mLlSharingSection;
     @BindView( R.id.ll_sharing_info) LinearLayout mLlSharingInfo;
 
     private Unbinder mUnbinder;
@@ -227,8 +226,10 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         super.onResume();
         adjustActionBar();
         try {
-            if (eeData.isNew)
+            if (eeData.isNew) {
+                clearForm();
                 mSharingActivityLoader.loadSharingActivity(eeData.shaActKey);
+            }
             else
                 mExpenseLoader.loadExpense(eeData.shaActKey, eeData.expKey);
         } catch (DataLoaderException ex) {
@@ -268,7 +269,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         }
         else
         {
-            ClearForm();
+            clearForm();
             getFragmentManager().popBackStack();
         }
     }
@@ -354,7 +355,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @OnCheckedChanged( R.id.sw_share_evenly )
     public void shareEvenlyChanged( boolean state ) {
         eeData.isSharedEvenly = state;
-        mLlSharingInfo.setVisibility( state ? View.GONE : View.VISIBLE  );
+        mLlSharingSection.setVisibility( state ? View.GONE : View.VISIBLE  );
     }
 
     @Override
@@ -453,73 +454,34 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         newExpense.setDate(eeData.expenseDate);
         newExpense.setParentSharingActivityId(eeData.shaActKey);
         newExpense.setCreatedBy(((CountOnMeApp) getActivity().getApplication()).getCurrentUser());
-        if( imageDownloadUrl != null )
-            newExpense.setImageUrl( imageDownloadUrl.toString() );
+        if (imageDownloadUrl != null)
+            newExpense.setImageUrl(imageDownloadUrl.toString());
 
-        try {
-            DataManager.getsInstance().updateExpense( eeData.shaActKey, newExpense, this );
-        } catch (InvalidDataException ex) {
-            mProgressDialog.dismiss();
-            mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
-            mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
-
-        }
-    }
-
-
-        //TODO need to distinguish between save and update
- /*       if( checkData() )
-        {
-            newExpense = new Expense();
-            newExpense.setName(mName.getText().toString());
-            newExpense.setDescription(mDescription.getText().toString());
-            newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
-            newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
-            newExpense.setPayer( (User) mPaidBySpinner.getSelectedItem() );
-            newExpense.setIsMoneyTransfer( eeData.isMoneyTransfer );
-            newExpense.setIsSharedEvenly( eeData.isSharedEvenly );
-            newExpense.setDate( eeData.expenseDate );
-            newExpense.setParentSharingActivityId( eeData.shaActKey );
-            newExpense.setCreatedBy( ( ( CountOnMeApp ) getActivity().getApplication()).getCurrentUser() );
-
-            if( eeData.isSharedEvenly == false ) {
-                newExpense.clearShare();
-                for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
-                    View view = mLlSharingInfo.getChildAt(idx);
-                    String strAmount  =  ( (EditText) view.findViewById( R.id.ed_amount ) ).getText().toString();
-                    Double amount;
-                    try {
-                        amount = Double.parseDouble(strAmount);
-                    } catch ( NumberFormatException e ) {
-                        amount = 0.0;
-                    }
-                    User user = ( User ) view.getTag( R.id.id_user );
-                    newExpense.addShare( user.getId(), new Share(user, amount ) );
+        if (eeData.isSharedEvenly == false) {
+            newExpense.clearShare();
+            for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                View view = mLlSharingInfo.getChildAt(idx);
+                Double amount;
+                try {
+                    amount = Double.parseDouble(((EditText) view.findViewById(R.id.ed_amount)).getText().toString());
+                } catch (NumberFormatException e) {
+                    amount = 0.0;
                 }
-                if( false == newExpense.checkSharing() ) {
-                    mErrorDialog.setDialogContent( R.string.lbl_error_could_not_save, R.string.lbl_error_wrong_expense_sharing );
-
-                    mErrorDialog.show( getFragmentManager(), "error" );
-                    return;
-                }
+                User user = (User) view.getTag(R.id.id_user);
+                newExpense.addShare(user.getId(), new Share(user, amount));
             }
 
+            // finally lets save data
             try {
-
-                mProgressDialog.setTitle( R.string.lbl_saving_expense);
-                mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
-                mProgressDialog.show();
-
-
-
-                expKey = DataManager.getsInstance().addNewExpense(eeData.shaActKey, newExpense, this);
-
+                DataManager.getsInstance().updateExpense(eeData.shaActKey, newExpense, this);
             } catch (InvalidDataException ex) {
                 mProgressDialog.dismiss();
-                Toast.makeText(getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
+                mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
+                mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
+
             }
         }
-    } */
+    }
 
 
     private void saveExpenseImage() {
@@ -562,24 +524,52 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mRtvExpenseDescription.cleanError();
         }
 
-        if( TextUtils.isEmpty( mAmount.getText().toString() ) ||
-                Double.parseDouble( mAmount.getText().toString() ) <= 0.0001f ) {
+        Double amount;
+        try {
+            amount = Double.parseDouble(mAmount.getText().toString());
+        } catch( NumberFormatException fne ) {
+            amount = 0.0;
+            mAmount.setText("0");
+        }
+
+        if( TextUtils.isEmpty( mAmount.getText().toString() ) ) {
             dataProvided = false;
             mRtvExpenseAmount.showError();
         } else {
             mRtvExpenseAmount.cleanError();
         }
 
-        // TODO: add check for currency and payer
-
+        // check the sharing if needed
+        if( eeData.isSharedEvenly == false ) {
+            Double total_sharing = 0.0;
+            for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                View view = mLlSharingInfo.getChildAt( idx );
+                EditText edShareAmount = (EditText) view.findViewById( R.id.ed_amount );
+                Double share_amount;
+                try {
+                    share_amount = Double.parseDouble( edShareAmount.getText().toString());
+                } catch ( NumberFormatException e ) {
+                    share_amount = 0.0;
+                    edShareAmount.setText( "0" );
+                }
+                total_sharing += share_amount;
+            }
+            if( amount.compareTo( total_sharing ) != 0 ) {
+                dataProvided = false;
+                mRtvAmountSharing.showError();
+            } else {
+                mRtvAmountSharing.cleanError();
+            }
+        }
         return dataProvided;
     }
 
-    private void ClearForm()
+    private void clearForm()
     {
         mName.setText( "" );
         mDescription.setText( "" );
         mAmount.setText( "" );
+
     }
 
     private void adjustActionBar() {
