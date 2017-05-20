@@ -112,8 +112,6 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
 
         DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).addValueEventListener( this );
         ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).showLoadingDialog();
-        //counter=0;
-        //
     }
 
     @Override
@@ -211,7 +209,6 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
     public void updateCounter(int counter){
         if(counter==0) {
             adjustActionBar();
-            //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("0 item selected");// R.string.lbl_any_selected );
         }else{
             //String sToShow = String.format("" + counter + " " + R.string.lbl_item_selected); //gets a number ....
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(counter + " item selected");// sToShow );
