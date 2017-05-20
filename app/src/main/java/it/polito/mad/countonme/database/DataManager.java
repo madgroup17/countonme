@@ -109,11 +109,21 @@ public class DataManager {
         }
     }
 
+
     // Sharing activities management
 
-    public void addNewSharingActivity(SharingActivity activity, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
-        DatabaseReference reference = mDatabase.getReference();
+
+    public void updateSharingActivity( SharingActivity sharingActivity, DatabaseReference.CompletionListener completionListener ) throws  InvalidDataException {
+        if( sharingActivity == null ) throw new InvalidDataException( "Invalid Sharing Activity has been provided" );
+        DatabaseReference reference = mDatabase.getReference( CHILD_SHARING_ACTIVITIES );
+        Map<String, Object> updates = new HashMap<>();
+        updates.put( "/" + sharingActivity.getKey() + "/",  sharingActivity );
+        reference.updateChildren( updates, completionListener);
+    }
+
+   /* public void addNewSharingActivity(SharingActivity activity, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {
         if( activity == null ) throw new InvalidDataException("Invalid Sharing Activity has been provided" );
+        DatabaseReference reference = mDatabase.getReference();
         // create a new sharing activity and add the data in the user simultaneusly
         String shaActKey = reference.child(CHILD_SHARING_ACTIVITIES).push().getKey();
         String belongSaKey = reference.child( CHILD_USER_BELONGS_SHARING_ACTIVITIES + "/" + activity.getCreatedBy().getId()).push().getKey();
@@ -123,7 +133,7 @@ public class DataManager {
         updates.put( "/" + CHILD_USER_BELONGS_SHARING_ACTIVITIES + "/" + activity.getCreatedBy().getId() + "/" + belongSaKey + "/",  true );
         reference.updateChildren( updates, completionListener );
 
-    }
+    }*/
 
     // Expenses management
 
@@ -134,6 +144,7 @@ public class DataManager {
         updates.put( "/" + expense.getKey() + "/", expense );
         reference.updateChildren( updates, completionListener);
     }
+
 
 
     public String addNewExpense(String parentKey, Expense expense, DatabaseReference.CompletionListener completionListener)  throws InvalidDataException {

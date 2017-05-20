@@ -7,7 +7,8 @@
     <string name="invitation_title">Join sharing activity</string>
 
     <string name="sharing_activities_title">Sharing activities</string>
-    <string name="sharing_activity_add_new_title">New Sharing activity</string>
+    <string name="sharing_activity_add_new_title">New Sharing Activity</string>
+    <string name="sharing_activity_edit_title">Edit Sharing Activity</string>
     <string name="sharing_activity_details_title">Details</string>
 
     <string name="lbl_users">Users</string>
@@ -71,7 +72,11 @@
     <!-- Expenses -->
     <string name="lbl_saving_expense">Saving expense</string>
     <string name="notificationTitle" translatable="false">CountOnMe</string>
-    <string name="notificationDetail">New expense created</string>
+    <string name="notificationDetail">New expense saved</string>
+
+    <!-- Sharing Activity -->
+    <string name="lbl_saving_sharing_activity">Saving sharing activity</string>
+    <string name="lbl_saved_sharing_activity">New sharing activity saved</string>
 
 
     <!-- Currencies -->
@@ -126,6 +131,8 @@
 
     <string name="lbl_invalid_value">Invalid value</string>
     <string name="lbl_invalid_amount_sharing">Invalid amount sharing</string>
+
+    <string name="lbl_camera_error">Could not open camera application</string>
 
     <!-- Image management -->
     <string name="lbl_add_picture_from">Add picture from</string>

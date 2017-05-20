@@ -1,6 +1,9 @@
 package it.polito.mad.countonme.lists;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +11,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.polito.mad.countonme.R;
+import it.polito.mad.countonme.business.ImageManagement;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.models.SharingActivity;
-import it.polito.mad.countonme.networking.ImageFromUrlTask;
+import it.polito.mad.countonme.storage.StorageManager;
 
 /**
  * Custmom RecycleView Adapter for the sharing activities list
@@ -29,16 +38,30 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
         @BindView( R.id.sharing_activity_name) TextView mTvName;
         @BindView( R.id.sharing_activity_desc ) TextView mTvDesc;
 
+        private StorageReference mStorageRef;
+
         public ShActViewHolder(View itemView ) {
             super( itemView );
             ButterKnife.bind( this, itemView );
         }
 
         public void setData(final SharingActivity activity, final IOnListItemClickListener listener ) {
+            String namePhoto;
             String imgUrl = activity.getImageUrl();
-
+            mStorageRef = FirebaseStorage.getInstance().getReference();
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                new ImageFromUrlTask(  mIvPhoto, R.drawable.img_sharing_default, true ).execute( imgUrl );
+                namePhoto = StorageManager.STORAGE_SHAREACTS_FOLDER + "/" + activity.getKey();
+                StorageReference newstoragereference = mStorageRef.child(namePhoto);
+
+                Glide.with(mIvPhoto.getContext()).using(new ImageManagement()).load(newstoragereference).asBitmap().centerCrop().into(new BitmapImageViewTarget(mIvPhoto) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(mIvPhoto.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        mIvPhoto.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
             } else {
                  mIvPhoto.setImageResource(R.drawable.img_sharing_default);
             }

@@ -1,4 +1,4 @@
-package it.polito.mad.countonme.database;
+package it.polito.mad.countonme.storage;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -9,8 +9,8 @@ import com.google.firebase.storage.StorageReference;
 
 public class StorageManager {
 
-    private static final String STORAGE_SHAREACTS_FOLDER    = "shareacts";
-    private static final String STORAGE_EXPENSES_FOLDER     = "expenses";
+    public static final String STORAGE_SHAREACTS_FOLDER    = "shareacts";
+    public static final String STORAGE_EXPENSES_FOLDER     = "expenses";
 
     private FirebaseStorage mStorage;
 

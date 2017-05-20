@@ -1,6 +1,5 @@
 package it.polito.mad.countonme;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -12,37 +11,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.polito.mad.countonme.business.LinkSharing;
-import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.database.SharingActivityLoader;
 import it.polito.mad.countonme.exceptions.DataLoaderException;
-import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
-import it.polito.mad.countonme.models.Expense;
-import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
 import it.polito.mad.countonme.models.User;
-import it.polito.mad.countonme.networking.ImageFromUrlTask;
 
 /**
  * Created by Khatereh on 4/28/2017.
@@ -50,6 +36,7 @@ import it.polito.mad.countonme.networking.ImageFromUrlTask;
 
 public class SharingActivityDetailsFragment extends BaseFragment implements IOnDataListener {
 
+    @BindView(R.id.iv_shact_img) ImageView mIvPhoto;
     @BindView(R.id.tv_name) TextView mTvName;
     @BindView(R.id.tv_created_by) TextView mTvCreatedBy;
     @BindView(R.id.tv_description) TextView mTvDescription;
@@ -168,6 +155,9 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
             mTvCreatedBy.setText(createdBy);
             mTvDescription.setText(activity.getDescription());
             mTvCurrency.setText(activity.getCurrency());
+            if( activity.getImageUrl() != null )
+                Glide.with( mIvPhoto.getContext()).load( activity.getImageUrl() ).into( mIvPhoto );
+
 
             LayoutInflater myInflater = LayoutInflater.from(getActivity());
 
@@ -179,7 +169,10 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
                 ImageView userPhoto = (ImageView) child.findViewById(R.id.user_img);
                 TextView userName = (TextView) child.findViewById(R.id.user_name);
                 TextView userEmail = (TextView) child.findViewById(R.id.user_email);
-                new ImageFromUrlTask(userPhoto, R.drawable.default_user_photo, true).execute(user.getPhotoUrl());
+                if( user.getPhotoUrl() != null )
+                    Glide.with( userPhoto.getContext()).load( user.getPhotoUrl() ).into( userPhoto );
+                else
+                    userPhoto.setImageResource(R.drawable.default_user_photo );
                 userName.setText(user.getName());
                 userEmail.setText(user.getEmail());
 

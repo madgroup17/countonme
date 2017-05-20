@@ -49,6 +49,8 @@ public class SharingActivity {
         return mDescription;
     }
 
+    public void setImageUrl( String imageUrl ) { mImageUrl = imageUrl; }
+
     public String getImageUrl() {
         return mImageUrl;
     }

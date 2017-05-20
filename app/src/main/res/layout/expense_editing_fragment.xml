@@ -18,7 +18,6 @@
             android:src="@drawable/ic_add_a_photo"
             android:background="?attr/selectableItemBackground"
             android:layout_alignParentTop="true"
-            android:padding="@dimen/image_padding_10"
             android:layout_alignParentLeft="true"/>
 
         <!-- The expense name -->

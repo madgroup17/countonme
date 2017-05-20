@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,13 +27,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,22 +52,20 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import it.polito.mad.countonme.UI.DatePicker;
 import it.polito.mad.countonme.UI.ErrorDialog;
+import it.polito.mad.countonme.UI.ImageSourceDialog;
 import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.database.ExpenseLoader;
 import it.polito.mad.countonme.database.SharingActivityLoader;
-import it.polito.mad.countonme.database.StorageManager;
 import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.lists.UsersAdapter;
-import it.polito.mad.countonme.models.*;
-import it.polito.mad.countonme.networking.ImageFromUrlTask;
-
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.Share;
+import it.polito.mad.countonme.models.SharingActivity;
+import it.polito.mad.countonme.models.User;
+import it.polito.mad.countonme.storage.StorageManager;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -69,7 +75,8 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class ExpenseEditingFragment extends BaseFragment implements DatabaseReference.CompletionListener,
-       DatePickerDialog.OnDateSetListener, IOnDataListener {
+       DatePickerDialog.OnDateSetListener, IOnDataListener, ImageSourceDialog.IImageSourceDialogListener {
+
 
     public static class ExpenseEditingData {
 
@@ -80,6 +87,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         private static final String KEY_EXPKEY          = "Expense_Key";
         private static final String KEY_PAYER           = "Payer";
         private static final String KEY_DATE            = "Date";
+        private static final String KEY_CAPT_IMAGE      = "CaptureImageUri";
 
         public Boolean isNew;
         public Boolean isMoneyTransfer;
@@ -88,6 +96,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         public String expKey;
         public String payerId;
         public Date expenseDate;
+        public String captureImageUri;
 
         public ExpenseEditingData() {
             isNew           = true;
@@ -97,6 +106,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             expKey          = null;
             payerId         = null;
             expenseDate     = new Date();
+            captureImageUri = null;
         }
 
         public void saveInstance( Bundle outState ) {
@@ -108,6 +118,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             outState.putString( KEY_EXPKEY, expKey );
             outState.putString( KEY_PAYER, payerId );
             outState.putSerializable( KEY_DATE, expenseDate );
+            outState.putString( KEY_CAPT_IMAGE, captureImageUri );
         }
 
         public void loadInstance( Bundle inState ) {
@@ -119,14 +130,17 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             expKey  = inState.getString( KEY_EXPKEY );
             payerId = inState.getString( KEY_PAYER );
             expenseDate = ( Date ) inState.getSerializable( KEY_DATE );
+            captureImageUri = inState.getString( KEY_CAPT_IMAGE );
         }
 
     }
 
 
-    private static final String DATE_PICKER_TAG = "date_picker";
-    private static final String ERROR_DIALOG_TAG = "error_dialog";
+    private static final String DATE_PICKER_TAG       = "date_picker";
+    private static final String ERROR_DIALOG_TAG      = "error_dialog";
+    private static final String IMG_SOURCE_DIALOG_TAG = "image_source_dialog";
 
+    private static final int RC_PHOTO_CAPTURE = 1;
     private static final int RC_PHOTO_REQUEST = 2;
 
     @BindView( R.id.rtv_expense_name )  RequiredInputTextView mRtvExpenseName;
@@ -152,12 +166,13 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     private Unbinder mUnbinder;
 
     private UsersAdapter mUsersAdapter;
-    private SharingActivity mSharingActivity;
     private Expense newExpense;
-    private ProgressDialog mProgressDialog1;
-
     private ProgressDialog mProgressDialog;
+
     private ErrorDialog mErrorDialog;
+
+    private ImageSourceDialog mImgSourceDialog;
+
     private DatePicker mDatePickerDialog;
     private DateFormat mDateFormat;
 
@@ -167,10 +182,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     private ArrayList<User> mUsersList;
 
     private ExpenseEditingFragment.ExpenseEditingData eeData = new ExpenseEditingFragment.ExpenseEditingData();
-    private Uri mUriSelectedImage;
-    private StorageReference riversRef;
-    private StorageReference mStorageRef;
-    private String generatedFilePath;
+    private Uri mUriSelectedImage, mUriCapturedImage;
     private String mExpKey;
 
     @Override
@@ -199,7 +211,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
         mProgressDialog = new ProgressDialog( getActivity() );
         mErrorDialog = new ErrorDialog();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        mImgSourceDialog = new ImageSourceDialog();
         createDatePickerDialog();
         initializeViewContent();
 
@@ -221,13 +233,14 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mUnbinder.unbind();
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
         adjustActionBar();
         try {
             if (eeData.isNew) {
-                clearForm();
                 mSharingActivityLoader.loadSharingActivity(eeData.shaActKey);
             }
             else
@@ -264,6 +277,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mProgressDialog.dismiss();
         if( databaseError != null )
         {
+            StorageReference strRef = StorageManager.getInstance().getExpensesStorageReference( mExpKey );
+            strRef.delete();
             mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
             mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
         }
@@ -273,50 +288,17 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             getFragmentManager().popBackStack();
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
         if(requestCode== RC_PHOTO_REQUEST && resultCode == RESULT_OK && data != null){
             mUriSelectedImage = data.getData();
-            mImage.setImageURI(mUriSelectedImage);
+            Glide.with( mImage.getContext()).load( mUriSelectedImage ).into( mImage );
+        } else if( requestCode == RC_PHOTO_CAPTURE && resultCode == RESULT_OK ) {
+            Glide.with( mImage.getContext()).load( Uri.parse( eeData.captureImageUri ) ).into( mImage );
         }
     }
 
-
-    public void saveImage(final String activiyKey,final String expKey){//curShaActKey,expKey
-        if(mUriSelectedImage !=null && expKey !=null && activiyKey!=null) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                mProgressDialog1 = new ProgressDialog(this.getContext());
-                mProgressDialog1.setTitle("Uploading...");
-                mProgressDialog1.show();
-            }
-            final String namePhoto = "expenses/"+expKey+".jpg";
-            riversRef = mStorageRef.child(namePhoto);
-            riversRef.putFile(mUriSelectedImage)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //taskSnapshot.getDownloadUrl();
-                            FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                            String mostrar = ""+ currentFirebaseUser.getUid();
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                            DatabaseReference actexpref = ref.child("expenses").child(activiyKey).child(expKey);
-                            String urlExpense = mUriSelectedImage + namePhoto;
-                            newExpense.setImageUrl(urlExpense);
-                            actexpref.setValue(newExpense);
-                            // mostrar= actexpref.toString();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(getActivity(),exception.getMessage(),Toast.LENGTH_LONG).show();
-                        }
-                    });
-        }else{
-            //user doesnt selected a photo
-        }
-    }
 
     @Override
     public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
@@ -336,10 +318,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     @OnClick( R.id.img_expense_photo )
     public void pickExpensePhoto() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType( "image/*" );
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        startActivityForResult( Intent.createChooser( intent, getResources().getString( R.string.lbl_select_picture ) ), RC_PHOTO_REQUEST);
+        mImgSourceDialog.show( getChildFragmentManager(), IMG_SOURCE_DIALOG_TAG );
     }
 
     @OnClick( R.id.tv_expense_date )
@@ -365,6 +344,46 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mDatePickerDialog.setDate( eeData.expenseDate );
     }
 
+    @Override
+    public void onImageSourceSelected(int which) {
+        Intent intent;
+        if( mImgSourceDialog != null ) mImgSourceDialog.dismiss();
+        if( which == ImageSourceDialog.TAKE_FROM_CAMERA ) {
+            intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+            File image = null;
+            File imageDir = null;
+            try {
+                imageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                image = new File(imageDir + "/expense_img.jpg" );
+                image.createNewFile();
+            } catch (IOException e) {
+                Toast.makeText( getActivity(), R.string.lbl_camera_error, Toast.LENGTH_LONG).show();
+                return;
+            }
+            if( image != null ) {
+                mUriCapturedImage = FileProvider.getUriForFile(getActivity(),
+                        "it.polito.mad.countonme",
+                        image );
+                eeData.captureImageUri = mUriCapturedImage.toString();
+            } else {
+                Toast.makeText( getActivity(), R.string.lbl_camera_error, Toast.LENGTH_LONG).show();
+                return;
+            }
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriCapturedImage);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivityForResult(intent, RC_PHOTO_CAPTURE);
+            } else {
+                Toast.makeText( getActivity(), R.string.lbl_camera_error, Toast.LENGTH_LONG).show();
+            }
+        } else {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType( "image/*" );
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            startActivityForResult( Intent.createChooser( intent, getResources().getString( R.string.lbl_select_picture ) ), RC_PHOTO_REQUEST);
+        }
+
+    }
+
     /******************************************************/
     /*                 PRIVATE METHODS                    */
     /******************************************************/
@@ -383,7 +402,16 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             View child = inflater.inflate( R.layout.share_editing_item, null );
             ImageView userPhoto = ( ImageView ) child.findViewById( R.id.iv_user );
             TextView userName = (TextView) child.findViewById( R.id.tv_name );
-            new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
+
+            String namePhoto;
+            StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+            String imgUrl = user.getPhotoUrl();
+
+            if( imgUrl != null && imgUrl.length() > 0 ) {
+                Glide.with( userPhoto.getContext()).load( user.getPhotoUrl() ).into( userPhoto );
+            }else
+                userPhoto.setImageResource( R.drawable.default_user_photo );
+
             userName.setText( user.getName() );
             child.setTag( R.id.id_user, user );
             mLlSharingInfo.addView( child );
@@ -424,6 +452,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
 
     private void saveNewExpense() {
+        closeSoftKeyboard();
         if (checkData()) {
             mProgressDialog.setTitle(R.string.lbl_saving_expense);
             mProgressDialog.setMessage(getResources().getString(R.string.lbl_please_wait));
@@ -485,7 +514,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
 
     private void saveExpenseImage() {
-        // TODO check if we need the file extension
         StorageReference strRef = StorageManager.getInstance().getExpensesStorageReference( mExpKey );
 
         UploadTask uploadTask = strRef.putFile( mUriSelectedImage );
@@ -584,5 +612,10 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         Calendar c = Calendar.getInstance();
         c.set( year, month, date );
         eeData.expenseDate.setTime( c.getTimeInMillis() );
+    }
+
+    private void closeSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 }

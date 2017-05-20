@@ -8,13 +8,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.polito.mad.countonme.R;
 import it.polito.mad.countonme.models.User;
-import it.polito.mad.countonme.networking.ImageFromUrlTask;
 
 /**
  * Created by francescobruno on 21/04/17.
@@ -60,7 +61,7 @@ public class UsersAdapter extends BaseAdapter {
         User user = mUsers.get( i );
         String photoUrl = user.getPhotoUrl();
         if( photoUrl != null && photoUrl.length() > 0 ) {
-            new ImageFromUrlTask( holder.image, R.drawable.default_user_photo, true ).execute( photoUrl );
+            Glide.with( holder.image.getContext()).load( photoUrl ).into( holder.image );
         } else {
             holder.image.setImageResource( R.drawable.default_user_photo );
         }

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string-array name="image_sources">
+        <item>@string/lbl_picture_from_camera</item>
+        <item>@string/lbl_picture_from_gallery</item>
+    </string-array>
 </resources>
