@@ -1,5 +1,8 @@
 package it.polito.mad.countonme.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -14,7 +17,7 @@ import java.util.Map;
  */
 
 @IgnoreExtraProperties
-public class Expense {
+public class Expense{
     private String mKey;
     private String mName;
     private String mDescription;
@@ -172,6 +175,5 @@ public class Expense {
         if( id == null || share == null ) return;
         mShares.put( id, share );
     }
-
 }
 

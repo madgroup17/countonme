@@ -151,18 +151,21 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
         holder.mImgView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                infoData = mExpense.get(position);
                 Activity parentActivity  = expensesListFragment.getActivity();
                 ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
             }
         });
         holder.mTvName.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                infoData = mExpense.get(position);
                 Activity parentActivity  = expensesListFragment.getActivity();
                 ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
             }
         });
         holder.mTvAmount.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                infoData = mExpense.get(position);
                 Activity parentActivity  = expensesListFragment.getActivity();
                 ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
             }
@@ -217,8 +220,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         this.notifyItemRemoved(position);
     }
 
-    public void updateAdapter(final ArrayList<Expense> list){
-
+    public void updateAdapter(final ArrayList<Expense> list) {
         this.counter = list.size();
         if(counter!=0) {
             AlertDialog.Builder mPopup = new AlertDialog.Builder(((ExpensesListFragment) this.mListener).getActivity());//traer el activity
