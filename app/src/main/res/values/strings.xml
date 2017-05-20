@@ -32,8 +32,8 @@
     <string name="lbl_money_transfer">Money tranfer</string>
     <string name="lbl_share_evenly">Share evenly</string>
     <string name="lbl_yes">YES</string>
-    <string name="lbl_no">NO</string>
-    <string name="lbl_ok">OK</string>
+    <string name="lbl_no" translatable="false">NO</string>
+    <string name="lbl_ok" translatable="false">OK</string>
 
     <string name="lbl_created_by">Created by: %1$s</string>
 
@@ -145,6 +145,11 @@
     <string name="thanks">Thanks for using CountOnMe</string>
     <string name="usernologged">User did not do log in</string>
     <string name="noexistactivity">The activity shared does not exist any more. Thanks for use CountOnMe</string>
+    <string name="lbl_deleteExpense">An expense will be delete</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lbl_confirmationdeleteExpense">Are you sure that you want to delete the expense?</string>
+    <string name="lbl_any_selected">0 item selected</string>
+    <string name="lbl_item_selected">item selected</string>
 
 
 </resources>

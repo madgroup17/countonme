@@ -45,12 +45,11 @@
     <string name="lbl_nav_drawer_logout">Salir</string>
     <string name="lbl_nav_drawer_settings">Configuración</string>
     <string name="lbl_new_user">Registro de usuario</string>
-    <string name="lbl_no">NO</string>
     <string name="lbl_paid_by">Pagado por</string>
     <string name="lbl_passwd_too_weak">MUY DEBIL!!</string>
     <string name="lbl_password">Contraseña:</string>
     <string name="lbl_password_hint">Ingrese su contraseña</string>
-    <string name="lbl_please_wait">Porfavor espere</string>
+    <string name="lbl_please_wait">Porfavor espere...</string>
     <string name="lbl_register_user">Registro de usuario</string>
     <string name="lbl_registering_user">Registrando usuario</string>
     <string name="lbl_registration_error">No se ha registrado. Porfavor registrese</string>
@@ -74,7 +73,20 @@
     <string name="thanks">Gracias por haber usado CountOnMe</string>
     <string name="usernologged">El usuario no hizo el log in</string>
     <string name="noexistactivity">La actividad compartida no ya no existe, Gracias por haber usado CountOnMe</string>
-    <string name="lbl_users"></string>
-    <string name="lbl_ok">OK</string>
+    <string name="lbl_users">Usuarios</string>
+    <string name="lbl_deleteExpense">Un gasto será eliminado</string>
+    <string name="invitation_title">Agrega una actividad compartida</string>
+    <string name="lbl_add_picture_from">Agrega una foto desde</string>
+    <string name="lbl_created_by">Creada por: %1$s</string>
+    <string name="lbl_error_could_not_save">No se pudo guardar</string>
+    <string name="lbl_error_wrong_expense_sharing">Pofavor revise el monto del gasto</string>
+    <string name="lbl_picture_from_camera">Camara</string>
+    <string name="lbl_picture_from_gallery">Galeria u otros recursos</string>
+    <string name="lbl_share_evenly">Dividir equitativamente</string>
+    <string name="drawer_close">Cierre el cajón de navegación</string>
+    <string name="drawer_open">Abra el cajón de navegación</string>
+    <string name="lbl_confirmationdeleteExpense">Esta seguro que quiere eliminar este gasto?</string>
+    <string name="lbl_any_selected">0 elemento seleccionados</string>
+    <string name="lbl_item_selected">elementos seleccionados</string>
 
 </resources>

@@ -9,9 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,11 +40,14 @@ import it.polito.mad.countonme.swiper.SwipeHelperExpenses;
  * Created by francescobruno on 04/04/17.
  */
 
-public class ExpensesListFragment extends BaseFragment implements  View.OnClickListener, ValueEventListener, IOnListItemClickListener {
+public class ExpensesListFragment extends BaseFragment implements  View.OnClickListener, ValueEventListener, IOnListItemClickListener{//}, View.OnLongClickListener{
     private FloatingActionButton mActionButton;
     private RecyclerView mExpensesRv;
     private ExpenseAdapter mExpensesAdapter;
     private List<Expense> mExpensesList;
+    public static ArrayList<Expense>selection_list = new ArrayList<>();
+    static int counter;
+    public Activity currentActivity;
 
 
     @Override
@@ -61,7 +69,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         mActionButton.setOnClickListener( this );
         mExpensesRv = (RecyclerView)view.findViewById(R.id.expenses_list);
         mExpensesList = new ArrayList<Expense>();
-        mExpensesAdapter = new ExpenseAdapter(getActivity(),mExpensesList,this);
+        mExpensesAdapter = new ExpenseAdapter(getActivity(),mExpensesList,this,this);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mExpensesRv.setLayoutManager(layoutManager);
         mExpensesRv.setAdapter(mExpensesAdapter);
@@ -70,9 +78,9 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         ItemTouchHelper.Callback callback = new SwipeHelperExpenses(mExpensesAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mExpensesRv);
-
-
-
+        counter=0;
+        currentActivity=getActivity();
+        //selection_list=null;
         return view;
     }
 
@@ -91,9 +99,9 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         if(args != null ) setData( args.getString( AppConstants.SHARING_ACTIVITY_KEY ) );
 
         DataManager.getsInstance().getSharActExpensesReference( ( String ) getData() ).addValueEventListener( this );
-
-
         ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).showLoadingDialog();
+        counter=0;
+        selection_list.clear();
     }
 
     @Override
@@ -140,5 +148,37 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         setHasOptionsMenu( true );
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.expense_menu_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_expense:
+                mExpensesAdapter.updateAdapter(selection_list);
+                adjustActionBar();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     /******************************************************************************************/
+
+    public void prepareSelection(Expense infoData){
+        selection_list.add(infoData);
+        counter++;
+        updateCounter(counter);
+    }
+
+    public void updateCounter(int counter){
+        if(counter==0) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("0 item selected");// R.string.lbl_any_selected );
+        }else{
+            //String sToShow = String.format("" + counter + " " + R.string.lbl_item_selected); //gets a number ....
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(counter + "item selected");// sToShow );
+        }
+    }
+
 }

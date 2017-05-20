@@ -25,6 +25,7 @@ import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
+import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
 import it.polito.mad.countonme.models.User;
@@ -125,5 +126,6 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     private void adjustActionBar() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.sharing_activities_title );
     }
+
 
 }

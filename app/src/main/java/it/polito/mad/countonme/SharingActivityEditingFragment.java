@@ -57,9 +57,7 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
         if( savedInstanceState != null ) {
             isAddNewSharing = savedInstanceState.getBoolean( SAVE_STATE_NEW_DATA );
         }
-
         isAddNewSharing  = ( getData() == null );
-
         return view;
     }
 

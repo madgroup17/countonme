@@ -1,12 +1,18 @@
 package it.polito.mad.countonme.lists;
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +27,21 @@ import com.google.firebase.storage.StorageReference;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import it.polito.mad.countonme.CountOnMeActivity;
+import it.polito.mad.countonme.ExpensesListFragment;
 import it.polito.mad.countonme.R;
+import it.polito.mad.countonme.SharingActivitiesListFragment;
 import it.polito.mad.countonme.business.ImageManagement;
 import it.polito.mad.countonme.database.DataManager;
+import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.ReportBackAction;
+import it.polito.mad.countonme.models.SharingActivity;
 import it.polito.mad.countonme.swiper.SwipeHelperExpenses;
 
 
@@ -36,12 +51,13 @@ import it.polito.mad.countonme.swiper.SwipeHelperExpenses;
 
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewHolder> {
 
+    private int counter;
+
     public static class ExpViewHolder extends RecyclerView.ViewHolder {
         ImageView mImgView;
         TextView mTvName;
         TextView mTvAmount;
         private StorageReference mStorageRef;
-
 
         private static NumberFormat mFormatter = new DecimalFormat("#0.00");
 
@@ -92,11 +108,14 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     }
 
 
-    private List<Expense> mExpense;
+    private static List<Expense> mExpense;
     private LayoutInflater mInflater;
-    private IOnListItemClickListener mListener;
+    public IOnListItemClickListener mListener;
     private int currentPosition;
     private Expense infoData;
+    private Context mContext;
+    public Activity currentActivity;
+    public ExpensesListFragment expensesListFragment;
 
     public List<Expense> getmExpense() {
         return mExpense;
@@ -114,10 +133,12 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         this.infoData = infoData;
     }
 
-    public ExpenseAdapter(Context context, List<Expense> data, IOnListItemClickListener listener ) {
+    public ExpenseAdapter(Context context, List<Expense> data, IOnListItemClickListener listener, ExpensesListFragment expensesListFragment ) {
         mExpense = data;
         mListener = listener;
         mInflater = LayoutInflater.from( context );
+        this.mContext=context;
+        this.expensesListFragment = expensesListFragment;
     }
 
     @Override
@@ -130,38 +151,48 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     public void onBindViewHolder(final ExpenseAdapter.ExpViewHolder holder, final int position) {
         holder.setData( mExpense.get( position ), mListener  );
         infoData = mExpense.get(position);
-        /*
+
         holder.mImgView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                //Toast.makeText(holder.mImgView.getContext(), "on click called at position "+position,Toast.LENGTH_SHORT).show();
+                Activity parentActivity  = expensesListFragment.getActivity();
+                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
+            }
+        });
+        holder.mTvName.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Activity parentActivity  = expensesListFragment.getActivity();
+                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
+            }
+        });
+        holder.mTvAmount.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Activity parentActivity  = expensesListFragment.getActivity();
+                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
             }
         });
 
         holder.mImgView.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
-                //Toast.makeText(holder.mImgView.getContext(), "on LONG click called at position "+position,Toast.LENGTH_SHORT).show();
                 infoData = mExpense.get(position);
-                removeItem(infoData);
+                expensesListFragment.prepareSelection(infoData);
                 return false;
             }
         });
         holder.mTvName.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
-                //Toast.makeText(holder.mImgView.getContext(), "on LONG click called at position "+position,Toast.LENGTH_SHORT).show();
                 infoData = mExpense.get(position);
-                removeItem(infoData);
+                expensesListFragment.prepareSelection(infoData);
                 return false;
             }
         });
         holder.mTvAmount.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
-                //Toast.makeText(holder.mImgView.getContext(), "on LONG click called at position "+position,Toast.LENGTH_SHORT).show();
                 infoData = mExpense.get(position);
-                removeItem(infoData);
+                expensesListFragment.prepareSelection(infoData);
                 return false;
             }
         });
-        */
+
 
 
     }
@@ -187,5 +218,43 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         }
         mExpense.remove(position);
         this.notifyItemRemoved(position);
+    }
+
+    public void updateAdapter(final ArrayList<Expense> list){
+
+        this.counter = list.size();
+        if(counter!=0) {
+            AlertDialog.Builder mPopup = new AlertDialog.Builder(((ExpensesListFragment) this.mListener).getActivity());//traer el activity
+            mPopup.setIcon(R.drawable.appicon);
+            mPopup.setTitle(R.string.lbl_deleteExpense);
+            mPopup.setMessage(R.string.lbl_confirmationdeleteExpense);
+            mPopup.setPositiveButton(R.string.lbl_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    while (counter != 0) {
+                        Iterator<Expense> iter = list.iterator();
+                        if (iter.hasNext()) {
+                            Expense exp = iter.next();
+                            ExpensesListFragment.selection_list.remove(exp);
+                            removeItem(exp);
+                            counter = list.size();
+                        }
+                    }
+
+                    dialog.dismiss();
+                }
+            });
+            mPopup.setNegativeButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    notifyDataSetChanged();
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = mPopup.create();
+            alertDialog.show();
+        }
+        notifyDataSetChanged();
     }
 }
