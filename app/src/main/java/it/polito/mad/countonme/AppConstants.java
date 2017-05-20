@@ -18,4 +18,7 @@ public class AppConstants {
 
     public final static int GET_IMAGE_REQUEST       = 1;
 
+    public final static String COUNTER_EXPENSES = "counter";
+    public final static String SELECTION_LIST_EXPENSES="selection_List";
+
 }

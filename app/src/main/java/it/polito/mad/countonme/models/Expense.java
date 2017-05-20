@@ -1,5 +1,8 @@
 package it.polito.mad.countonme.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -14,7 +17,7 @@ import java.util.Map;
  */
 
 @IgnoreExtraProperties
-public class Expense {
+public class Expense{// implements Parcelable{
     private String mKey;
     private String mName;
     private String mDescription;
@@ -181,5 +184,40 @@ public class Expense {
         }
         return( totalShare.compareTo( mAmount ) == 0 );
     }
+/*
+    public Expense(Parcel in ) {
+        this.mName = in.readString();
+        this.mDescription = in.readString();
+        this.mSharingActivityCurrency = mSharingActivityCurrency;
+        this.mExpenseCurrency = mExpenseCurrency;
+        this.mAmount = mAmount;
+        this.mConvertedAmount = mConvertedAmount;
+        this.mImageUrl = mImageUrl;
+        this.mParentSharingActivityId = mParentSharingActivityId;
+        this.mDate = date;
+        this.mIsSurvey = mIsSurvey;
+        this.mIsSharedEvenly = mIsSharedEvenly;
+    }
+*/
+/*
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+*/
+  /*  @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mName);
+        dest.writeString(mKey);
+        dest.writeString(mDescription);
+        dest.writeString(mSharingActivityCurrency);
+        dest.writeString(mExpenseCurrency);
+        dest.writeString(mImageUrl);
+        dest.writeString(mParentSharingActivityId);
+        dest.writeMap(mShares);
+        dest.writeDouble(mAmount);
+        dest.writeDouble(mConvertedAmount);
+        dest.writeB
+    }*/
 }
 
