@@ -80,6 +80,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     public static class ExpenseEditingData {
 
+        private static final String KEY_HAVE_DATA       = "Have_data";
         private static final String KEY_NEW             = "Is_New";
         private static final String KEY_MONEY_TRANSFER  = "Is_Money_Transfer";
         private static final String KEY_SHARE_EVENLY    = "Is_Share_Evenly";
@@ -89,6 +90,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         private static final String KEY_DATE            = "Date";
         private static final String KEY_CAPT_IMAGE      = "CaptureImageUri";
 
+        public Boolean haveData;
         public Boolean isNew;
         public Boolean isMoneyTransfer;
         public Boolean isSharedEvenly;
@@ -99,6 +101,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         public String captureImageUri;
 
         public ExpenseEditingData() {
+            haveData        = false;
             isNew           = true;
             isMoneyTransfer = false;
             isSharedEvenly  = true;
@@ -111,6 +114,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
         public void saveInstance( Bundle outState ) {
             if( outState == null ) return;
+            outState.putBoolean( KEY_HAVE_DATA, haveData );
             outState.putBoolean( KEY_NEW, isNew );
             outState.putBoolean( KEY_MONEY_TRANSFER, isMoneyTransfer );
             outState.putBoolean( KEY_SHARE_EVENLY, isSharedEvenly );
@@ -123,6 +127,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
         public void loadInstance( Bundle inState ) {
             if( inState == null ) return;
+            haveData = inState.getBoolean( KEY_HAVE_DATA );
             isNew = inState.getBoolean( KEY_NEW );
             isMoneyTransfer = inState.getBoolean( KEY_MONEY_TRANSFER );
             isSharedEvenly = inState.getBoolean( KEY_SHARE_EVENLY );
@@ -185,6 +190,15 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     private Uri mUriSelectedImage, mUriCapturedImage;
     private String mExpKey;
 
+
+    private SharingActivity mSharingActivity;
+    private Expense mExpense;
+
+
+    /*****************************************************
+     *              PUBLIC METHODS                       *
+     *****************************************************/
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -199,7 +213,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         if( savedInstanceState == null ) {
             eeData.shaActKey = ( String ) getData( AppConstants.SHARING_ACTIVITY_KEY );
             eeData.expKey = (String) getData( AppConstants.EXPENSE_KEY );
-            eeData.isNew  = (eeData.shaActKey != null );
+            eeData.isNew  = (eeData.expKey == null );
         } else {
             eeData.loadInstance( savedInstanceState );
         }
@@ -213,19 +227,11 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mErrorDialog = new ErrorDialog();
         mImgSourceDialog = new ImageSourceDialog();
         createDatePickerDialog();
-        initializeViewContent();
-
-
-        if( eeData.isNew ) {
-            mSharingActivityLoader = new SharingActivityLoader();
-            mSharingActivityLoader.setOnDataListener( this );
-        } else {
-            mExpenseLoader = new ExpenseLoader();
-            mExpenseLoader.setOnDataListener( this );
-        }
 
         return view;
     }
+
+
 
     @Override
     public void onDestroyView() {
@@ -234,19 +240,17 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
         adjustActionBar();
         try {
-            if (eeData.isNew) {
-                mSharingActivityLoader.loadSharingActivity(eeData.shaActKey);
-            }
-            else
-                mExpenseLoader.loadExpense(eeData.shaActKey, eeData.expKey);
-        } catch (DataLoaderException ex) {
-            ex.printStackTrace();
+            mProgressDialog.setTitle(R.string.lbl_loading_data );
+            mProgressDialog.setMessage(getResources().getString(R.string.lbl_please_wait));
+            mProgressDialog.show();
+            mSharingActivityLoader.loadSharingActivity(eeData.shaActKey);
+        } catch ( DataLoaderException e ) {
+            e.printStackTrace();
         }
     }
 
@@ -256,49 +260,36 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         setHasOptionsMenu( false );
     }
 
-
     @Override
     public void onData( Object data ) {
-        if( data instanceof SharingActivity )
-            fillNewExpense( (SharingActivity ) data );
-        else
-            fillExistingExpense( ( Expense ) data );
+        if( data instanceof SharingActivity ) {
+            mSharingActivity = (  SharingActivity ) data;
+            if( ! eeData.isNew ) {
+                try {
+                    fillUsersSpinnerAndSharingSection();
+                    mExpenseLoader.loadExpense( eeData.shaActKey, eeData.expKey );
+                } catch (DataLoaderException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                mExpense = null;
+                mProgressDialog.dismiss();
+                fillUserInterface();
+            }
+        } else if( data instanceof  Expense ) {
+            mExpense = ( Expense ) data;
+            eeData.expKey = mExpense.getKey();
+            mProgressDialog.dismiss();
+            fillUserInterface();
+        }
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        eeData.haveData = true;
         eeData.saveInstance( outState );
     }
-
-    @Override
-    public void onComplete( DatabaseError databaseError, DatabaseReference databaseReference) {
-        mProgressDialog.dismiss();
-        if( databaseError != null )
-        {
-            StorageReference strRef = StorageManager.getInstance().getExpensesStorageReference( mExpKey );
-            strRef.delete();
-            mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
-            mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
-        }
-        else
-        {
-            clearForm();
-            getFragmentManager().popBackStack();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode== RC_PHOTO_REQUEST && resultCode == RESULT_OK && data != null){
-            mUriSelectedImage = data.getData();
-            Glide.with( mImage.getContext()).load( mUriSelectedImage ).into( mImage );
-        } else if( requestCode == RC_PHOTO_CAPTURE && resultCode == RESULT_OK ) {
-            Glide.with( mImage.getContext()).load( Uri.parse( eeData.captureImageUri ) ).into( mImage );
-        }
-    }
-
 
     @Override
     public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
@@ -337,12 +328,25 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mLlSharingSection.setVisibility( state ? View.GONE : View.VISIBLE  );
     }
 
+
     @Override
     public void onDateSet(android.widget.DatePicker datePicker, int year, int month, int date) {
         updateDate( year, month, date );
         mTvDate.setText( mDateFormat.format( eeData.expenseDate ) );
         mDatePickerDialog.setDate( eeData.expenseDate );
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode== RC_PHOTO_REQUEST && resultCode == RESULT_OK && data != null){
+            eeData.captureImageUri = data.getData().toString();
+            Glide.with( mImage.getContext()).load(eeData.captureImageUri ).into( mImage );
+        } else if( requestCode == RC_PHOTO_CAPTURE && resultCode == RESULT_OK ) {
+            Glide.with( mImage.getContext()).load( Uri.parse( eeData.captureImageUri ) ).into( mImage );
+        }
+    }
+
 
     @Override
     public void onImageSourceSelected(int which) {
@@ -354,8 +358,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             File imageDir = null;
             try {
                 imageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                image = new File(imageDir + "/expense_img.jpg" );
-                image.createNewFile();
+                image = File.createTempFile( "expense_img", ".jpg", imageDir );
             } catch (IOException e) {
                 Toast.makeText( getActivity(), R.string.lbl_camera_error, Toast.LENGTH_LONG).show();
                 return;
@@ -384,18 +387,55 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     }
 
-    /******************************************************/
-    /*                 PRIVATE METHODS                    */
-    /******************************************************/
+    @Override
+    public void onComplete( DatabaseError databaseError, DatabaseReference databaseReference) {
+        mProgressDialog.dismiss();
+        if( databaseError != null )
+        {
+            StorageReference strRef = StorageManager.getInstance().getExpensesStorageReference( mExpKey );
+            strRef.delete();
+            mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
+            mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
+        }
+        else
+        {
+            clearForm();
+            getFragmentManager().popBackStack();
+        }
+    }
 
-    private void fillNewExpense( SharingActivity activity ) {
+    /*****************************************************
+     *              PRIVATE METHODS                      *
+     *****************************************************/
 
-        if( activity == null ) return;
+
+    private  void fillUserInterface() {
+        if( eeData.haveData ) {
+            Glide.with( mImage.getContext() ).load( Uri.parse( eeData.captureImageUri ) ).placeholder(R.drawable.ic_add_a_photo).crossFade().into( mImage );
+            mSwMoneyTransfer.setChecked( eeData.isMoneyTransfer );
+            mSwShareEvenly.setChecked( eeData.isSharedEvenly );
+            // select the chosen payer
+            String payerId;
+            if( eeData.payerId != null ) payerId = eeData.payerId;
+            else payerId =  ((CountOnMeApp) getActivity().getApplication() ).getCurrentUser().getId();
+            selectPayer( payerId );
+        } else {
+           if( eeData.isNew ) {
+               clearForm();
+           } else {
+               fillFormWithData();
+           }
+        }
+    }
+
+
+    private void fillUsersSpinnerAndSharingSection() {
+        if( mSharingActivity == null ) return;
         User user;
         LayoutInflater inflater = LayoutInflater.from( getActivity() );
         mUsersList.clear();
         mLlSharingInfo.removeAllViews();
-        for(Map.Entry<String, User> entry : activity.getUsers().entrySet() ) {
+        for(Map.Entry<String, User> entry : mSharingActivity.getUsers().entrySet() ) {
             user = entry.getValue();
             mUsersList.add( user );
             // set the views for expenses sharing
@@ -417,30 +457,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mLlSharingInfo.addView( child );
         }
         mUsersAdapter.notifyDataSetChanged();
-
-        initializeViewContent();
     }
 
-    private void fillExistingExpense( Expense expense ) {
-        if( expense == null ) return;
-        initializeViewContent();
-    }
-
-    private void initializeViewContent() {
-        mTvDate.setText( mDateFormat.format( eeData.expenseDate ) );
-        mSwMoneyTransfer.setChecked( eeData.isMoneyTransfer );
-        mSwShareEvenly.setChecked( eeData.isSharedEvenly );
-        // select the chosen payer
-        String payerId;
-        if( eeData.payerId != null ) payerId = eeData.payerId;
-        else payerId =  ((CountOnMeApp) getActivity().getApplication() ).getCurrentUser().getId();
-        for( User user: mUsersList ) {
-            if( user.getId().equals( payerId ) ) {
-                mPaidBySpinner.setSelection(mUsersList.indexOf(user));
-                break;
-            }
-        }
-    }
 
     private void createDatePickerDialog() {
         mDateFormat = new SimpleDateFormat( getString( R.string.fmt_date ) );
@@ -450,6 +468,129 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     }
 
 
+    private boolean checkData()
+    {
+        boolean dataProvided = true;
+
+        if( TextUtils.isEmpty( mName.getText().toString() ) ) {
+            dataProvided =  false;
+            mRtvExpenseName.showError();
+        } else {
+            mRtvExpenseName.cleanError();
+        }
+
+        if( TextUtils.isEmpty( mDescription.getText().toString() ) ) {
+            dataProvided = false;
+            mRtvExpenseDescription.showError();
+        } else {
+            mRtvExpenseDescription.cleanError();
+        }
+
+        Double amount;
+        try {
+            amount = Double.parseDouble(mAmount.getText().toString());
+        } catch( NumberFormatException fne ) {
+            amount = 0.0;
+            mAmount.setText("0");
+        }
+
+        if( TextUtils.isEmpty( mAmount.getText().toString() ) ) {
+            dataProvided = false;
+            mRtvExpenseAmount.showError();
+        } else {
+            mRtvExpenseAmount.cleanError();
+        }
+
+        // check the sharing if needed
+        if( eeData.isSharedEvenly == false ) {
+            Double total_sharing = 0.0;
+            for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                View view = mLlSharingInfo.getChildAt( idx );
+                EditText edShareAmount = (EditText) view.findViewById( R.id.ed_amount );
+                Double share_amount;
+                try {
+                    share_amount = Double.parseDouble( edShareAmount.getText().toString());
+                } catch ( NumberFormatException e ) {
+                    share_amount = 0.0;
+                    edShareAmount.setText( "0" );
+                }
+                total_sharing += share_amount;
+            }
+            if( amount.compareTo( total_sharing ) != 0 ) {
+                dataProvided = false;
+                mRtvAmountSharing.showError();
+            } else {
+                mRtvAmountSharing.cleanError();
+            }
+        }
+        return dataProvided;
+    }
+
+    private void clearForm()
+    {
+        mName.setText( "" );
+        mDescription.setText( "" );
+        mAmount.setText( "" );
+        // Set the currency to the sharing activity one
+        mCurrency.setSelection( 0 );
+        // SET the user to the current one
+        mTvDate.setText( mDateFormat.format( new Date() ) );
+        mSwMoneyTransfer.setChecked( false );
+        mSwShareEvenly.setChecked( true );
+    }
+
+    private void adjustActionBar() {
+        if( eeData.isNew )
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_add_new_title );
+        else
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
+        setHasOptionsMenu( true );
+    }
+
+    private void updateDate( int year, int month, int date ) {
+        Calendar c = Calendar.getInstance();
+        c.set( year, month, date );
+        eeData.expenseDate.setTime( c.getTimeInMillis() );
+    }
+
+    private void closeSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    }
+
+
+    private void fillFormWithData() {
+        try {
+            eeData.captureImageUri = mExpense.getImageUrl();
+            Glide.with(mImage.getContext()).load(Uri.parse(eeData.captureImageUri)).placeholder(R.drawable.ic_add_a_photo).crossFade().into(mImage);
+            mName.setText(mExpense.getName());
+            mDescription.setText( mExpense.getDescription() );
+            mAmount.setText( "" + mExpense.getAmount() );
+            // TODO manage the currency
+            eeData.payerId = mExpense.getPayer().getId();
+            selectPayer( eeData.payerId );
+            eeData.expenseDate = mExpense.getDate();
+            mTvDate.setText( mDateFormat.format( eeData.expenseDate ) );
+            mDatePickerDialog.setDate( eeData.expenseDate );
+            eeData.isMoneyTransfer = mExpense.getIsMoneyTransfer();
+            mSwMoneyTransfer.setChecked( eeData.isMoneyTransfer );
+            eeData.isSharedEvenly = mExpense.getIsSharedEvenly();
+            mSwShareEvenly.setChecked(mExpense.getIsSharedEvenly());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void selectPayer( String payerId ) {
+        for( User user: mUsersList ) {
+            if( user.getId().equals( payerId ) ) {
+                mPaidBySpinner.setSelection(mUsersList.indexOf(user));
+                break;
+            }
+        }
+    }
+
 
     private void saveNewExpense() {
         closeSoftKeyboard();
@@ -458,8 +599,14 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mProgressDialog.setMessage(getResources().getString(R.string.lbl_please_wait));
             mProgressDialog.show();
             // first get the new expense Push Id
-            DatabaseReference dbRef = DataManager.getsInstance().getSharActExpensesReference(eeData.shaActKey);
-            mExpKey = dbRef.push().getKey();
+
+            if( eeData.isNew ) {
+                DatabaseReference dbRef = DataManager.getsInstance().getSharActExpensesReference(eeData.shaActKey);
+                mExpKey = dbRef.push().getKey();
+            } else {
+                mExpKey = eeData.expKey;
+            }
+
             // look whether we have an image to save
             if (mUriSelectedImage != null) {
                 saveExpenseImage();
@@ -534,88 +681,5 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     }
 
 
-    private boolean checkData()
-    {
-        boolean dataProvided = true;
 
-        if( TextUtils.isEmpty( mName.getText().toString() ) ) {
-            dataProvided =  false;
-            mRtvExpenseName.showError();
-        } else {
-            mRtvExpenseName.cleanError();
-        }
-
-        if( TextUtils.isEmpty( mDescription.getText().toString() ) ) {
-            dataProvided = false;
-            mRtvExpenseDescription.showError();
-        } else {
-            mRtvExpenseDescription.cleanError();
-        }
-
-        Double amount;
-        try {
-            amount = Double.parseDouble(mAmount.getText().toString());
-        } catch( NumberFormatException fne ) {
-            amount = 0.0;
-            mAmount.setText("0");
-        }
-
-        if( TextUtils.isEmpty( mAmount.getText().toString() ) ) {
-            dataProvided = false;
-            mRtvExpenseAmount.showError();
-        } else {
-            mRtvExpenseAmount.cleanError();
-        }
-
-        // check the sharing if needed
-        if( eeData.isSharedEvenly == false ) {
-            Double total_sharing = 0.0;
-            for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
-                View view = mLlSharingInfo.getChildAt( idx );
-                EditText edShareAmount = (EditText) view.findViewById( R.id.ed_amount );
-                Double share_amount;
-                try {
-                    share_amount = Double.parseDouble( edShareAmount.getText().toString());
-                } catch ( NumberFormatException e ) {
-                    share_amount = 0.0;
-                    edShareAmount.setText( "0" );
-                }
-                total_sharing += share_amount;
-            }
-            if( amount.compareTo( total_sharing ) != 0 ) {
-                dataProvided = false;
-                mRtvAmountSharing.showError();
-            } else {
-                mRtvAmountSharing.cleanError();
-            }
-        }
-        return dataProvided;
-    }
-
-    private void clearForm()
-    {
-        mName.setText( "" );
-        mDescription.setText( "" );
-        mAmount.setText( "" );
-
-    }
-
-    private void adjustActionBar() {
-        if( eeData.isNew )
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_add_new_title );
-        else
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.expense_details_title );
-        setHasOptionsMenu( true );
-    }
-
-    private void updateDate( int year, int month, int date ) {
-        Calendar c = Calendar.getInstance();
-        c.set( year, month, date );
-        eeData.expenseDate.setTime( c.getTimeInMillis() );
-    }
-
-    private void closeSoftKeyboard() {
-        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-    }
 }

@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,8 +38,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.DataLoaderException;
+import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
+import it.polito.mad.countonme.messaging.MessagingManager;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
 import it.polito.mad.countonme.models.User;
@@ -65,6 +68,7 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
     String emailUser;
     String urlUser;
     private String path;
+    private SharingActivity myActivity;
 
     @Override
     public void onAttach(Context context) {
@@ -115,6 +119,12 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
 
                     User current = new User(id,nombre,correo,urlphoto);//(idUser,nUser,emailUser,urlUser);
                     actuserref.child(id).setValue(current);
+                    // register new user to the notification about this sharing activity
+                    try {
+                        MessagingManager.getInstance().subscribeToSharingActivity( myActivity.getKey() );
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     //redirect to sharing activity item list
                     getActivity().finish();
@@ -172,7 +182,7 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
         // Here the data arrives
         //Log.d("Hello", "ello"); // here are your data as you can see
         if(dataSnapshot.getValue() != null){
-        SharingActivity myActivity = (SharingActivity) dataSnapshot.getValue(SharingActivity.class);
+        myActivity = (SharingActivity) dataSnapshot.getValue(SharingActivity.class);
         mNameSADetails.setText(myActivity.getName());
         mDetailsSADetails.setText(myActivity.getDescription());
         mCurrencySADetails.setText(myActivity.getCurrency());
