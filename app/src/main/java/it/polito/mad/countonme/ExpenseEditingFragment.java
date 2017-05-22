@@ -222,6 +222,10 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mUsersAdapter = new UsersAdapter( getActivity(), mUsersList );
         mPaidBySpinner.setAdapter( mUsersAdapter );
 
+        mSharingActivityLoader = new SharingActivityLoader();
+        mSharingActivityLoader.setOnDataListener( this );
+        mExpenseLoader = new ExpenseLoader();
+        mExpenseLoader.setOnDataListener( this );
 
         mProgressDialog = new ProgressDialog( getActivity() );
         mErrorDialog = new ErrorDialog();
@@ -264,9 +268,9 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     public void onData( Object data ) {
         if( data instanceof SharingActivity ) {
             mSharingActivity = (  SharingActivity ) data;
+            fillUsersSpinnerAndSharingSection();
             if( ! eeData.isNew ) {
                 try {
-                    fillUsersSpinnerAndSharingSection();
                     mExpenseLoader.loadExpense( eeData.shaActKey, eeData.expKey );
                 } catch (DataLoaderException e) {
                     e.printStackTrace();
@@ -300,7 +304,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_expense:
-                saveNewExpense();
+                saveExpense();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -592,15 +596,15 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     }
 
 
-    private void saveNewExpense() {
+    private void saveExpense() {
         closeSoftKeyboard();
         if (checkData()) {
             mProgressDialog.setTitle(R.string.lbl_saving_expense);
             mProgressDialog.setMessage(getResources().getString(R.string.lbl_please_wait));
             mProgressDialog.show();
-            // first get the new expense Push Id
 
             if( eeData.isNew ) {
+                // first get the new expense Push Id
                 DatabaseReference dbRef = DataManager.getsInstance().getSharActExpensesReference(eeData.shaActKey);
                 mExpKey = dbRef.push().getKey();
             } else {
@@ -608,7 +612,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             }
 
             // look whether we have an image to save
-            if (mUriSelectedImage != null) {
+            if ( eeData.captureImageUri != null ) {
                 saveExpenseImage();
             } else {
                 saveExpenseData( null );
@@ -646,16 +650,16 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
                 User user = (User) view.getTag(R.id.id_user);
                 newExpense.addShare(user.getId(), new Share(user, amount));
             }
+        }
 
-            // finally lets save data
-            try {
-                DataManager.getsInstance().updateExpense(eeData.shaActKey, newExpense, this);
-            } catch (InvalidDataException ex) {
-                mProgressDialog.dismiss();
-                mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
-                mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
+        // finally lets save data
+        try {
+            DataManager.getsInstance().updateExpense(eeData.shaActKey, newExpense, this);
+        } catch (InvalidDataException ex) {
+            mProgressDialog.dismiss();
+            mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
+            mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
 
-            }
         }
     }
 
@@ -663,7 +667,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     private void saveExpenseImage() {
         StorageReference strRef = StorageManager.getInstance().getExpensesStorageReference( mExpKey );
 
-        UploadTask uploadTask = strRef.putFile( mUriSelectedImage );
+        UploadTask uploadTask = strRef.putFile( Uri.parse( eeData.captureImageUri ) );
 
         uploadTask.addOnSuccessListener(getActivity(), new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
