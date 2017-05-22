@@ -18,11 +18,10 @@
             android:src="@drawable/ic_add_a_photo"
             android:background="?attr/selectableItemBackground"
             android:layout_alignParentTop="true"
-            android:padding="@dimen/image_padding_10"
             android:layout_alignParentLeft="true"/>
 
         <it.polito.mad.countonme.customviews.RequiredInputTextView
-            android:id="@+id/rtv_expense_name"
+            android:id="@+id/rtv_sharing_activity_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/lbl_name"

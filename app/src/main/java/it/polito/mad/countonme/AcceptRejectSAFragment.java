@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,15 +54,16 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabase;
     private TextView mNameSADetails;
+    private TextView mCreatedBy;
     private TextView mDetailsSADetails;
     private TextView mCurrencySADetails;
+    private ImageView mIvPhoto;
     private boolean vacio;
     HashMap<String,User> UserMap;
     String nUser;
     String idUser;
     String emailUser;
     String urlUser;
-    private Unbinder mUnbinder;
     private String path;
 
     @Override
@@ -85,8 +87,10 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
         DataManager.getsInstance().getSharingActivityReference(path).addListenerForSingleValueEvent(this);
 
         mNameSADetails = (TextView) view.findViewById(R.id.tv_name);
+        mCreatedBy = (TextView) view.findViewById( R.id.tv_created_by );
         mDetailsSADetails = (TextView) view.findViewById(R.id.tv_description);
         mCurrencySADetails = (TextView) view.findViewById(R.id.tv_currency);
+        mIvPhoto = (ImageView) view.findViewById( R.id.iv_shact_img );
 
         SharingActivity model = new SharingActivity();
 
@@ -172,6 +176,10 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
         mNameSADetails.setText(myActivity.getName());
         mDetailsSADetails.setText(myActivity.getDescription());
         mCurrencySADetails.setText(myActivity.getCurrency());
+        String createdBy = String.format(getResources().getString(R.string.lbl_created_by), myActivity.getCreatedBy().getName());
+        mCreatedBy.setText(createdBy);
+        if( myActivity.getImageUrl() != null )
+            Glide.with( mIvPhoto.getContext()).load( myActivity.getImageUrl() ).into( mIvPhoto );
         for(DataSnapshot userDataSnapshot : dataSnapshot.getChildren()){
             if(userDataSnapshot.getKey().equals("users")){
                 HashMap<String,HashMap<String,String>> aux = (HashMap<String,HashMap<String,String>>)userDataSnapshot.getValue();

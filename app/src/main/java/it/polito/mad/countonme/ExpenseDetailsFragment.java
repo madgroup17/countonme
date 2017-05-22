@@ -32,31 +32,21 @@ import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.Share;
-import it.polito.mad.countonme.networking.ImageFromUrlTask;
 
 public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListener {
 
-    @BindView(R.id.iv_exp_img)
-    ImageView mIvPhoto;
-    @BindView(R.id.tv_created_by)
-    TextView mTvCreatedBy;
-    @BindView(R.id.tv_name)
-    TextView mTvName;
-    @BindView(R.id.tv_description)
-    TextView mTvDescription;
-    @BindView(R.id.tv_currency)
-    TextView mTvCurrency;
-    @BindView(R.id.tv_amount)
-    TextView mTvAmount;
-    @BindView(R.id.tv_date)
-    TextView mTvDate;
-    @BindView(R.id.tv_money_transfer)
-    TextView mTvMoneyTransfer;
-    @BindView(R.id.tv_shared_evenly)
-    TextView mTvSharedEvenly;
+    @BindView( R.id.iv_exp_img) ImageView mIvPhoto;
+    @BindView( R.id.tv_created_by ) TextView mTvCreatedBy;
+    @BindView( R.id.tv_name ) TextView mTvName;
+    @BindView( R.id.tv_description ) TextView mTvDescription;
+    @BindView( R.id.tv_currency ) TextView mTvCurrency;
+    @BindView( R.id.tv_amount ) TextView mTvAmount;
+    @BindView( R.id.tv_date ) TextView mTvDate;
+    @BindView( R.id.tv_money_transfer ) TextView mTvMoneyTransfer;
+    @BindView( R.id.tv_shared_evenly ) TextView mTvSharedEvenly;
 
-    @BindView(R.id.ll_sharing_info)
-    LinearLayout mLlShareInfo;
+    @BindView( R.id.ll_sharing_section) LinearLayout mLlSharingSection;
+    @BindView( R.id.ll_sharing_info )  LinearLayout mLlShareInfo;
 
     private Unbinder mUnbinder;
 
@@ -179,7 +169,6 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         mLlShareInfo.removeAllViews();
         if (expense.getIsSharedEvenly() == false) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-
             for (Map.Entry<String, Share> entry : expense.getShares().entrySet()) {
                 Share share = entry.getValue();
                 // set the views for expenses sharing
@@ -187,15 +176,17 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
                 ImageView userPhoto = (ImageView) child.findViewById(R.id.iv_user);
                 TextView userName = (TextView) child.findViewById(R.id.tv_name);
                 TextView amount = (TextView) child.findViewById(R.id.tv_amount);
-                new ImageFromUrlTask(userPhoto, R.drawable.default_user_photo, true).execute(share.getUser().getPhotoUrl());
+                if( share.getUser().getPhotoUrl() != null )
+                    Glide.with( userPhoto.getContext()).load( share.getUser().getPhotoUrl() ).into( userPhoto );
+                else
+                    userPhoto.setImageResource( R.drawable.default_user_photo );
                 userName.setText(share.getUser().getName());
                 amount.setText(formatter.format(share.getAmount()));
 
                 mLlShareInfo.addView(child);
-
             }
         }
-        mLlShareInfo.setVisibility(expense.getIsSharedEvenly() ? View.GONE : View.VISIBLE);
+        mLlSharingSection.setVisibility( expense.getIsSharedEvenly() ? View.GONE : View.VISIBLE );
 
     }
 

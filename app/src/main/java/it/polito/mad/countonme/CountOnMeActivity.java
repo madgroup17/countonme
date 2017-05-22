@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -29,7 +30,9 @@ import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.User;
 
-public class CountOnMeActivity extends AppCompatActivity implements IActionReportBack, IOnDrawerItemListener, IOnDataListener {
+public class CountOnMeActivity extends AppCompatActivity implements IActionReportBack, IOnDrawerItemListener, IOnDataListener,
+FirebaseAuth.AuthStateListener {
+
 
     private static final String TAG = CountOnMeActivity.class.getName();
 
@@ -55,6 +58,7 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
     private ProgressDialog mLoadingProgressDialog;
     private boolean mShowShalist;
     private boolean mIsLoadingUser;
+    private FirebaseAuth mFirebaseAuth;
 
     @BindView( R.id.toolbar ) Toolbar mToolbar;
 
@@ -63,7 +67,29 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
         super.onCreate(savedInstanceState);
         initProgressDialog();
         // check whether the user is logged in
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mShowShalist = ( savedInstanceState == null);
+        setContentView(R.layout.activity_sharing);
+        ButterKnife.bind( this );
+        mFragmentManager = getFragmentManager();
+        setUpDrawer();
+        setUpActionBar();
+        loadAppFragments();
+    }
+
+    @Override
+    public void onData(Object data) {
+        hideLoadingDialog();
+        ( (CountOnMeApp)getApplication() ).setCurrentUser( (User) data );
+        if( mShowShalist );
+            showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
+        manageCallingIntent();
+    }
+
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if( currentUser == null ) {
             // no user logged in so we switch to the login activity
             finish();
@@ -83,13 +109,6 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
                 }
             }
         }
-        mShowShalist = ( savedInstanceState == null);
-        setContentView(R.layout.activity_sharing);
-        ButterKnife.bind( this );
-        mFragmentManager = getFragmentManager();
-        setUpDrawer();
-        setUpActionBar();
-        loadAppFragments();
 
         if( mIsLoadingUser == false ) {
             if( mShowShalist == true ){
@@ -101,17 +120,8 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
                     handleActionAcceptRejectSAFragment(intentback.getData());
                 }
             }
-                manageCallingIntent();
+            manageCallingIntent();
         }
-    }
-
-    @Override
-    public void onData(Object data) {
-        hideLoadingDialog();
-        ( (CountOnMeApp)getApplication() ).setCurrentUser( (User) data );
-        if( mShowShalist );
-            showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
-        manageCallingIntent();
     }
 
 
@@ -164,6 +174,19 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
                 Log.w( TAG, "Unknown/Not implemented action: " + action.getAction().name() );
                 break;
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        mFirebaseAuth.addAuthStateListener( this );
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFirebaseAuth.removeAuthStateListener(this);
     }
 
 
@@ -244,11 +267,8 @@ public class CountOnMeActivity extends AppCompatActivity implements IActionRepor
     }
 
     private void doLogout() {
-        FirebaseAuth mFirebaseAuth  = FirebaseAuth.getInstance();
         mFirebaseAuth.signOut();
         ( ( CountOnMeApp ) getApplication()).setCurrentUser( null );
-        finish();
-        startActivity(new Intent(this, LoginActivity.class ) );
     }
 
     private void initProgressDialog() {

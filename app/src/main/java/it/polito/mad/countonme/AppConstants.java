@@ -22,4 +22,7 @@ public class AppConstants {
     public final static String NEW_MODE = "New";
     public final static String MODE = "Mode";
 
+    public final static String COUNTER_EXPENSES = "counter";
+    public final static String SELECTION_LIST_EXPENSES="selection_List";
+
 }

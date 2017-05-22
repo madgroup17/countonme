@@ -42,6 +42,7 @@ import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
+import it.polito.mad.countonme.storage.StorageManager;
 import it.polito.mad.countonme.swiper.SwipeHelperExpenses;
 
 
@@ -71,14 +72,10 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         public void setData(final Expense expense, final IOnListItemClickListener listener ) {
             String namePhoto;
             mStorageRef = FirebaseStorage.getInstance().getReference();
-            //mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl("");
-            //mStorageRef.getDownloadUrl().addOnSuccessListener();
-//
             String imgUrl = expense.getImageUrl();
 
-
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                namePhoto = "expenses/" + expense.getKey() + ".jpg";
+                namePhoto = StorageManager.STORAGE_EXPENSES_FOLDER + "/" + expense.getKey();
                 StorageReference newstoragereference = mStorageRef.child(namePhoto);
 
                 Glide.with(mImgView.getContext()).using(new ImageManagement()).load(newstoragereference).asBitmap().centerCrop().into(new BitmapImageViewTarget(mImgView) {
@@ -154,18 +151,21 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
         holder.mImgView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                infoData = mExpense.get(position);
                 Activity parentActivity  = expensesListFragment.getActivity();
                 ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
             }
         });
         holder.mTvName.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                infoData = mExpense.get(position);
                 Activity parentActivity  = expensesListFragment.getActivity();
                 ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
             }
         });
         holder.mTvAmount.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                infoData = mExpense.get(position);
                 Activity parentActivity  = expensesListFragment.getActivity();
                 ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
             }
@@ -220,8 +220,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         this.notifyItemRemoved(position);
     }
 
-    public void updateAdapter(final ArrayList<Expense> list){
-
+    public void updateAdapter(final ArrayList<Expense> list) {
         this.counter = list.size();
         if(counter!=0) {
             AlertDialog.Builder mPopup = new AlertDialog.Builder(((ExpensesListFragment) this.mListener).getActivity());//traer el activity

@@ -4,11 +4,12 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,7 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,13 +27,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -48,7 +52,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import it.polito.mad.countonme.UI.DatePicker;
 import it.polito.mad.countonme.UI.ErrorDialog;
-import it.polito.mad.countonme.business.ImageManagement;
+import it.polito.mad.countonme.UI.ImageSourceDialog;
 import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.database.ExpenseLoader;
@@ -57,13 +61,11 @@ import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.lists.UsersAdapter;
-import it.polito.mad.countonme.models.*;
-import it.polito.mad.countonme.networking.ImageFromUrlTask;
-
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import it.polito.mad.countonme.models.Expense;
+import it.polito.mad.countonme.models.Share;
+import it.polito.mad.countonme.models.SharingActivity;
+import it.polito.mad.countonme.models.User;
+import it.polito.mad.countonme.storage.StorageManager;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -73,7 +75,8 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class ExpenseEditingFragment extends BaseFragment implements DatabaseReference.CompletionListener,
-       DatePickerDialog.OnDateSetListener, IOnDataListener {
+       DatePickerDialog.OnDateSetListener, IOnDataListener, ImageSourceDialog.IImageSourceDialogListener {
+
 
     public static class ExpenseEditingData {
 
@@ -84,6 +87,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         private static final String KEY_EXPKEY          = "Expense_Key";
         private static final String KEY_PAYER           = "Payer";
         private static final String KEY_DATE            = "Date";
+        private static final String KEY_CAPT_IMAGE      = "CaptureImageUri";
 
         public Boolean isNew;
         public Boolean isMoneyTransfer;
@@ -92,6 +96,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         public String expKey;
         public String payerId;
         public Date expenseDate;
+        public String captureImageUri;
 
         public ExpenseEditingData() {
             isNew           = true;
@@ -101,6 +106,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             expKey          = null;
             payerId         = null;
             expenseDate     = new Date();
+            captureImageUri = null;
         }
 
         public void saveInstance( Bundle outState ) {
@@ -112,6 +118,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             outState.putString( KEY_EXPKEY, expKey );
             outState.putString( KEY_PAYER, payerId );
             outState.putSerializable( KEY_DATE, expenseDate );
+            outState.putString( KEY_CAPT_IMAGE, captureImageUri );
         }
 
         public void loadInstance( Bundle inState ) {
@@ -123,19 +130,25 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             expKey  = inState.getString( KEY_EXPKEY );
             payerId = inState.getString( KEY_PAYER );
             expenseDate = ( Date ) inState.getSerializable( KEY_DATE );
+            captureImageUri = inState.getString( KEY_CAPT_IMAGE );
         }
 
     }
 
 
-    private static final String DATE_PICKER_TAG = "date_picker";
-    private static final int PICK_IMAGE_REQUEST = 2;
+    private static final String DATE_PICKER_TAG       = "date_picker";
+    private static final String ERROR_DIALOG_TAG      = "error_dialog";
+    private static final String IMG_SOURCE_DIALOG_TAG = "image_source_dialog";
+
+    private static final int RC_PHOTO_CAPTURE = 1;
+    private static final int RC_PHOTO_REQUEST = 2;
 
     @BindView( R.id.rtv_expense_name )  RequiredInputTextView mRtvExpenseName;
     @BindView( R.id.rtv_expense_description ) RequiredInputTextView mRtvExpenseDescription;
     @BindView( R.id.rtv_expense_amount ) RequiredInputTextView mRtvExpenseAmount;
     @BindView( R.id.rtv_expense_currency ) RequiredInputTextView mRtvExpenseCurrency;
     @BindView( R.id.rtv_expense_payer ) RequiredInputTextView mRtvExpensePayer;
+    @BindView( R.id.rtv_amount_sharing ) RequiredInputTextView mRtvAmountSharing;
 
     @BindView( R.id.img_expense_photo ) ImageView mImage;
     @BindView( R.id.ed_expense_name ) EditText mName;
@@ -147,17 +160,19 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @BindView( R.id.sw_money_transfer ) Switch mSwMoneyTransfer;
     @BindView( R.id.sw_share_evenly ) Switch mSwShareEvenly;
 
+    @BindView( R.id.ll_sharing_section) LinearLayout mLlSharingSection;
     @BindView( R.id.ll_sharing_info) LinearLayout mLlSharingInfo;
 
     private Unbinder mUnbinder;
 
     private UsersAdapter mUsersAdapter;
-    private SharingActivity mSharingActivity;
     private Expense newExpense;
-    private ProgressDialog mProgressDialog1;
-
     private ProgressDialog mProgressDialog;
+
     private ErrorDialog mErrorDialog;
+
+    private ImageSourceDialog mImgSourceDialog;
+
     private DatePicker mDatePickerDialog;
     private DateFormat mDateFormat;
 
@@ -167,11 +182,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     private ArrayList<User> mUsersList;
 
     private ExpenseEditingFragment.ExpenseEditingData eeData = new ExpenseEditingFragment.ExpenseEditingData();
-    private Uri filePath;
-    private StorageReference riversRef;
-    private StorageReference mStorageRef;
-    private String generatedFilePath;
-    private String expKey;
+    private Uri mUriSelectedImage, mUriCapturedImage;
+    private String mExpKey;
 
     @Override
     public void onAttach(Context context) {
@@ -199,8 +211,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
         mProgressDialog = new ProgressDialog( getActivity() );
         mErrorDialog = new ErrorDialog();
-        mErrorDialog.setDialogContent( R.string.lbl_error_could_not_save, R.string.lbl_error_wrong_expense_sharing );
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        mImgSourceDialog = new ImageSourceDialog();
         createDatePickerDialog();
         initializeViewContent();
 
@@ -222,13 +233,16 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mUnbinder.unbind();
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
         adjustActionBar();
         try {
-            if (eeData.isNew)
+            if (eeData.isNew) {
                 mSharingActivityLoader.loadSharingActivity(eeData.shaActKey);
+            }
             else
                 mExpenseLoader.loadExpense(eeData.shaActKey, eeData.expKey);
         } catch (DataLoaderException ex) {
@@ -263,71 +277,28 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mProgressDialog.dismiss();
         if( databaseError != null )
         {
-            Toast.makeText( getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
+            StorageReference strRef = StorageManager.getInstance().getExpensesStorageReference( mExpKey );
+            strRef.delete();
+            mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
+            mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
         }
         else
         {
-            ClearForm();
+            clearForm();
             getFragmentManager().popBackStack();
-            String curShaActKey= databaseReference.getKey();
-            //expKey= ""+getData();
-            //ImageManagement.saveImage(key,curShaActKey);
-            saveImage(curShaActKey,expKey);
-            Toast.makeText(getActivity(), R.string.lbl_expense_saved, Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-        if(requestCode==PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null){
-            //filePath = data.getData();
-            filePath = data.getData();
-            mImage.setImageURI(filePath);
-/*
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(),filePath);
-                mImage.setImageBitmap(bitmap);
+        if(requestCode== RC_PHOTO_REQUEST && resultCode == RESULT_OK && data != null){
+            mUriSelectedImage = data.getData();
+            Glide.with( mImage.getContext()).load( mUriSelectedImage ).into( mImage );
+        } else if( requestCode == RC_PHOTO_CAPTURE && resultCode == RESULT_OK ) {
+            Glide.with( mImage.getContext()).load( Uri.parse( eeData.captureImageUri ) ).into( mImage );
+        }
+    }
 
-            }catch (IOException e){
-                //ignore
-            }
-*/
-        }
-    }
-    public void saveImage(final String activiyKey,final String expKey){//curShaActKey,expKey
-        if(filePath!=null && expKey !=null && activiyKey!=null) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                mProgressDialog1 = new ProgressDialog(this.getContext());
-                mProgressDialog1.setTitle("Uploading...");
-                mProgressDialog1.show();
-            }
-            final String namePhoto = "expenses/"+expKey+".jpg";
-            riversRef = mStorageRef.child(namePhoto);
-            riversRef.putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //taskSnapshot.getDownloadUrl();
-                            FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                            String mostrar = ""+ currentFirebaseUser.getUid();
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                            DatabaseReference actexpref = ref.child("expenses").child(activiyKey).child(expKey);
-                            String urlExpense = filePath + namePhoto;
-                            newExpense.setImageUrl(urlExpense);
-                            actexpref.setValue(newExpense);
-                            // mostrar= actexpref.toString();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(getActivity(),exception.getMessage(),Toast.LENGTH_LONG).show();
-                        }
-                    });
-        }else{
-            //user doesnt selected a photo
-        }
-    }
 
     @Override
     public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
@@ -347,11 +318,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     @OnClick( R.id.img_expense_photo )
     public void pickExpensePhoto() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType( "image/*" );
-        //intent.setAction( Intent.ACTION_GET_CONTENT );
-        //startActivityForResult( Intent.createChooser( intent, "Select Picture"), PICK_IMAGE_REQUEST);
-        startActivityForResult( intent,PICK_IMAGE_REQUEST);//.createChooser( intent, "Select Picture"), AppConstants.GET_IMAGE_REQUEST);
+        mImgSourceDialog.show( getChildFragmentManager(), IMG_SOURCE_DIALOG_TAG );
     }
 
     @OnClick( R.id.tv_expense_date )
@@ -367,7 +334,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @OnCheckedChanged( R.id.sw_share_evenly )
     public void shareEvenlyChanged( boolean state ) {
         eeData.isSharedEvenly = state;
-        mLlSharingInfo.setVisibility( state ? View.GONE : View.VISIBLE  );
+        mLlSharingSection.setVisibility( state ? View.GONE : View.VISIBLE  );
     }
 
     @Override
@@ -375,6 +342,46 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         updateDate( year, month, date );
         mTvDate.setText( mDateFormat.format( eeData.expenseDate ) );
         mDatePickerDialog.setDate( eeData.expenseDate );
+    }
+
+    @Override
+    public void onImageSourceSelected(int which) {
+        Intent intent;
+        if( mImgSourceDialog != null ) mImgSourceDialog.dismiss();
+        if( which == ImageSourceDialog.TAKE_FROM_CAMERA ) {
+            intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+            File image = null;
+            File imageDir = null;
+            try {
+                imageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                image = new File(imageDir + "/expense_img.jpg" );
+                image.createNewFile();
+            } catch (IOException e) {
+                Toast.makeText( getActivity(), R.string.lbl_camera_error, Toast.LENGTH_LONG).show();
+                return;
+            }
+            if( image != null ) {
+                mUriCapturedImage = FileProvider.getUriForFile(getActivity(),
+                        "it.polito.mad.countonme",
+                        image );
+                eeData.captureImageUri = mUriCapturedImage.toString();
+            } else {
+                Toast.makeText( getActivity(), R.string.lbl_camera_error, Toast.LENGTH_LONG).show();
+                return;
+            }
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriCapturedImage);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivityForResult(intent, RC_PHOTO_CAPTURE);
+            } else {
+                Toast.makeText( getActivity(), R.string.lbl_camera_error, Toast.LENGTH_LONG).show();
+            }
+        } else {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType( "image/*" );
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            startActivityForResult( Intent.createChooser( intent, getResources().getString( R.string.lbl_select_picture ) ), RC_PHOTO_REQUEST);
+        }
+
     }
 
     /******************************************************/
@@ -395,7 +402,16 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             View child = inflater.inflate( R.layout.share_editing_item, null );
             ImageView userPhoto = ( ImageView ) child.findViewById( R.id.iv_user );
             TextView userName = (TextView) child.findViewById( R.id.tv_name );
-            new ImageFromUrlTask( userPhoto, R.drawable.default_user_photo, true ).execute( user.getPhotoUrl() );
+
+            String namePhoto;
+            StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+            String imgUrl = user.getPhotoUrl();
+
+            if( imgUrl != null && imgUrl.length() > 0 ) {
+                Glide.with( userPhoto.getContext()).load( user.getPhotoUrl() ).into( userPhoto );
+            }else
+                userPhoto.setImageResource( R.drawable.default_user_photo );
+
             userName.setText( user.getName() );
             child.setTag( R.id.id_user, user );
             mLlSharingInfo.addView( child );
@@ -433,56 +449,90 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mDatePickerDialog.setDate( eeData.expenseDate );
     }
 
-    private void saveNewExpense()
-    {
-        //TODO need to distinguish between save and update
-        if( checkData() )
-        {
-            newExpense = new Expense();
-            newExpense.setName(mName.getText().toString());
-            newExpense.setDescription(mDescription.getText().toString());
-            newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
-            newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
-            newExpense.setPayer( (User) mPaidBySpinner.getSelectedItem() );
-            newExpense.setIsMoneyTransfer( eeData.isMoneyTransfer );
-            newExpense.setIsSharedEvenly( eeData.isSharedEvenly );
-            newExpense.setDate( eeData.expenseDate );
-            newExpense.setParentSharingActivityId( eeData.shaActKey );
-            newExpense.setCreatedBy( ( ( CountOnMeApp ) getActivity().getApplication()).getCurrentUser() );
 
-            if( eeData.isSharedEvenly == false ) {
-                newExpense.clearShare();
-                for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
-                    View view = mLlSharingInfo.getChildAt(idx);
-                    String strAmount  =  ( (EditText) view.findViewById( R.id.ed_amount ) ).getText().toString();
-                    Double amount;
-                    try {
-                        amount = Double.parseDouble(strAmount);
-                    } catch ( NumberFormatException e ) {
-                        amount = 0.0;
-                    }
-                    User user = ( User ) view.getTag( R.id.id_user );
-                    newExpense.addShare( user.getId(), new Share(user, amount ) );
-                }
-                if( false == newExpense.checkSharing() ) {
-                    mErrorDialog.show( getFragmentManager(), "error" );
-                    return;
-                }
+
+    private void saveNewExpense() {
+        closeSoftKeyboard();
+        if (checkData()) {
+            mProgressDialog.setTitle(R.string.lbl_saving_expense);
+            mProgressDialog.setMessage(getResources().getString(R.string.lbl_please_wait));
+            mProgressDialog.show();
+            // first get the new expense Push Id
+            DatabaseReference dbRef = DataManager.getsInstance().getSharActExpensesReference(eeData.shaActKey);
+            mExpKey = dbRef.push().getKey();
+            // look whether we have an image to save
+            if (mUriSelectedImage != null) {
+                saveExpenseImage();
+            } else {
+                saveExpenseData( null );
             }
 
+        }
+    }
+
+    private void saveExpenseData(Uri imageDownloadUrl ) {
+        newExpense = new Expense();
+        newExpense.setKey(mExpKey);
+        newExpense.setName(mName.getText().toString());
+        newExpense.setDescription(mDescription.getText().toString());
+        newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
+        newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
+        newExpense.setPayer((User) mPaidBySpinner.getSelectedItem());
+        newExpense.setIsMoneyTransfer(eeData.isMoneyTransfer);
+        newExpense.setIsSharedEvenly(eeData.isSharedEvenly);
+        newExpense.setDate(eeData.expenseDate);
+        newExpense.setParentSharingActivityId(eeData.shaActKey);
+        newExpense.setCreatedBy(((CountOnMeApp) getActivity().getApplication()).getCurrentUser());
+        if (imageDownloadUrl != null)
+            newExpense.setImageUrl(imageDownloadUrl.toString());
+
+        if (eeData.isSharedEvenly == false) {
+            newExpense.clearShare();
+            for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                View view = mLlSharingInfo.getChildAt(idx);
+                Double amount;
+                try {
+                    amount = Double.parseDouble(((EditText) view.findViewById(R.id.ed_amount)).getText().toString());
+                } catch (NumberFormatException e) {
+                    amount = 0.0;
+                }
+                User user = (User) view.getTag(R.id.id_user);
+                newExpense.addShare(user.getId(), new Share(user, amount));
+            }
+
+            // finally lets save data
             try {
-
-                mProgressDialog.setTitle( R.string.lbl_saving_expense);
-                mProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
-                mProgressDialog.show();
-                expKey = DataManager.getsInstance().addNewExpense(eeData.shaActKey, newExpense, this);
-
+                DataManager.getsInstance().updateExpense(eeData.shaActKey, newExpense, this);
             } catch (InvalidDataException ex) {
                 mProgressDialog.dismiss();
-                Toast.makeText(getActivity(), R.string.lbl_saving_error, Toast.LENGTH_LONG).show();
+                mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
+                mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
+
             }
         }
     }
+
+
+    private void saveExpenseImage() {
+        StorageReference strRef = StorageManager.getInstance().getExpensesStorageReference( mExpKey );
+
+        UploadTask uploadTask = strRef.putFile( mUriSelectedImage );
+
+        uploadTask.addOnSuccessListener(getActivity(), new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                saveExpenseData( taskSnapshot.getDownloadUrl() );
+            }
+        }).addOnFailureListener(getActivity(), new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                mProgressDialog.dismiss();
+                mErrorDialog.setDialogContent(R.string.lbl_error_could_not_save, R.string.lbl_error_please_try_again);
+                mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
+            }
+        });
+    }
+
 
     private boolean checkData()
     {
@@ -502,24 +552,52 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mRtvExpenseDescription.cleanError();
         }
 
-        if( TextUtils.isEmpty( mAmount.getText().toString() ) ||
-                Double.parseDouble( mAmount.getText().toString() ) <= 0.0001f ) {
+        Double amount;
+        try {
+            amount = Double.parseDouble(mAmount.getText().toString());
+        } catch( NumberFormatException fne ) {
+            amount = 0.0;
+            mAmount.setText("0");
+        }
+
+        if( TextUtils.isEmpty( mAmount.getText().toString() ) ) {
             dataProvided = false;
             mRtvExpenseAmount.showError();
         } else {
             mRtvExpenseAmount.cleanError();
         }
 
-        // TODO: add check for currency and payer
-
+        // check the sharing if needed
+        if( eeData.isSharedEvenly == false ) {
+            Double total_sharing = 0.0;
+            for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                View view = mLlSharingInfo.getChildAt( idx );
+                EditText edShareAmount = (EditText) view.findViewById( R.id.ed_amount );
+                Double share_amount;
+                try {
+                    share_amount = Double.parseDouble( edShareAmount.getText().toString());
+                } catch ( NumberFormatException e ) {
+                    share_amount = 0.0;
+                    edShareAmount.setText( "0" );
+                }
+                total_sharing += share_amount;
+            }
+            if( amount.compareTo( total_sharing ) != 0 ) {
+                dataProvided = false;
+                mRtvAmountSharing.showError();
+            } else {
+                mRtvAmountSharing.cleanError();
+            }
+        }
         return dataProvided;
     }
 
-    private void ClearForm()
+    private void clearForm()
     {
         mName.setText( "" );
         mDescription.setText( "" );
         mAmount.setText( "" );
+
     }
 
     private void adjustActionBar() {
@@ -534,5 +612,10 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         Calendar c = Calendar.getInstance();
         c.set( year, month, date );
         eeData.expenseDate.setTime( c.getTimeInMillis() );
+    }
+
+    private void closeSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 }
