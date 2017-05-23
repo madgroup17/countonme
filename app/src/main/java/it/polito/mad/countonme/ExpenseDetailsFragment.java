@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -127,7 +129,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_expense:
-                Activity parentActivity = getActivity();
+               Activity parentActivity = getActivity();
                 if (parentActivity instanceof IActionReportBack) {
                     Bundle bundle = new Bundle();
                     bundle.putString( AppConstants.SHARING_ACTIVITY_KEY, model.getParentSharingActivityId());

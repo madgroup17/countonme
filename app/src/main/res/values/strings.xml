@@ -142,7 +142,9 @@
     <!-- formatting and parametric string -->
     <string name="fmt_date">yyyy/MM/dd</string>
 
-
+    <!-- notification -->
+    <string name="lbl_new_expense_notification_title">A new expense has been added</string>
+    <string name="lbl_new_expense_nofirication_boby">%1$s created by %2$s</string>
 
     <!-- Error strings -->
     <string name="lbl_error_could_not_save">Could not save</string>

@@ -83,7 +83,7 @@ FirebaseAuth.AuthStateListener {
         ( (CountOnMeApp)getApplication() ).setCurrentUser( (User) data );
         if( mShowShalist );
             showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
-        manageCallingIntent();
+        //manageCallingIntent();
     }
 
 
@@ -115,12 +115,13 @@ FirebaseAuth.AuthStateListener {
                 Intent intentback = getIntent();
                 if(intentback.getData()==null){
                     showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
-                }else{
-                    //showAppFragment(AppFragment.ACCEPT_REJECT_SA_FRAGMENT,false);
+                    if( intentback.getBooleanExtra( AppConstants.FROM_NOTIFICATION, false ) )
+                        handleOpenFromNotification( intentback );
+                } else{
                     handleActionAcceptRejectSAFragment(intentback.getData());
                 }
             }
-            manageCallingIntent();
+            //manageCallingIntent();
         }
     }
 
@@ -355,6 +356,12 @@ FirebaseAuth.AuthStateListener {
      */
     private void handleActionAcceptExpenseSurvey( Object data ) {
         Toast.makeText(this, R.string.temp_not_implemeted_lbl, Toast.LENGTH_SHORT).show();
+    }
+
+    private void handleOpenFromNotification( Intent intent ) {
+        mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.SHARING_ACTIVITY_KEY, intent.getStringExtra( AppConstants.SHARING_ACTIVITY_KEY ) );
+        mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.EXPENSE_KEY, intent.getStringExtra( AppConstants.EXPENSE_KEY) );
+        showAppFragment( AppFragment.EXPENSE_DETAILS_FRAGMENT, true );
     }
 
     private void handleActionAcceptRejectSAFragment(Object actionData) {
