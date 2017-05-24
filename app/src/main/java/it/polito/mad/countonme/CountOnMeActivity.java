@@ -86,6 +86,11 @@ FirebaseAuth.AuthStateListener {
         //manageCallingIntent();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideLoadingDialog();
+    }
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -137,7 +142,12 @@ FirebaseAuth.AuthStateListener {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.content_frame, mFragmentsList[mCurrentFragment.ordinal()]);
         if ( addToBackStack == true ) transaction.addToBackStack(fragment.name());
-        transaction.commit();
+        try {
+            transaction.commit();
+        } catch (IllegalStateException e ) {
+           // ignored
+        }
+
     }
 
     @Override
@@ -178,8 +188,8 @@ FirebaseAuth.AuthStateListener {
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
         mFirebaseAuth.addAuthStateListener( this );
     }
 
@@ -213,11 +223,13 @@ FirebaseAuth.AuthStateListener {
     }
 
     public void showLoadingDialog() {
-        mLoadingProgressDialog.show();
+        if( mLoadingProgressDialog != null && !mLoadingProgressDialog.isShowing() )
+            mLoadingProgressDialog.show();
     }
 
     public void hideLoadingDialog() {
-        mLoadingProgressDialog.dismiss();
+        if( mLoadingProgressDialog != null && mLoadingProgressDialog.isShowing() )
+            mLoadingProgressDialog.dismiss();
     }
 
 
