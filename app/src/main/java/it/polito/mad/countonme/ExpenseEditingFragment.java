@@ -232,24 +232,19 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mUnbinder = ButterKnife.bind(this, view);
 
         if (savedInstanceState == null) {
-            eeData.mode = (String) getData(AppConstants.MODE);
-            if (eeData.mode == null)
-                eeData.mode = (String) (((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.MODE));
 
-            eeData.shaActKey = (String) getData(AppConstants.SHARING_ACTIVITY_KEY);
-            if (eeData.shaActKey == null)
+            if ((getData(AppConstants.EXPENSE_KEY)) != null) {
                 eeData.shaActKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.SHARING_ACTIVITY_KEY);
-            else
-                eeData.mode = AppConstants.NEW_MODE;
-
-            if (eeData.mode.equals(AppConstants.EDIT_MODE)) {
-                if ((getData(AppConstants.EXPENSE_KEY)) != null)
-                    eeData.expKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.EXPENSE_KEY);
-                eeData.isNew = (eeData.expKey == null);
+                eeData.expKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.EXPENSE_KEY);
+                eeData.mode = (String) (((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.MODE));
             } else {
+                eeData.shaActKey = (String) ((Bundle) (getData(AppConstants.SHARING_ACTIVITY_KEY))).getSerializable(AppConstants.SHARING_ACTIVITY_KEY);
                 eeData.expKey = null;
-                eeData.isNew = true;
+                eeData.mode = (String) (((Bundle) (getData(AppConstants.SHARING_ACTIVITY_KEY))).getSerializable(AppConstants.MODE));
             }
+
+            eeData.isNew = (eeData.expKey == null);
+
 
             //eeData.expKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.EXPENSE_KEY);
             //(String) getData( AppConstants.EXPENSE_KEY );
