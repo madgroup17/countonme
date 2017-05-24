@@ -2,6 +2,8 @@ package it.polito.mad.countonme.database;
 
 import android.net.UrlQuerySanitizer;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -193,58 +195,295 @@ public class DataManager {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 fetchData(dataSnapshot);
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 fetchData(dataSnapshot);
             }
-
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
+            public void onChildRemoved(DataSnapshot dataSnapshot) { }
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) { }
         });
         return salist;
     }
 
-    public void deleteExpense(String ParentSharingActivityKey, final String ExpenseKey){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(CHILD_EXPENSES + "/" + ParentSharingActivityKey);//mDatabase.getReference( CHILD_EXPENSES + "/" + ParentSharingActivityKey + "/" + ExpenseKey );
-        Query removeExpenseQuery = reference.orderByKey().equalTo(ExpenseKey);
-        removeExpenseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot expenseSnapshot : dataSnapshot.getChildren()){
-                    if(expenseSnapshot.getKey().equals(ExpenseKey)) {
+    public void leaveSharingActivity(String activityKey, final String currentUser){
+        if(activityKey!=null && currentUser!=null) {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference(CHILD_SHARING_ACTIVITIES + "/" + activityKey + "/" + CHILD_USERS);
+            Query leaveSharingActivityQuery = reference.orderByKey();
+            leaveSharingActivityQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot usersAux : dataSnapshot.getChildren()) {
+                        if (usersAux.getKey().equals(currentUser)) {
+                            usersAux.getRef().removeValue();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
+    }
+
+    public void deleteSharingActivity(final String activityKey) {
+        if(activityKey!=null) {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference(CHILD_SHARING_ACTIVITIES);
+            Query removeSharingActivityQuery = reference.orderByKey().equalTo(activityKey);
+            removeSharingActivityQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot sharingActivityAux : dataSnapshot.getChildren()) {
+                        if (sharingActivityAux.getKey().equals(activityKey)) {
+                            sharingActivityAux.getRef().removeValue();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            final String namePhoto = "shareacts/" + activityKey + ".jpg";
+            StorageReference riversRef = storageRef.child(namePhoto);
+            riversRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                }
+            });
+        }
+    }
+    public void deleteExpenseBySharActivity(String SharingActivity) {
+        if (SharingActivity != null) {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference(CHILD_EXPENSES );
+            Query deleteAllExpenses = reference.orderByKey().equalTo( SharingActivity);
+            deleteAllExpenses.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot expenseSnapshot : dataSnapshot.getChildren()){
                         expenseSnapshot.getRef().removeValue();
                     }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) { }
-        });
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        final String namePhoto = "expenses/"+ExpenseKey+".jpg";
-        StorageReference riversRef = storageRef.child(namePhoto);
-        riversRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {  }
+            });
+        }
     }
+    public void deleteExpense(String ParentSharingActivityKey, final String ExpenseKey){
+        if(ParentSharingActivityKey!=null && ExpenseKey != null) {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference(CHILD_EXPENSES + "/" + ParentSharingActivityKey);//mDatabase.getReference( CHILD_EXPENSES + "/" + ParentSharingActivityKey + "/" + ExpenseKey );
+            Query removeExpenseQuery = reference.orderByKey().equalTo(ExpenseKey);
+            removeExpenseQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot expenseSnapshot : dataSnapshot.getChildren()) {
+                        if (expenseSnapshot.getKey().equals(ExpenseKey)) {
+                            expenseSnapshot.getRef().removeValue();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            final String namePhoto = "expenses/" + ExpenseKey + ".jpg";
+            StorageReference riversRef = storageRef.child(namePhoto);
+            riversRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+        }
+    }
+    public static boolean checkExpRelofShaAct(String SharingActivity){
+        boolean toReturn=false;
+        if(SharingActivity!=null){
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference(CHILD_EXPENSES + "/" + SharingActivity);
+            if(reference!=null){
+                toReturn=true;
+            }
+        }
+        return toReturn;
+    }
+
+    public static ArrayList<Expense> checkExpensesRelatedOfSharingActivity(String SharingActivity) {
+        final ArrayList<Expense> listToReturn = new ArrayList<>();
+        if (SharingActivity != null) {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference(CHILD_EXPENSES + "/" + SharingActivity);
+            //TODO:get the wholelist of expeses envolved on this sharingactivity
+            DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(CHILD_EXPENSES);
+            Query getExpQuery = ref2.child(SharingActivity);
+            Query getExpensesQuery = reference.orderByKey().equalTo(SharingActivity);
+            getExpQuery.orderByValue().addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("Hello", "ello");
+                    if (dataSnapshot.getValue() != null) {
+                        Expense exp = dataSnapshot.getValue(Expense.class);
+                        listToReturn.add(exp);
+                    }else{
+                        Log.d("Hello", "ello");
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            getExpensesQuery.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("Hello", "ello");
+                    if (dataSnapshot.getValue() != null) {
+                        Expense exp = dataSnapshot.getValue(Expense.class);
+                        listToReturn.add(exp);
+                    }else{
+                        Log.d("Hello", "ello");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+/*
+            getExpensesQuery.addChildEventListener(new ChildEventListener() {
+                                                       @Override
+                                                       public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                                                       }
+
+                                                       @Override
+                                                       public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                                                           Log.d("Hello", "ello");
+                                                           if (dataSnapshot.getValue() != null) {
+                                                               Expense exp = dataSnapshot.getValue(Expense.class);
+                                                               listToReturn.add(exp);
+                                                           }else{
+                                                               Log.d("Hello", "ello");
+                                                           }
+                                                       }
+
+                                                       @Override
+                                                       public void onChildRemoved(DataSnapshot dataSnapshot) {
+                                                           Log.d("Hello", "ello");
+                                                           if (dataSnapshot.getValue() != null) {
+                                                               Expense exp = dataSnapshot.getValue(Expense.class);
+                                                               listToReturn.add(exp);
+                                                           }else{
+                                                               Log.d("Hello", "ello");
+                                                           }
+                                                       }
+
+                                                       @Override
+                                                       public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                                                       }
+
+                                                       @Override
+                                                       public void onCancelled(DatabaseError databaseError) {
+                                                       }
+                /*@Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("Hello", "ello");
+                    if (dataSnapshot.getValue() != null) {
+                        Expense exp = dataSnapshot.getValue(Expense.class);
+                        listToReturn.add(exp);
+                    }else{
+                        Log.d("Hello", "ello");
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {  }
+                */
+  //      });
+/*
+            getExpQuery.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Log.d("Hello", "ello");
+                    if (dataSnapshot.getValue() != null) {
+                        Expense exp = dataSnapshot.getValue(Expense.class);
+                        listToReturn.add(exp);
+                    }else{
+                        Log.d("Hello", "ello");
+                    }
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Log.d("Hello", "ello");
+                    if (dataSnapshot.getValue() != null) {
+                        Expense exp = dataSnapshot.getValue(Expense.class);
+                        listToReturn.add(exp);
+                    }else{
+                        Log.d("Hello", "ello");
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+                /*@Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("Hello", "ello");
+                    if (dataSnapshot.getValue() != null) {
+                        Expense exp = dataSnapshot.getValue(Expense.class);
+                        listToReturn.add(exp);
+                    }
+                    else{
+                        Log.d("Hello", "ello");
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }*/
+  //          });
+
+
+        if (listToReturn.isEmpty()) {
+            return null;
+        } else {
+            return listToReturn;
+        }
+    }
+
+
 }

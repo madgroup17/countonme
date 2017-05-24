@@ -211,13 +211,15 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     }
 
     //DISMISS
-    public void dimissExense(int position){
+    public void dimissExpense(int position){
         removeItem(mExpense.get(position));
         if(position==mExpense.size()){
             position--;
         }
         mExpense.remove(position);
         this.notifyItemRemoved(position);
+        this.expensesListFragment.setCounter(0);
+        this.expensesListFragment.updateCounter(0);
     }
 
     public void updateAdapter(final ArrayList<Expense> list) {

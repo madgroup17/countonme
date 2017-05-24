@@ -15,7 +15,7 @@ import it.polito.mad.countonme.models.User;
 
 public class CountOnMeApp extends MultiDexApplication
 {
-    private User mCurrentUser;
+    private static User mCurrentUser;
 
     public User getCurrentUser() {
         return mCurrentUser;
