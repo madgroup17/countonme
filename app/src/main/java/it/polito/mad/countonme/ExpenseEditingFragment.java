@@ -233,22 +233,18 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
         if (savedInstanceState == null) {
 
-            if ((getData(AppConstants.EXPENSE_KEY)) != null) {
+            eeData.shaActKey = (String) getData(AppConstants.SHARING_ACTIVITY_KEY);
+            if (eeData.shaActKey == null) {
                 eeData.shaActKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.SHARING_ACTIVITY_KEY);
                 eeData.expKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.EXPENSE_KEY);
                 eeData.mode = (String) (((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.MODE));
             } else {
-                eeData.shaActKey = (String) ((Bundle) (getData(AppConstants.SHARING_ACTIVITY_KEY))).getSerializable(AppConstants.SHARING_ACTIVITY_KEY);
+                eeData.mode = AppConstants.NEW_MODE;
                 eeData.expKey = null;
-                eeData.mode = (String) (((Bundle) (getData(AppConstants.SHARING_ACTIVITY_KEY))).getSerializable(AppConstants.MODE));
             }
 
             eeData.isNew = (eeData.expKey == null);
 
-
-            //eeData.expKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.EXPENSE_KEY);
-            //(String) getData( AppConstants.EXPENSE_KEY );
-            //eeData.isNew  = (eeData.expKey == null );
         } else {
             eeData.loadInstance(savedInstanceState);
         }
@@ -567,7 +563,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mAmount.setText("");
         // Set the currency to the sharing activity one
         mCurrency.setSelection(0);
-        // SET the user to the current one
+        selectPayer(((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId());
         mTvDate.setText(mDateFormat.format(new Date()));
         mSwMoneyTransfer.setChecked(false);
         mSwShareEvenly.setChecked(true);
