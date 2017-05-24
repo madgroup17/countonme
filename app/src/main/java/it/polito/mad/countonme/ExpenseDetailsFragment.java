@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,6 +70,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         if (savedInstanceState != null) {
             setData(AppConstants.SHARING_ACTIVITY_KEY, savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
             setData(AppConstants.EXPENSE_KEY, savedInstanceState.getString(AppConstants.EXPENSE_KEY));
+            setData(AppConstants.FROM_NOTIFICATION, savedInstanceState.getBoolean(AppConstants.FROM_NOTIFICATION) );
         }
 
         mExpenseLoader = new ExpenseLoader();
@@ -82,6 +84,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         super.onSaveInstanceState(outState);
         outState.putString(AppConstants.SHARING_ACTIVITY_KEY, (String) getData(AppConstants.SHARING_ACTIVITY_KEY));
         outState.putString(AppConstants.EXPENSE_KEY, (String) getData(AppConstants.EXPENSE_KEY));
+        outState.putBoolean( AppConstants.FROM_NOTIFICATION, (Boolean) getData(AppConstants.FROM_NOTIFICATION) );
     }
 
 
@@ -148,7 +151,8 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
 
     private void adjustActionBar() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.expense_details_title);
-        setHasOptionsMenu(true);
+        Object notification = getData( AppConstants.FROM_NOTIFICATION );
+        setHasOptionsMenu( notification == null || !((Boolean)notification) );
     }
 
 
