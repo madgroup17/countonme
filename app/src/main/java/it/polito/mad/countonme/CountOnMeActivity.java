@@ -373,6 +373,7 @@ FirebaseAuth.AuthStateListener {
     private void handleOpenFromNotification( Intent intent ) {
         mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.SHARING_ACTIVITY_KEY, intent.getStringExtra( AppConstants.SHARING_ACTIVITY_KEY ) );
         mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.EXPENSE_KEY, intent.getStringExtra( AppConstants.EXPENSE_KEY) );
+        mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.FROM_NOTIFICATION, true );
         showAppFragment( AppFragment.EXPENSE_DETAILS_FRAGMENT, true );
     }
 

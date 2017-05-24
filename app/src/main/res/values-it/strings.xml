@@ -9,7 +9,7 @@
     <string name="lbl_description">Descrizione</string>
     <string name="lbl_name">Nome</string>
     <string name="empty_sharing_list_lbl">Non hai ancora spese condivise</string>
-    <string name="expense_details_title">Dettali spesa</string>
+    <string name="expense_details_title">Dettagli spesa</string>
     <string name="expenses_title">Spese</string>
     <string name="sharing_activities_title">Attività di condivisione</string>
     <string name="sharing_activity_details_title">Dettagli condivisione</string>
@@ -20,28 +20,28 @@
     <string name="lbl_saving_error">Errore in fase di salvataggio. Riprova</string>
     <string name="example">esempio</string>
     <string name="err_amount">inserice il valore</string>
-    <string name="err_amount_range">il valore deve di essere di piu a 0</string>
-    <string name="err_description">Inserisce la descripzione</string>
-    <string name="err_name">Inserisce il nome</string>
+    <string name="err_amount_range">il valore deve di essere maggiore di 0</string>
+    <string name="err_description">Inserisci la descrizione</string>
+    <string name="err_name">Inserisci il nome</string>
     <string name="message_to_share">Sei stato invitatio ad una attività di condivisione spese:</string>
     <string name="sharing_activity_add_new_title">Nuova attività di condividere</string>
     <string name="succ_save">Salvato con successo</string>
-    <string name="lbl_error_sharing_link">Errore al condividere il link</string>
+    <string name="lbl_error_sharing_link">Errore di condivisione del link</string>
     <string name="select_app">Seleziona una applicazione</string>
-    <string name="group_status_lbl">Stado dei gruppo</string>
+    <string name="group_status_lbl">Stato del gruppo</string>
     <string name="hello_blank_fragment">ciao fragment bianco</string>
-    <string name="lbl_email">Indirizzo electronico:</string>
+    <string name="lbl_email">Indirizzo email:</string>
     <string name="lbl_email_hint">inserisce il suo indirizzo electronico</string>
     <string name="lbl_invalid_value">valore non valido</string>
     <string name="lbl_logging_user">Registrare</string>
     <string name="lbl_login">Registrare utente</string>
     <string name="lbl_login_btn">Accesso</string>
-    <string name="lbl_login_error">Accesso non valido. faccialo un\'altra volta</string>
+    <string name="lbl_login_error">Accesso non valido. Per favore riprova</string>
     <string name="balance_title">Bilancio</string>
     <string name="lbl_nav_drawer_logout">Uscita</string>
     <string name="lbl_yes">SI</string>
 
-    <string name="balance_owes"></string>
+    <string name="balance_owes">Deve</string>
 
     <string name="fmt_date">dd/MM/yyyy</string>
     <string name="lbl_nav_drawer_settings">Impostazioni</string>
@@ -79,18 +79,24 @@
     <string name="lbl_amount_sharing">Condivisione importo:</string>
     <string name="lbl_invalid_amount_sharing">Condivisione importo non valida</string>
 
-    <string name="lbl_deleteExpense">A spese sarà eliminato</string>
-    <string name="invitation_title">Aggiunge una atività condivisa</string>
-    <string name="lbl_add_picture_from">Aggiunge una photo da</string>
+    <string name="lbl_deleteExpense">Una spesa sarà eliminata</string>
+    <string name="invitation_title">Aggiunge una attività di condivisione</string>
+    <string name="lbl_add_picture_from">Aggiungere una foto da</string>
     <string name="lbl_error_could_not_save">Non è stato in grado di salvare</string>
-    <string name="lbl_error_wrong_expense_sharing">perfavore guardare il monto di la spesa</string>
-    <string name="lbl_loading_data">Caricamento di data</string>
+    <string name="lbl_error_wrong_expense_sharing">Per avore controlla la divisione della spesa</string>
+    <string name="lbl_loading_data">Caricamento dati</string>
     <string name="lbl_money_transfer">trasferimento di denario</string>
-    <string name="noexistactivity">L\'attività condivisa non esiste più, Grazie di utilizzare CountOnMe.</string>
+    <string name="noexistactivity">L\'attività condivisa non esiste più, Grazie per aver utilizzato CountOnMe.</string>
     <string name="drawer_close">chiude cassetto di navigazione</string>
     <string name="drawer_open">Apre cassetto di navigazione</string>
     <string name="lbl_confirmationdeleteExpense">Sei securo di eliminare questa spesa</string>
     <string name="lbl_any_selected">"0 elemento selezionato "</string>
     <string name="lbl_item_selected">elementi selezionati</string>
+    <string name="lbl_camera_error">Impossibile aprire l\'applicazione foto camer</string>
+    <string name="lbl_error_please_try_again">Errore. Per favore riprova.</string>
+    <string name="lbl_new_expense_nofirication_boby">%1$s creata da %2$s</string>
+    <string name="lbl_saved_sharing_activity">Nuova attività di condivisione salvata</string>
+    <string name="lbl_saving_sharing_activity">Sto salvando l\'attività di condivisione</string>
+    <string name="sharing_activity_edit_title">Modifica attività di condivisione</string>
 
 </resources>
