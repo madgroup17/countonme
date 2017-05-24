@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +31,23 @@ import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
 import it.polito.mad.countonme.models.User;
+import it.polito.mad.countonme.swiper.SwipeHelperExpenses;
+import it.polito.mad.countonme.swiper.SwipeHelperSharingActivities;
 
 public class SharingActivitiesListFragment extends BaseFragment implements ValueEventListener, IOnListItemClickListener, View.OnClickListener {
     private RecyclerView mSharActsRv;
     private SharingActivitiesAdapter mSharActsAdapter;
     private List<SharingActivity> mSharActsList;
     private FloatingActionButton mActionButton;
+    public String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
 
     @Override
@@ -44,9 +56,8 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setUserId(((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId());
         Intent intentback = getActivity().getIntent();
         if(intentback.getData()!=null) {
             Activity parentActivity  = getActivity();
@@ -61,12 +72,15 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
 
         mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activities_list );
         mSharActsList = new ArrayList<SharingActivity>();
-        mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList, this );
+        mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList, this ,userId);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mSharActsRv.setLayoutManager( layoutManager );
         mSharActsRv.setAdapter( mSharActsAdapter );
         mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
+        ItemTouchHelper.Callback callback = new SwipeHelperSharingActivities(mSharActsAdapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(mSharActsRv);
         return view;
     }
 
@@ -89,12 +103,13 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     public void onDataChange( DataSnapshot dataSnapshot ) {
         FirebaseMessaging fbMessaging = FirebaseMessaging.getInstance();
         SharingActivity tmp;
-        String userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
+        setUserId(((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId());
+        //String userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
         mSharActsList.clear();
         for ( DataSnapshot data : dataSnapshot.getChildren() ) {
             tmp = (SharingActivity) data.getValue( SharingActivity.class );
             for( Map.Entry<String, User> entry : tmp.getUsers().entrySet() ) {
-                if( entry.getKey().equals( userId ) )
+                if( entry.getKey().equals( getUserId()))//userId ) )
                     mSharActsList.add(tmp);
             }
         }
@@ -115,7 +130,6 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
             ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY_DETAIL_TABS, ((SharingActivity) clickedItem).getKey()));
         }
     }
-
     @Override
     public void onClick(View v) {
         // we just have the floating action button to manage here
@@ -124,10 +138,7 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
             ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_SHARING_ACTIVITY, null) );
         }
     }
-
     private void adjustActionBar() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.sharing_activities_title );
     }
-
-
 }

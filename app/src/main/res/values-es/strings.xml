@@ -3,7 +3,7 @@
     <string name="currency_dollar_lbl">Dolar</string>
     <string name="currency_euro_lbl">Euro</string>
     <string name="currency_pesetas_lbl">Pesos</string>
-    <string name="empty_sharing_list_lbl">No hay ninguna atividad todavia</string>
+    <string name="empty_sharing_list_lbl">No hay ninguna actividad todavía</string>
     <string name="example">ejemplo</string>
     <string name="expense_add_new_title">Nuevo gasto</string>
     <string name="expense_details_title">Detalle del gasto</string>
@@ -17,11 +17,11 @@
     <string name="lbl_saving_error">Error en la fase de guardar. Intente de nuevo</string>
     <string name="sharing_activities_title">Actividad a compartir</string>
     <string name="sharing_activity_details_title">Detalles de la actividad a compartir</string>
-    <string name="temp_not_implemeted_lbl">Funcionalidad no implementada todavia</string>
+    <string name="temp_not_implemeted_lbl">Funcionalidad no implementada todavía</string>
     <string name="total_balance_lbl">Balance total:</string>
     <string name="err_amount">Ingrese el valor</string>
     <string name="err_amount_range">El valor debe ser mayor a 0</string>
-    <string name="err_description">Ingrese la descripciòn</string>
+    <string name="err_description">Ingrese la descripción</string>
     <string name="err_name">Ingrese el nombre</string>
     <string name="message_to_share">Has sido invitado a una actividad para compartir los gastos:</string>
     <string name="sharing_activity_add_new_title">Nueva Actividad a compartir</string>
@@ -30,16 +30,16 @@
     <string name="select_app">Selecciona una aplicacion</string>
     <string name="group_status_lbl">Estado del Grupo</string>
     <string name="hello_blank_fragment">Hola fragmento en blanco</string>
-    <string name="lbl_email">Correo electronica:</string>
+    <string name="lbl_email">Correo electronico:</string>
     <string name="lbl_email_hint">Ingrese su correo electronico</string>
     <string name="lbl_invalid_value">Valor erroneo</string>
     <string name="lbl_logging_user">Ingresar</string>
     <string name="lbl_login">Registrar usuario</string>
     <string name="lbl_login_btn">Ingresar</string>
-    <string name="lbl_login_error">No pudo ingresar. porfavor intente de nuevo</string>
+    <string name="lbl_login_error">No pudo ingresar. Porfavor intente de nuevo</string>
     <string name="balance_title">Balance</string>
     <string name="lbl_loading_data">Cargando información</string>
-    <string name="lbl_login_instr_1">Registrado preeviamente</string>
+    <string name="lbl_login_instr_1">Registrado previamente</string>
     <string name="lbl_login_instr_2">Inscribase aquí</string>
     <string name="lbl_money_transfer">Transferencia de dinero</string>
     <string name="lbl_nav_drawer_logout">Salir</string>
@@ -88,5 +88,17 @@
     <string name="lbl_confirmationdeleteExpense">Esta seguro que quiere eliminar este gasto?</string>
     <string name="lbl_any_selected">0 elemento seleccionados</string>
     <string name="lbl_item_selected">elementos seleccionados</string>
+    <string name="lbl_deleteSharingActivity">Abandonando actividad compartida</string>
+    <string name="lbl_camera_error">Imposible abrir la aplicación de la Camara</string>
+    <string name="lbl_amount_sharing">Monto compartido:</string>
+    <string name="lbl_confirmationdeleteSharingActivity">Estas seguro que quieres abandonar la actividad compartida?</string>
+    <string name="lbl_error_please_try_again">Error. Porfavor intente de nuevo</string>
+    <string name="lbl_invalid_amount_sharing">Monto compartido no válido</string>
+    <string name="lbl_new_expense_nofirication_boby">%1$s creada de %2$s</string>
+    <string name="lbl_new_expense_notification_title">Un nuevo gasto ha sido creado</string>
+    <string name="lbl_saved_sharing_activity">La nueva actividad hasido guardada</string>
+    <string name="lbl_saving_sharing_activity">Guardando la actividad a compartir</string>
+    <string name="lbl_select_picture">Selecciona una imagen</string>
+    <string name="sharing_activity_edit_title">Modifica la actividad a compartir</string>
 
 </resources>

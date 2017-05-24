@@ -47,9 +47,16 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
     private ExpenseAdapter mExpensesAdapter;
     private List<Expense> mExpensesList;
     public static ArrayList<Expense>selection_list = new ArrayList<>();
-    static int counter;
+    public static int counter;
     public Activity currentActivity;
 
+    public static int getCounter() {
+        return counter;
+    }
+
+    public static void setCounter(int counter) {
+        ExpensesListFragment.counter = counter;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -172,6 +179,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
             case R.id.delete_expense:
                 mExpensesAdapter.updateAdapter(selection_list);
                 adjustActionBar();
+                counter=0;
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

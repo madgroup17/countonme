@@ -150,7 +150,7 @@
     <string name="lbl_error_could_not_save">Could not save</string>
     <string name="lbl_error_please_try_again">An error occurred. Please try again</string>
 
-    <string name="lbl_error_wrong_expense_sharing">Plese check the expense amount sharing</string>
+    <string name="lbl_error_wrong_expense_sharing">Please check the expense amount sharing</string>
     <string name="thanks">Thanks for using CountOnMe</string>
     <string name="usernologged">User did not do log in</string>
     <string name="noexistactivity">The activity shared does not exist any more. Thanks for use CountOnMe</string>
@@ -159,6 +159,7 @@
     <string name="lbl_confirmationdeleteExpense">Are you sure that you want to delete the expense?</string>
     <string name="lbl_any_selected">0 item selected</string>
     <string name="lbl_item_selected">item selected</string>
-
+    <string name="lbl_deleteSharingActivity">Leaving the Sharing Activity</string>
+    <string name="lbl_confirmationdeleteSharingActivity">Are you sure that you want to leave the sharing activity?</string>
 
 </resources>
