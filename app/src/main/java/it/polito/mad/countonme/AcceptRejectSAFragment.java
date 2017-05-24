@@ -128,7 +128,9 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
 
                     //redirect to sharing activity item list
                     getActivity().finish();
-                    startActivity(new Intent(getActivity(), it.polito.mad.countonme.CountOnMeActivity.class));
+                    Intent intent = new Intent(getActivity(), it.polito.mad.countonme.CountOnMeActivity.class );
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP );
+                    startActivity( intent );
                 }
             }
         });
