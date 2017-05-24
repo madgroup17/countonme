@@ -144,7 +144,10 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         // we just have the floating action button to manage here
         Activity parentActivity  = getActivity();
         if( parentActivity instanceof IActionReportBack) {
-            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, getData() ) );
+            Bundle bundle = new Bundle();
+            bundle.putString( AppConstants.SHARING_ACTIVITY_KEY, (String) getData());
+            bundle.putString(AppConstants.MODE,AppConstants.NEW_MODE);
+            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, bundle ) );
         }
     }
 

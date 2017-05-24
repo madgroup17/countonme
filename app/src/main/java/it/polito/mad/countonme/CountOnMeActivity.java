@@ -83,9 +83,14 @@ FirebaseAuth.AuthStateListener {
         ( (CountOnMeApp)getApplication() ).setCurrentUser( (User) data );
         if( mShowShalist );
             showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
-        manageCallingIntent();
+        //manageCallingIntent();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideLoadingDialog();
+    }
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -115,12 +120,13 @@ FirebaseAuth.AuthStateListener {
                 Intent intentback = getIntent();
                 if(intentback.getData()==null){
                     showAppFragment(AppFragment.SHARING_ACTIVITIES_LIST_FRAGMENT, false);
-                }else{
-                    //showAppFragment(AppFragment.ACCEPT_REJECT_SA_FRAGMENT,false);
+                    if( intentback.getBooleanExtra( AppConstants.FROM_NOTIFICATION, false ) )
+                        handleOpenFromNotification( intentback );
+                } else{
                     handleActionAcceptRejectSAFragment(intentback.getData());
                 }
             }
-            manageCallingIntent();
+            //manageCallingIntent();
         }
     }
 
@@ -136,7 +142,12 @@ FirebaseAuth.AuthStateListener {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.content_frame, mFragmentsList[mCurrentFragment.ordinal()]);
         if ( addToBackStack == true ) transaction.addToBackStack(fragment.name());
-        transaction.commit();
+        try {
+            transaction.commit();
+        } catch (IllegalStateException e ) {
+           // ignored
+        }
+
     }
 
     @Override
@@ -177,8 +188,8 @@ FirebaseAuth.AuthStateListener {
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
         mFirebaseAuth.addAuthStateListener( this );
     }
 
@@ -212,11 +223,13 @@ FirebaseAuth.AuthStateListener {
     }
 
     public void showLoadingDialog() {
-        mLoadingProgressDialog.show();
+        if( mLoadingProgressDialog != null && !mLoadingProgressDialog.isShowing() )
+            mLoadingProgressDialog.show();
     }
 
     public void hideLoadingDialog() {
-        mLoadingProgressDialog.dismiss();
+        if( mLoadingProgressDialog != null && mLoadingProgressDialog.isShowing() )
+            mLoadingProgressDialog.dismiss();
     }
 
 
@@ -355,6 +368,12 @@ FirebaseAuth.AuthStateListener {
      */
     private void handleActionAcceptExpenseSurvey( Object data ) {
         Toast.makeText(this, R.string.temp_not_implemeted_lbl, Toast.LENGTH_SHORT).show();
+    }
+
+    private void handleOpenFromNotification( Intent intent ) {
+        mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.SHARING_ACTIVITY_KEY, intent.getStringExtra( AppConstants.SHARING_ACTIVITY_KEY ) );
+        mFragmentsList[ AppFragment.EXPENSE_DETAILS_FRAGMENT.ordinal() ].setData( AppConstants.EXPENSE_KEY, intent.getStringExtra( AppConstants.EXPENSE_KEY) );
+        showAppFragment( AppFragment.EXPENSE_DETAILS_FRAGMENT, true );
     }
 
     private void handleActionAcceptRejectSAFragment(Object actionData) {

@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -46,6 +47,7 @@ import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
+import it.polito.mad.countonme.messaging.MessagingManager;
 import it.polito.mad.countonme.models.User;
 import it.polito.mad.countonme.storage.StorageManager;
 
@@ -260,6 +262,13 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
         }
         else
         {
+            if(saeData.isNew) {
+                try {
+                    MessagingManager.getInstance().subscribeToSharingActivity(saeData.key);
+                } catch (InvalidDataException e) {
+                    e.printStackTrace();
+                }
+            }
             getFragmentManager().popBackStack();
         }
     }

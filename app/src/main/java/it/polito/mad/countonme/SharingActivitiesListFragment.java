@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,7 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
 
     @Override
     public void onDataChange( DataSnapshot dataSnapshot ) {
+        FirebaseMessaging fbMessaging = FirebaseMessaging.getInstance();
         SharingActivity tmp;
         String userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
         mSharActsList.clear();
