@@ -57,27 +57,29 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setUserId(((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId());
+        if (((CountOnMeApp) getActivity().getApplication()).getCurrentUser() != null)
+            setUserId(((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId());
+
         Intent intentback = getActivity().getIntent();
-        if(intentback.getData()!=null) {
-            Activity parentActivity  = getActivity();
-            if( parentActivity instanceof IActionReportBack ) {
-                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACCEPT_REJECT_SA_FRAGMENT,intentback.getData()));
+        if (intentback.getData() != null) {
+            Activity parentActivity = getActivity();
+            if (parentActivity instanceof IActionReportBack) {
+                ((IActionReportBack) parentActivity).onAction(new ReportBackAction(ReportBackAction.ActionEnum.ACCEPT_REJECT_SA_FRAGMENT, intentback.getData()));
             }
         }
         View view = inflater.inflate(R.layout.sharing_activities_list_fragment, container, false);
 
-        mActionButton = ( FloatingActionButton ) view.findViewById( R.id.fab );
-        mActionButton.setOnClickListener( this );
+        mActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+        mActionButton.setOnClickListener(this);
 
-        mSharActsRv = ( RecyclerView ) view.findViewById( R.id.sharing_activities_list );
+        mSharActsRv = (RecyclerView) view.findViewById(R.id.sharing_activities_list);
         mSharActsList = new ArrayList<SharingActivity>();
-        mSharActsAdapter = new SharingActivitiesAdapter( getActivity(), mSharActsList, this ,userId);
+        mSharActsAdapter = new SharingActivitiesAdapter(getActivity(), mSharActsList, this, userId);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mSharActsRv.setLayoutManager( layoutManager );
-        mSharActsRv.setAdapter( mSharActsAdapter );
-        mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );
+        mSharActsRv.setLayoutManager(layoutManager);
+        mSharActsRv.setAdapter(mSharActsAdapter);
+        mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         ItemTouchHelper.Callback callback = new SwipeHelperSharingActivities(mSharActsAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mSharActsRv);
@@ -88,57 +90,59 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     public void onResume() {
         super.onResume();
         adjustActionBar();
-        DataManager.getsInstance().getSharingActivitiesReference().addValueEventListener( this );
-        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).showLoadingDialog();
+        DataManager.getsInstance().getSharingActivitiesReference().addValueEventListener(this);
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).showLoadingDialog();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
-        DataManager.getsInstance().getSharingActivitiesReference().removeEventListener( this );
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).hideLoadingDialog();
+        DataManager.getsInstance().getSharingActivitiesReference().removeEventListener(this);
     }
 
     @Override
-    public void onDataChange( DataSnapshot dataSnapshot ) {
+    public void onDataChange(DataSnapshot dataSnapshot) {
         FirebaseMessaging fbMessaging = FirebaseMessaging.getInstance();
         SharingActivity tmp;
-        setUserId(((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId());
+        setUserId(((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId());
         //String userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
         mSharActsList.clear();
-        for ( DataSnapshot data : dataSnapshot.getChildren() ) {
-            tmp = (SharingActivity) data.getValue( SharingActivity.class );
-            for( Map.Entry<String, User> entry : tmp.getUsers().entrySet() ) {
-                if( entry.getKey().equals( getUserId()))//userId ) )
+        for (DataSnapshot data : dataSnapshot.getChildren()) {
+            tmp = (SharingActivity) data.getValue(SharingActivity.class);
+            for (Map.Entry<String, User> entry : tmp.getUsers().entrySet()) {
+                if (entry.getKey().equals(getUserId()))//userId ) )
                     mSharActsList.add(tmp);
             }
         }
         mSharActsAdapter.notifyDataSetChanged();
-        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).hideLoadingDialog();
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-        ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).hideLoadingDialog();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).hideLoadingDialog();
     }
 
     @Override
-    public void onItemClick( Object clickedItem ) {
+    public void onItemClick(Object clickedItem) {
         SharingActivity activity = (SharingActivity) clickedItem;
-        Activity parentActivity  = getActivity();
-        if( parentActivity instanceof IActionReportBack ) {
-            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY_DETAIL_TABS, ((SharingActivity) clickedItem).getKey()));
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof IActionReportBack) {
+            ((IActionReportBack) parentActivity).onAction(new ReportBackAction(ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY_DETAIL_TABS, ((SharingActivity) clickedItem).getKey()));
         }
     }
+
     @Override
     public void onClick(View v) {
         // we just have the floating action button to manage here
-        Activity parentActivity  = getActivity();
-        if( parentActivity instanceof IActionReportBack) {
-            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_SHARING_ACTIVITY, null) );
+        Activity parentActivity = getActivity();
+        if (parentActivity instanceof IActionReportBack) {
+            ((IActionReportBack) parentActivity).onAction(new ReportBackAction(ReportBackAction.ActionEnum.ACTION_ADD_NEW_SHARING_ACTIVITY, null));
         }
     }
+
     private void adjustActionBar() {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.sharing_activities_title );
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.sharing_activities_title);
     }
 }

@@ -233,12 +233,12 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
         if (savedInstanceState == null) {
 
-            eeData.shaActKey = (String) getData(AppConstants.SHARING_ACTIVITY_KEY);
-            if (eeData.shaActKey == null) {
+            if ((getData(AppConstants.EXPENSE_KEY)) != null) {
                 eeData.shaActKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.SHARING_ACTIVITY_KEY);
                 eeData.expKey = (String) ((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.EXPENSE_KEY);
                 eeData.mode = (String) (((Bundle) (getData(AppConstants.EXPENSE_KEY))).getSerializable(AppConstants.MODE));
             } else {
+                eeData.shaActKey = (String) getData(AppConstants.SHARING_ACTIVITY_KEY);
                 eeData.mode = AppConstants.NEW_MODE;
                 eeData.expKey = null;
             }
@@ -292,6 +292,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     public void onStop() {
         super.onStop();
         setHasOptionsMenu(false);
+        clearForm();
     }
 
     @Override
@@ -563,6 +564,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         mAmount.setText("");
         // Set the currency to the sharing activity one
         mCurrency.setSelection(0);
+        //mCurrency.getSelectedItemPosition()
         selectPayer(((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId());
         mTvDate.setText(mDateFormat.format(new Date()));
         mSwMoneyTransfer.setChecked(false);
@@ -594,10 +596,13 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             eeData.captureImageUri = mExpense.getImageUrl();
             if (eeData.captureImageUri != null)
                 Glide.with(mImage.getContext()).load(Uri.parse(eeData.captureImageUri)).placeholder(R.drawable.ic_add_a_photo).crossFade().into(mImage);
+            else
+                mImage.setImageResource(R.drawable.ic_add_a_photo);
             mName.setText(mExpense.getName());
             mDescription.setText(mExpense.getDescription());
             mAmount.setText("" + mExpense.getAmount());
             // TODO manage the currency
+            mRtvExpenseAmount.setText(mRtvExpenseAmount.getText()+" (" +getCurrency(mExpense.getExpenseCurrency())+")");
             eeData.payerId = mExpense.getPayer().getId();
             selectPayer(eeData.payerId);
             eeData.expenseDate = mExpense.getDate();
@@ -607,11 +612,62 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mSwMoneyTransfer.setChecked(eeData.isMoneyTransfer);
             eeData.isSharedEvenly = mExpense.getIsSharedEvenly();
             mSwShareEvenly.setChecked(mExpense.getIsSharedEvenly());
+
+            fillUsersSharingSection();
+            if(!mExpense.getIsSharedEvenly())
+            {
+                mLlSharingSection.setVisibility(View.VISIBLE);
+
+                for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                    View view = mLlSharingInfo.getChildAt(idx);
+                    User user = (User) view.getTag(R.id.id_user);
+
+                    Map<String, Share> ShareList = mExpense.getShares();
+                    for (Map.Entry<String, Share> entry : ShareList.entrySet()) {
+                        String key = entry.getKey();
+                        Share value = entry.getValue();
+
+                        if ((value.getUser().getId()).equals(user.getId()))
+                            ((EditText) view.findViewById(R.id.ed_amount)).setText(value.getAmount().toString());
+                    }
+                }
+
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void fillUsersSharingSection() {
+        if (mSharingActivity == null) return;
+        User user;
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+        mLlSharingInfo.removeAllViews();
+        for (Map.Entry<String, User> entry : mSharingActivity.getUsers().entrySet()) {
+            user = entry.getValue();
+
+            // set the views for expenses sharing
+            View child = inflater.inflate(R.layout.share_editing_item, null);
+            ImageView userPhoto = (ImageView) child.findViewById(R.id.iv_user);
+            TextView userName = (TextView) child.findViewById(R.id.tv_name);
+
+            String namePhoto;
+            StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+            String imgUrl = user.getPhotoUrl();
+
+            if (imgUrl != null && imgUrl.length() > 0) {
+                Glide.with(userPhoto.getContext()).load(user.getPhotoUrl()).into(userPhoto);
+            } else
+                userPhoto.setImageResource(R.drawable.default_user_photo);
+
+            userName.setText(user.getName());
+            child.setTag(R.id.id_user, user);
+            mLlSharingInfo.addView(child);
+        }
+
+    }
 
     private void selectPayer(String payerId) {
         for (User user : mUsersList) {
@@ -709,6 +765,28 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
                 mErrorDialog.show(getFragmentManager(), ERROR_DIALOG_TAG);
             }
         });
+    }
+
+    private String getCurrency(String Currency) {
+
+        switch (Currency)
+        {
+            case "U.S. Dollar":
+            case"Dolar":
+            case "Dollari":
+                return getString(R.string.currency_dollar_lbl);
+
+            case "Euro":
+                return getString(R.string.currency_euro_lbl);
+
+            case"Pesos":
+            case"":
+                return getString(R.string.currency_pesetas_lbl);
+
+
+        }
+
+        return "";
     }
 
 
