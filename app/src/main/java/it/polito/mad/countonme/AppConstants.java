@@ -27,4 +27,7 @@ public class AppConstants {
 
     public final static String FROM_NOTIFICATION = "from_notification";
 
+    public final static String COUNTER_SHRACTIVITIES = "counter";
+    public final static String SELECTION_LIST_SHRACTIVITIES = "selection_List";
+
 }
