@@ -154,7 +154,7 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
             Bundle bundle = new Bundle();
             bundle.putString( AppConstants.SHARING_ACTIVITY_KEY, (String) getData());
             bundle.putString(AppConstants.MODE,AppConstants.NEW_MODE);
-            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, bundle ) );
+            ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_ADD_NEW_EXPENSE, getData() ) );
         }
     }
 

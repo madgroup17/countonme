@@ -347,6 +347,7 @@ FirebaseAuth.AuthStateListener {
      * @param data
      */
     private void handleActionAddNewExpense( Object data ) {
+        mFragmentsList[ AppFragment.EXPENSE_EDITING_FRAGMENT.ordinal() ].clearDatas();
         mFragmentsList[ AppFragment.EXPENSE_EDITING_FRAGMENT.ordinal() ].setData( AppConstants.SHARING_ACTIVITY_KEY, data );
         showAppFragment( AppFragment.EXPENSE_EDITING_FRAGMENT, true );
     }
