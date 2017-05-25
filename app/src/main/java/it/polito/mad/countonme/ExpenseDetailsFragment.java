@@ -70,7 +70,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         if (savedInstanceState != null) {
             setData(AppConstants.SHARING_ACTIVITY_KEY, savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
             setData(AppConstants.EXPENSE_KEY, savedInstanceState.getString(AppConstants.EXPENSE_KEY));
-            setData(AppConstants.FROM_NOTIFICATION, savedInstanceState.getBoolean(AppConstants.FROM_NOTIFICATION) );
+            setData(AppConstants.FROM_NOTIFICATION, savedInstanceState.getBoolean(AppConstants.FROM_NOTIFICATION, false) );
         }
 
         mExpenseLoader = new ExpenseLoader();
@@ -84,7 +84,8 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         super.onSaveInstanceState(outState);
         outState.putString(AppConstants.SHARING_ACTIVITY_KEY, (String) getData(AppConstants.SHARING_ACTIVITY_KEY));
         outState.putString(AppConstants.EXPENSE_KEY, (String) getData(AppConstants.EXPENSE_KEY));
-        outState.putBoolean( AppConstants.FROM_NOTIFICATION, (Boolean) getData(AppConstants.FROM_NOTIFICATION) );
+        if( getData(AppConstants.FROM_NOTIFICATION) != null )
+            outState.putBoolean( AppConstants.FROM_NOTIFICATION, (Boolean) getData(AppConstants.FROM_NOTIFICATION) );
     }
 
 
