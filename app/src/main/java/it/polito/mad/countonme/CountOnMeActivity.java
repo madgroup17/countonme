@@ -288,6 +288,7 @@ FirebaseAuth.AuthStateListener {
         mLoadingProgressDialog = new ProgressDialog( this );
         mLoadingProgressDialog.setTitle( R.string.lbl_loading_data );
         mLoadingProgressDialog.setMessage( getResources().getString( R.string.lbl_please_wait ) );
+        mLoadingProgressDialog.setCancelable( false );
     }
 
 

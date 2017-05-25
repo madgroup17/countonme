@@ -100,6 +100,6 @@
     <string name="sharing_activity_edit_title">Modifica attività di condivisione</string>
     <string name="lbl_deleteSharingActivity">Lasciando attività condivisa</string>
     <string name="lbl_confirmationdeleteSharingActivity">Stai securo che voi lasciare l\'attività condivisa</string>
-    <string name="lbl_new_expense_notification_title">Una nuova spesa ha stata creata</string>
+    <string name="lbl_new_expense_notification_title">Una nuova spesa è stata creata</string>
 
 </resources>
