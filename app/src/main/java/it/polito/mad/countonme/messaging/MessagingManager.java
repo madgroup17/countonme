@@ -26,7 +26,6 @@ public class MessagingManager {
             throw new InvalidDataException( "subscribeToSharingActivity: Invalid topic" );
     }
 
-
     public void unsubscribeFromSharingActivity( String shactKey ) throws InvalidDataException {
         if( shactKey != null && shactKey.length() >0 )
             mMessaging.unsubscribeFromTopic( shactKey );
@@ -34,11 +33,4 @@ public class MessagingManager {
             throw new InvalidDataException( "unsubscribeFromSharingActivity: Invalid topic" );
     }
 
-    public void sendNewExpenseNotification( String shactKey, String expKey ) throws InvalidDataException {
-        if( shactKey != null && expKey != null) {
-            //RemoteMessage.Builder messBuilder = new RemoteMessage.Builder( getRegistrationToken() );
-            //mMessaging.send();
-        } else
-            throw new InvalidDataException( "sendNewExpenseNotification: Invalid parameters" );
-     }
 }
