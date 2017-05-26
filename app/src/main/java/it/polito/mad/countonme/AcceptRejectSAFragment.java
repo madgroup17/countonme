@@ -36,6 +36,7 @@ import java.util.Iterator;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import it.polito.mad.countonme.business.CurrencyManagment;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.exceptions.InvalidDataException;
@@ -88,7 +89,6 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
         Intent intent = getActivity().getIntent();
         path = intent.getData().getPath();
         path = path.substring(1);
-        DataManager.getsInstance().getSharingActivityReference(path).addListenerForSingleValueEvent(this);
 
         mNameSADetails = (TextView) view.findViewById(R.id.tv_name);
         mCreatedBy = (TextView) view.findViewById( R.id.tv_created_by );
@@ -169,25 +169,24 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
     public void onResume() {
         super.onResume();
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( R.string.invitation_title );
-
-        DataManager.getsInstance().getSharingActivityReference(( String ) getData()).addValueEventListener( this );
+        DataManager.getsInstance().getSharingActivityReference(path).addListenerForSingleValueEvent(this);
+        ( (CountOnMeActivity) getActivity() ).showLoadingDialog();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        DataManager.getsInstance().getSharingActivityReference( ( String ) getData() ).removeEventListener( this );
+        ( (CountOnMeActivity) getActivity() ).hideLoadingDialog();
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        // Here the data arrives
-        //Log.d("Hello", "ello"); // here are your data as you can see
+        ( (CountOnMeActivity) getActivity() ).hideLoadingDialog();
         if(dataSnapshot.getValue() != null){
         myActivity = (SharingActivity) dataSnapshot.getValue(SharingActivity.class);
         mNameSADetails.setText(myActivity.getName());
         mDetailsSADetails.setText(myActivity.getDescription());
-        mCurrencySADetails.setText(myActivity.getCurrency());
+        mCurrencySADetails.setText(CurrencyManagment.GetText(Integer.valueOf((myActivity.getCurrency())), getActivity()));
         String createdBy = String.format(getResources().getString(R.string.lbl_created_by), myActivity.getCreatedBy().getName());
         mCreatedBy.setText(createdBy);
         if( myActivity.getImageUrl() != null )
@@ -232,6 +231,7 @@ public class AcceptRejectSAFragment extends BaseFragment implements ValueEventLi
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
+        ( (CountOnMeActivity) getActivity() ).hideLoadingDialog();
     }
 
 
