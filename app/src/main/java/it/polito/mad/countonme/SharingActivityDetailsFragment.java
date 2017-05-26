@@ -105,7 +105,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
     @Override
     public void onStop() {
         super.onStop();
-        setHasOptionsMenu(false);
+        //setHasOptionsMenu(false);
     }
 
 
