@@ -567,10 +567,10 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             amount = Double.parseDouble(mAmount.getText().toString());
         } catch (NumberFormatException fne) {
             amount = 0.0;
-            mAmount.setText("0");
+            mAmount.setText("");
         }
 
-        if (TextUtils.isEmpty(mAmount.getText().toString())) {
+        if( amount < 2 * Double.MIN_VALUE ) {
             dataProvided = false;
             mRtvExpenseAmount.showError();
         } else {
