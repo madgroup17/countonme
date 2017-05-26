@@ -101,7 +101,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
             }
 
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                Glide.with(mImgView.getContext()).load(Uri.parse(imgUrl)).into( mImgView );
+                Glide.with(mImgView.getContext()).load(Uri.parse(imgUrl)).placeholder(R.drawable.img_sharing_default).crossFade().into( mImgView );
             }else
                 mImgView.setImageResource( R.drawable.img_sharing_default );
 

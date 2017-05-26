@@ -102,7 +102,7 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
                 }
             }
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                Glide.with(mIvPhoto.getContext()).load(Uri.parse(imgUrl)).into( mIvPhoto);
+                Glide.with(mIvPhoto.getContext()).load(Uri.parse(imgUrl)).placeholder(R.drawable.img_sharing_default).crossFade().into( mIvPhoto);
             } else {
                  mIvPhoto.setImageResource(R.drawable.img_sharing_default);
             }
