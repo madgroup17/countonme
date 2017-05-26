@@ -3,7 +3,9 @@ package it.polito.mad.countonme;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +25,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import it.polito.mad.countonme.business.CurrencyManagment;
 import it.polito.mad.countonme.business.LinkSharing;
 import it.polito.mad.countonme.database.SharingActivityLoader;
 import it.polito.mad.countonme.exceptions.DataLoaderException;
@@ -146,7 +149,8 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
         setHasOptionsMenu(true);
     }
 
-    private void fillUi( SharingActivity activity ) {
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void fillUi(SharingActivity activity ) {
         if( activity == null ) return;
         try {
             mTvName.setText(activity.getName());
@@ -154,7 +158,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
             String createdBy = String.format(res.getString(R.string.lbl_created_by), activity.getCreatedBy().getName());
             mTvCreatedBy.setText(createdBy);
             mTvDescription.setText(activity.getDescription());
-            mTvCurrency.setText(activity.getCurrency());
+            mTvCurrency.setText( CurrencyManagment.GetText(Integer.valueOf(activity.getCurrency()),this.getContext() ));
             if( activity.getImageUrl() != null )
                 Glide.with( mIvPhoto.getContext()).load( activity.getImageUrl() ).into( mIvPhoto );
 

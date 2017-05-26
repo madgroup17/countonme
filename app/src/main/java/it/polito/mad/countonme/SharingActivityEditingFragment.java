@@ -353,7 +353,7 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
         User currentUser = ((CountOnMeApp)getActivity().getApplication()).getCurrentUser();
         shaAct.setName( mEdName.getText().toString() );
         shaAct.setDescription( mEdDescription.getText().toString());
-        shaAct.setCurrency(mSpnCurrency.getSelectedItem().toString());
+        shaAct.setCurrency(String.valueOf(mSpnCurrency.getSelectedItemPosition()));     // mSpnCurrency.getSelectedItem().toString());
         shaAct.setCreatedBy( currentUser );
         shaAct.addUser( currentUser );
         shaAct.setKey( saeData.key );

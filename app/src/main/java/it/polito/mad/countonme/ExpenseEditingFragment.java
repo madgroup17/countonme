@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -56,6 +58,7 @@ import butterknife.Unbinder;
 import it.polito.mad.countonme.UI.DatePicker;
 import it.polito.mad.countonme.UI.ErrorDialog;
 import it.polito.mad.countonme.UI.ImageSourceDialog;
+import it.polito.mad.countonme.business.CurrencyManagment;
 import it.polito.mad.countonme.customviews.RequiredInputTextView;
 import it.polito.mad.countonme.database.DataManager;
 import it.polito.mad.countonme.database.ExpenseLoader;
@@ -93,6 +96,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         private static final String KEY_DATE = "Date";
         private static final String KEY_CAPT_IMAGE = "CaptureImageUri";
         private static final String KEY_SHARES = "Shares";
+        private static final String KEY_CURRENCY = "Currency";
 
         public Boolean haveData;
         public Boolean isNew;
@@ -105,6 +109,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         public String captureImageUri;
         public String mode;
         public Map<String, Share> shares;
+        public String currency;
 
         public ExpenseEditingData() {
             haveData = false;
@@ -118,6 +123,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             captureImageUri = null;
             mode = AppConstants.NEW_MODE;
             shares = new HashMap<String, Share>();
+            currency = null;
         }
 
         public void saveInstance(Bundle outState) {
@@ -132,6 +138,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             outState.putSerializable(KEY_DATE, expenseDate);
             outState.putString(KEY_CAPT_IMAGE, captureImageUri);
             outState.putString(AppConstants.MODE, mode);
+            outState.putString(KEY_CURRENCY, currency);
 
             outState.putSerializable(KEY_SHARES, (Serializable) shares);
         }
@@ -167,8 +174,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     RequiredInputTextView mRtvExpenseDescription;
     @BindView(R.id.rtv_expense_amount)
     RequiredInputTextView mRtvExpenseAmount;
-    @BindView(R.id.rtv_expense_currency)
-    RequiredInputTextView mRtvExpenseCurrency;
+    /*@BindView(R.id.rtv_expense_currency)
+    RequiredInputTextView mRtvExpenseCurrency;*/
     @BindView(R.id.rtv_expense_payer)
     RequiredInputTextView mRtvExpensePayer;
     @BindView(R.id.rtv_amount_sharing)
@@ -182,8 +189,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     EditText mDescription;
     @BindView(R.id.ed_expense_amount)
     EditText mAmount;
-    @BindView(R.id.spin_expense_currency)
-    Spinner mCurrency;
+    /*@BindView(R.id.spin_expense_currency)
+    Spinner mCurrency;*/
     @BindView(R.id.spin_expense_paidby)
     Spinner mPaidBySpinner;
     @BindView(R.id.tv_expense_date)
@@ -304,10 +311,12 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         clearForm();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onData(Object data) {
         if (data instanceof SharingActivity) {
             mSharingActivity = (SharingActivity) data;
+            eeData.currency = mSharingActivity.getCurrency();
             fillUsersSpinnerAndSharingSection();
             if (!eeData.isNew) {
                 try {
@@ -432,6 +441,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
         mProgressDialog.dismiss();
@@ -451,6 +461,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
      *****************************************************/
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void fillUserInterface() {
         if (eeData.haveData) {
             if (eeData.captureImageUri != null)
@@ -459,7 +470,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mSwMoneyTransfer.setChecked(eeData.isMoneyTransfer);
             mSwShareEvenly.setChecked(eeData.isSharedEvenly);
             mTvDate.setText(mDateFormat.format(eeData.expenseDate));
-
+            mRtvExpenseAmount.setText(mRtvExpenseAmount.getText() + " (" + CurrencyManagment.GetText(Integer.valueOf((eeData.currency)), this.getContext()) + ")");
             // select the chosen payer
             String payerId;
             if (eeData.payerId != null) payerId = eeData.payerId;
@@ -591,12 +602,14 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         return dataProvided;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void clearForm() {
         mName.setText("");
         mDescription.setText("");
         mAmount.setText("");
         // Set the currency to the sharing activity one
-        mCurrency.setSelection(0);
+        mRtvExpenseAmount.setText(mRtvExpenseAmount.getText() + " (" + CurrencyManagment.GetText(Integer.valueOf((eeData.currency)), this.getContext()) + ")");
+        //mCurrency.setSelection(0);
         //mCurrency.getSelectedItemPosition()
         selectPayer(((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId());
         mTvDate.setText(mDateFormat.format(new Date()));
@@ -624,6 +637,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void fillFormWithData() {
         try {
             eeData.captureImageUri = mExpense.getImageUrl();
@@ -635,7 +649,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mDescription.setText(mExpense.getDescription());
             mAmount.setText("" + mExpense.getAmount());
             // TODO manage the currency
-            mRtvExpenseAmount.setText(mRtvExpenseAmount.getText() + " (" + getCurrency(mExpense.getExpenseCurrency()) + ")");
+            mRtvExpenseAmount.setText(mRtvExpenseAmount.getText() + " (" + CurrencyManagment.GetText(Integer.valueOf((eeData.currency)), this.getContext()) + ")");
+            eeData.currency = mExpense.getExpenseCurrency();
             eeData.payerId = mExpense.getPayer().getId();
             selectPayer(eeData.payerId);
             eeData.expenseDate = mExpense.getDate();
@@ -743,7 +758,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         newExpense.setName(mName.getText().toString());
         newExpense.setDescription(mDescription.getText().toString());
         newExpense.setAmount(Double.valueOf(mAmount.getText().toString()));
-        newExpense.setExpenseCurrency(mCurrency.getSelectedItem().toString());
+        newExpense.setExpenseCurrency(eeData.currency); //mCurrency.getSelectedItem().toString());
         newExpense.setPayer((User) mPaidBySpinner.getSelectedItem());
         newExpense.setIsMoneyTransfer(eeData.isMoneyTransfer);
         newExpense.setIsSharedEvenly(eeData.isSharedEvenly);
@@ -799,11 +814,10 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         });
     }
 
-    private void SetDataonSaveInstanceState()
-    {
+    private void SetDataonSaveInstanceState() {
         eeData.haveData = true;
         getShares();
-        eeData.payerId=((User) mPaidBySpinner.getSelectedItem()).getId();
+        eeData.payerId = ((User) mPaidBySpinner.getSelectedItem()).getId();
         try {
             eeData.expenseDate = mDateFormat.parse((String) mTvDate.getText());
         } catch (ParseException e) {

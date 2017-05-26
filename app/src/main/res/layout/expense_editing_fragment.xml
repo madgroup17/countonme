@@ -89,7 +89,7 @@
 
         <!-- The currency spinner -->
 
-        <it.polito.mad.countonme.customviews.RequiredInputTextView
+        <!--<it.polito.mad.countonme.customviews.RequiredInputTextView
             android:id="@+id/rtv_expense_currency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/currencies_array"
-            android:layout_below="@id/rtv_expense_currency"/>
+            android:layout_below="@id/rtv_expense_currency"/>-->
 
         <!-- The paid by spinner -->
 
@@ -121,7 +121,7 @@
             android:textSize="@dimen/interface_text_size_small"
             CountOnMe:error_text="@string/lbl_required_field"
             CountOnMe:error_color="@color/errorColor"
-            android:layout_below="@id/spin_expense_currency"
+            android:layout_below="@id/ed_expense_amount"
             android:layout_marginTop="@dimen/lbl_margin_10"
             android:layout_marginBottom="@dimen/lbl_margin_5"/>
 

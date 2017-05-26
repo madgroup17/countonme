@@ -2,7 +2,9 @@ package it.polito.mad.countonme;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +30,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import it.polito.mad.countonme.business.CurrencyManagment;
 import it.polito.mad.countonme.database.ExpenseLoader;
 import it.polito.mad.countonme.exceptions.DataLoaderException;
 import it.polito.mad.countonme.interfaces.IActionReportBack;
@@ -157,6 +160,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void fillUi(Expense expense) {
         if (expense == null) return;
 
@@ -167,7 +171,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         mTvCreatedBy.setText(String.format(getResources().getString(R.string.lbl_created_by), expense.getCreatedBy().getName()));
         mTvName.setText(expense.getName());
         mTvDescription.setText(expense.getDescription());
-        mTvCurrency.setText(expense.getExpenseCurrency());
+        mTvCurrency.setText(CurrencyManagment.GetText(Integer.valueOf(expense.getExpenseCurrency()),this.getContext() ));
         mTvAmount.setText(formatter.format(expense.getAmount()));
         mTvDate.setText(dateFormat.format(expense.getDate()));
         mTvMoneyTransfer.setText(expense.getIsMoneyTransfer() ? R.string.lbl_yes : R.string.lbl_no);
