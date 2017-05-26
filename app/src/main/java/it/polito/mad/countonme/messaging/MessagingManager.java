@@ -11,7 +11,7 @@ import it.polito.mad.countonme.exceptions.InvalidDataException;
 
 public class MessagingManager {
 
-    private FirebaseMessaging mMessaging;
+    private static FirebaseMessaging mMessaging;
 
     private static final MessagingManager sInstance = new MessagingManager();
 
@@ -26,7 +26,7 @@ public class MessagingManager {
             throw new InvalidDataException( "subscribeToSharingActivity: Invalid topic" );
     }
 
-    public void unsubscribeFromSharingActivity( String shactKey ) throws InvalidDataException {
+    public static void unsubscribeFromSharingActivity(String shactKey) throws InvalidDataException {
         if( shactKey != null && shactKey.length() >0 )
             mMessaging.unsubscribeFromTopic( shactKey );
         else
