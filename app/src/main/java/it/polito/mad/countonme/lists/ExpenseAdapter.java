@@ -131,7 +131,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     }
 
     public ExpenseAdapter(Context context, List<Expense> data, IOnListItemClickListener listener, ExpensesListFragment expensesListFragment ) {
-        mExpense = data;
+        mExpense = new ArrayList<Expense>(data);
         mListener = listener;
         mInflater = LayoutInflater.from( context );
         this.mContext=context;
@@ -146,6 +146,13 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
     @Override
     public void onBindViewHolder(final ExpenseAdapter.ExpViewHolder holder, final int position) {
+        //TODO CHeck mExpense Keys
+        Expense e = mExpense.get(position);
+
+        String key= e.getKey();
+        if (key == null) {
+            Toast.makeText( mInflater.getContext(),"hola", Toast.LENGTH_LONG).show();
+        }
         holder.setData( mExpense.get( position ), mListener  );
         infoData = mExpense.get(position);
 
@@ -174,13 +181,25 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         holder.mImgView.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
                 infoData = mExpense.get(position);
-                expensesListFragment.prepareSelection(infoData);
+                String toshow="";
+                if(infoData.getKey()==null){
+                    toshow+="key";
+                }else if(infoData.getName()==null){
+                    toshow+="name";
+                }else if(infoData.getDescription()==null){
+                    toshow+="desc";
+                }
+               // String toshow = infoData.getKey()+ " - "+infoData.getName()+ " - "+infoData.getDescription();
+                Toast.makeText( mInflater.getContext(),toshow, Toast.LENGTH_LONG).show();
+               expensesListFragment.prepareSelection(infoData);
                 return false;
             }
         });
         holder.mTvName.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
                 infoData = mExpense.get(position);
+                String toshow = infoData.getKey()+ " - "+infoData.getName()+ " - "+infoData.getDescription();
+                Toast.makeText( mInflater.getContext(),toshow, Toast.LENGTH_LONG).show();
                 expensesListFragment.prepareSelection(infoData);
                 return false;
             }
@@ -188,6 +207,8 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         holder.mTvAmount.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
                 infoData = mExpense.get(position);
+                String toshow = infoData.getKey()+ " - "+infoData.getName()+ " - "+infoData.getDescription();
+                Toast.makeText( mInflater.getContext(),toshow, Toast.LENGTH_LONG).show();
                 expensesListFragment.prepareSelection(infoData);
                 return false;
             }
