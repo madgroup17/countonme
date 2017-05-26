@@ -101,18 +101,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
             }
 
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                namePhoto = StorageManager.STORAGE_EXPENSES_FOLDER + "/" + expense.getKey();
-                StorageReference newstoragereference = mStorageRef.child(namePhoto);
-
-                Glide.with(mImgView.getContext()).using(new ImageManagement()).load(newstoragereference).asBitmap().centerCrop().into(new BitmapImageViewTarget(mImgView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(mImgView.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        mImgView.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                Glide.with(mImgView.getContext()).load(Uri.parse(imgUrl)).into( mImgView );
             }else
                 mImgView.setImageResource( R.drawable.img_sharing_default );
 

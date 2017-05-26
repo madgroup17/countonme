@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -101,18 +102,7 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
                 }
             }
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                namePhoto = StorageManager.STORAGE_SHAREACTS_FOLDER + "/" + activity.getKey();
-                StorageReference newstoragereference = mStorageRef.child(namePhoto);
-
-                Glide.with(mIvPhoto.getContext()).using(new ImageManagement()).load(newstoragereference).asBitmap().centerCrop().into(new BitmapImageViewTarget(mIvPhoto) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(mIvPhoto.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        mIvPhoto.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                Glide.with(mIvPhoto.getContext()).load(Uri.parse(imgUrl)).into( mIvPhoto);
             } else {
                  mIvPhoto.setImageResource(R.drawable.img_sharing_default);
             }
