@@ -161,5 +161,7 @@
     <string name="lbl_item_selected">item selected</string>
     <string name="lbl_deleteSharingActivity">Leaving the Sharing Activity</string>
     <string name="lbl_confirmationdeleteSharingActivity">Are you sure that you want to leave the sharing activity?</string>
+    <string name="lbl_error_can_not_leave_title">Sorry, You can not leave the Sharing Activity.</string>
+    <string name="lbl_error_can_not_leave_reason">Reason: Since this Sharing Activity contains some expenses , you can not leave.</string>
 
 </resources>

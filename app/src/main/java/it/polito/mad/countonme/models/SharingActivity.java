@@ -21,6 +21,7 @@ public class SharingActivity {
     private String mKey;
     private User mCreatedBy;
     private Map<String, User> mUsers = new HashMap<>();
+    //private boolean isDeleted;
 
     public SharingActivity() {
     }

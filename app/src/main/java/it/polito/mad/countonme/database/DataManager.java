@@ -335,30 +335,22 @@ public class DataManager {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d("Hello", "ello");
-                    if (dataSnapshot.getValue() != null) {
-                        Expense exp = dataSnapshot.getValue(Expense.class);
-                        listToReturn.add(exp);
-                    }else{
-                        Log.d("Hello", "ello");
+                    ArrayList<Expense> expenseList = new ArrayList<Expense>();
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        listToReturn.add( ( Expense ) data.getValue( Expense.class ) );
                     }
-
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
                 }
             });
-
             getExpensesQuery.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d("Hello", "ello");
-                    if (dataSnapshot.getValue() != null) {
-                        Expense exp = dataSnapshot.getValue(Expense.class);
-                        listToReturn.add(exp);
-                    }else{
-                        Log.d("Hello", "ello");
+                    ArrayList<Expense> expenseList = new ArrayList<Expense>();
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        listToReturn.add( ( Expense ) data.getValue( Expense.class ) );
                     }
                 }
 
