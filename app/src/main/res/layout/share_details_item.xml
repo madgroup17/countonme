@@ -13,7 +13,8 @@
         android:paddingLeft="@dimen/list_item_view_spacing"
         android:textSize="@dimen/list_item_text_size_20"
         android:textColor="@android:color/black"
-        android:text="100"/>
+        android:text="100"
+        android:background="@drawable/my_selector"/>
 
     <ImageView
         android:id="@+id/iv_user"
@@ -21,7 +22,8 @@
         android:layout_height="@dimen/list_item_height_small"
         android:src="@drawable/default_user_photo"
         android:scaleType="fitCenter"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/my_selector"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -35,6 +37,8 @@
         android:layout_toLeftOf="@id/tv_amount"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Francesco"/>
+        android:background="@drawable/my_selector"/>
+        <!--android:text="Francesco"/>what is this?-->
+
 
 </RelativeLayout>

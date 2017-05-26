@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -55,6 +56,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     private int counter;
 
     public static class ExpViewHolder extends RecyclerView.ViewHolder {
+        View mItemView ;
         ImageView mImgView;
         TextView mTvName;
         TextView mTvAmount;
@@ -64,6 +66,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
 
         ExpViewHolder(View itemView ) {
             super( itemView );
+            mItemView=itemView;
             mImgView = (ImageView) itemView.findViewById(R.id.expense_img);
             mTvName = (TextView) itemView.findViewById( R.id.expense_name );
             mTvAmount = (TextView) itemView.findViewById( R.id.expense_amount);
@@ -73,6 +76,29 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
             String namePhoto;
             mStorageRef = FirebaseStorage.getInstance().getReference();
             String imgUrl = expense.getImageUrl();
+            if(ExpenseAdapter.selection_list.size()!=0){
+                for(Expense expaux : ExpenseAdapter.selection_list){
+                    if(expaux.getKey().equals(expense.getKey())){
+                        if(!mItemView.isSelected()){
+                            mItemView.setSelected(true);
+                            int color = Color.parseColor("#AAAAAAAA");
+                            int colorWHITE = Color.parseColor("#FFFFFF");
+                            mItemView.setBackgroundColor(color);
+                            mImgView.setBackgroundColor(color);
+                            mItemView.setBackgroundColor(colorWHITE);
+                            mTvName.setBackgroundColor(colorWHITE);
+                            mTvAmount.setBackgroundColor(colorWHITE);
+                        }
+                    }else{
+                        if(mItemView.isSelected()){
+                            mItemView.setSelected(false);
+                            int color = Color.parseColor("#FFFFFF");
+                            mImgView.setBackgroundColor(color);
+                            mItemView.setBackgroundColor(color);
+                        }
+                    }
+                }
+            }
 
             if( imgUrl != null && imgUrl.length() > 0 ) {
                 namePhoto = StorageManager.STORAGE_EXPENSES_FOLDER + "/" + expense.getKey();
@@ -113,6 +139,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
     private Context mContext;
     public Activity currentActivity;
     public ExpensesListFragment expensesListFragment;
+    public static ArrayList<Expense> selection_list;
 
     public List<Expense> getmExpense() {
         return mExpense;
@@ -130,12 +157,13 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         this.infoData = infoData;
     }
 
-    public ExpenseAdapter(Context context, List<Expense> data, IOnListItemClickListener listener, ExpensesListFragment expensesListFragment ) {
+    public ExpenseAdapter(Context context, List<Expense> data, IOnListItemClickListener listener, ExpensesListFragment expensesListFragment ,ArrayList<Expense> selection_list) {
         mExpense = new ArrayList<Expense>(data);
         mListener = listener;
         mInflater = LayoutInflater.from( context );
         this.mContext=context;
         this.expensesListFragment = expensesListFragment;
+        this.selection_list=selection_list;
     }
 
     @Override
@@ -156,21 +184,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         holder.setData( mExpense.get( position ), mListener  );
         infoData = mExpense.get(position);
 
-        holder.mImgView.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                infoData = mExpense.get(position);
-                Activity parentActivity  = expensesListFragment.getActivity();
-                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
-            }
-        });
-        holder.mTvName.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                infoData = mExpense.get(position);
-                Activity parentActivity  = expensesListFragment.getActivity();
-                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_EXPENSE_DETAILS, infoData ));
-            }
-        });
-        holder.mTvAmount.setOnClickListener(new View.OnClickListener(){
+        holder.mItemView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 infoData = mExpense.get(position);
                 Activity parentActivity  = expensesListFragment.getActivity();
@@ -178,44 +192,28 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
             }
         });
 
-        holder.mImgView.setOnLongClickListener(new View.OnLongClickListener(){
+        holder.mItemView.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
                 infoData = mExpense.get(position);
-                String toshow="";
-                if(infoData.getKey()==null){
-                    toshow+="key";
-                }else if(infoData.getName()==null){
-                    toshow+="name";
-                }else if(infoData.getDescription()==null){
-                    toshow+="desc";
+                if(v.isSelected()){
+                    v.setSelected(false);
+                    int color = Color.parseColor("#FFFFFF");
+                    holder.mImgView.setBackgroundColor(color);
+                    holder.mItemView.setBackgroundColor(color);
+                }else{
+                    v.setSelected(true);
+                    int color = Color.parseColor("#AAAAAAAA");
+                    int colorWHITE = Color.parseColor("#FFFFFF");
+                    v.setBackgroundColor(color);
+                    holder.mImgView.setBackgroundColor(color);
+                    holder.mItemView.setBackgroundColor(colorWHITE);
+                    holder.mTvName.setBackgroundColor(colorWHITE);
+                    holder.mTvAmount.setBackgroundColor(colorWHITE);
                 }
-               // String toshow = infoData.getKey()+ " - "+infoData.getName()+ " - "+infoData.getDescription();
-                Toast.makeText( mInflater.getContext(),toshow, Toast.LENGTH_LONG).show();
-               expensesListFragment.prepareSelection(infoData);
-                return false;
-            }
-        });
-        holder.mTvName.setOnLongClickListener(new View.OnLongClickListener(){
-            public boolean onLongClick(View v){
-                infoData = mExpense.get(position);
-                String toshow = infoData.getKey()+ " - "+infoData.getName()+ " - "+infoData.getDescription();
-                Toast.makeText( mInflater.getContext(),toshow, Toast.LENGTH_LONG).show();
                 expensesListFragment.prepareSelection(infoData);
                 return false;
             }
         });
-        holder.mTvAmount.setOnLongClickListener(new View.OnLongClickListener(){
-            public boolean onLongClick(View v){
-                infoData = mExpense.get(position);
-                String toshow = infoData.getKey()+ " - "+infoData.getName()+ " - "+infoData.getDescription();
-                Toast.makeText( mInflater.getContext(),toshow, Toast.LENGTH_LONG).show();
-                expensesListFragment.prepareSelection(infoData);
-                return false;
-            }
-        });
-
-
-
     }
 
     @Override
@@ -263,7 +261,6 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
                             counter = list.size();
                         }
                     }
-
                     dialog.dismiss();
                 }
             });

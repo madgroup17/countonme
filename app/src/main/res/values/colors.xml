@@ -16,5 +16,6 @@
     <color name="colorListItemDivider">#AAAAAA</color>
 
     <color name="errorColor">#FF0000</color>
+    <drawable name ="grey">#AAAAAA</drawable>
 
 </resources>

@@ -79,26 +79,22 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
         final IOnListItemClickListener mListener=this;
         final SharingActivitiesListFragment shrActlf =this;
         if(savedInstanceState !=null){
-            Log.v("portrade","savedInstanceOnCreate");
             //setData(savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
             selection_list=(ArrayList<SharingActivity>)savedInstanceState.getSerializable(AppConstants.SELECTION_LIST_SHRACTIVITIES);
             counter = savedInstanceState.getInt(AppConstants.COUNTER_SHRACTIVITIES);
             updateCounter(counter);
         }
+
         //args=getArguments();
         if (((CountOnMeApp) getActivity().getApplication()).getCurrentUser() != null) {
-            //setUserId(((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId());
             userId = ((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId();
-            Log.v("Test SALF","userId: "+userId);
         }
         mSharingActivityListLoader = new SharingActivityListLoader();
         mSharingActivityListLoader.setOnDataListener(new IOnDataListener() {
             @Override
             public void onData(Object data) {
-                Log.v("Test SALF","ONDATA "+data.toString());
                 mSharActsList = (ArrayList<SharingActivity>)data;
-                Log.v("Test SALF","Smsal "+mSharActsList.size());
-                mSharActsAdapter = new SharingActivitiesAdapter(getActivity().getBaseContext(),mSharActsList,mListener,userId,shrActlf);
+                mSharActsAdapter = new SharingActivitiesAdapter(getActivity().getBaseContext(),mSharActsList,mListener,userId,shrActlf,selection_list);
                 //(Context context, List<SharingActivity> data, IOnListItemClickListener listener, String currentUser ,SharingActivitiesListFragment sharingActivitiesListFragment)
                 final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 mSharActsRv.setLayoutManager(layoutManager);
@@ -120,7 +116,7 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
         mActionButton.setOnClickListener(this);
         mSharActsRv = (RecyclerView) view.findViewById(R.id.sharing_activities_list);
         mSharActsList = new ArrayList<SharingActivity>();
-        mSharActsAdapter = new SharingActivitiesAdapter(getActivity().getBaseContext(),mSharActsList,mListener,userId,shrActlf);
+        mSharActsAdapter = new SharingActivitiesAdapter(getActivity().getBaseContext(),mSharActsList,mListener,userId,shrActlf,selection_list);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mSharActsRv.setLayoutManager(layoutManager);
         mSharActsRv.setAdapter(mSharActsAdapter);
@@ -167,10 +163,7 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     public void onDataChange(DataSnapshot dataSnapshot) {
         FirebaseMessaging fbMessaging = FirebaseMessaging.getInstance();
         SharingActivity tmp;
-        //setUserId(((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId());
-        //String userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
         userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
-        Log.v("Test SALF","onDataChange "+userId);
         mSharActsList.clear();
         for (DataSnapshot data : dataSnapshot.getChildren()) {
             tmp = (SharingActivity) data.getValue(SharingActivity.class);

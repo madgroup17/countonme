@@ -64,11 +64,12 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
         @BindView( R.id.sharing_activity_img ) ImageView mIvPhoto;
         @BindView( R.id.sharing_activity_name) TextView mTvName;
         @BindView( R.id.sharing_activity_desc ) TextView mTvDesc;
-
+        View mItemView ;
         private StorageReference mStorageRef;
 
         public ShActViewHolder(View itemView ) {
             super( itemView );
+            mItemView=itemView;
             ButterKnife.bind( this, itemView );
         }
 
@@ -76,6 +77,29 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
             String namePhoto;
             String imgUrl = activity.getImageUrl();
             mStorageRef = FirebaseStorage.getInstance().getReference();
+            if(SharingActivitiesAdapter.selection_list.size()!=0){
+                for(SharingActivity shactaux : SharingActivitiesAdapter.selection_list){
+                    if(shactaux.getKey().equals(activity.getKey())){
+                        if(!mItemView.isSelected()){
+                            mItemView.setSelected(true);
+                            int color = Color.parseColor("#AAAAAAAA");
+                            int colorWHITE = Color.parseColor("#FFFFFF");
+                            mItemView.setBackgroundColor(color);
+                            mIvPhoto.setBackgroundColor(color);
+                            mItemView.setBackgroundColor(colorWHITE);
+                            mTvName.setBackgroundColor(colorWHITE);
+                            mTvDesc.setBackgroundColor(colorWHITE);
+                        }
+                    }else{
+                        if(mItemView.isSelected()){
+                            mItemView.setSelected(false);
+                            int color = Color.parseColor("#FFFFFF");
+                            mIvPhoto.setBackgroundColor(color);
+                            mItemView.setBackgroundColor(color);
+                        }
+                    }
+                }
+            }
             if( imgUrl != null && imgUrl.length() > 0 ) {
                 namePhoto = StorageManager.STORAGE_SHAREACTS_FOLDER + "/" + activity.getKey();
                 StorageReference newstoragereference = mStorageRef.child(namePhoto);
@@ -118,6 +142,7 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
     private ExpensesListLoader mExpensesListLoader;
     private String mCurrentUser;
     public SharingActivitiesListFragment sharingActivityListFragment;
+    public static ArrayList<SharingActivity> selection_list;
 
 
     public List<SharingActivity> getmSharingActivities() {
@@ -136,12 +161,13 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
         this.infoData = infoData;
     }
 
-    public SharingActivitiesAdapter(Context context, List<SharingActivity> data, IOnListItemClickListener listener, String currentUser ,SharingActivitiesListFragment sharingActivitiesListFragment){
+    public SharingActivitiesAdapter(Context context, List<SharingActivity> data, IOnListItemClickListener listener, String currentUser ,SharingActivitiesListFragment sharingActivitiesListFragment, ArrayList<SharingActivity> selection_list){
         mSharingActivities = data;
         mListener = listener;
         mInflater = LayoutInflater.from( context );
         mCurrentUser=currentUser;
         sharingActivityListFragment = sharingActivitiesListFragment;
+        this.selection_list=selection_list;
     }
 
     @Override
@@ -154,73 +180,36 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
     public void onBindViewHolder(final ShActViewHolder holder, final int position) {
         SharingActivity sa = mSharingActivities.get(position);
         String key = sa.getKey();
-        if(key ==null){
-            Log.v("TEST SAA","key: "+key);
-        }
         holder.setData( mSharingActivities.get( position ), mListener  );
         //new code for multiple selection for delete
         infoData = mSharingActivities.get(position);
-        holder.mIvPhoto.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                infoData = mSharingActivities.get(position);
-                Log.v("TEST SAA 1","onBindViewHolder key: "+infoData.getKey());
-                Activity parentActivity  = sharingActivityListFragment.getActivity();
-                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY_DETAIL_TABS, infoData.getKey() ));
-            }
-        });
-        holder.mTvName.setOnClickListener(new View.OnClickListener(){
+        holder.mItemView.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 infoData = mSharingActivities.get(position);
                 Activity parentActivity  = sharingActivityListFragment.getActivity();
                 ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY_DETAIL_TABS, infoData.getKey() ));
             }
         });
-        holder.mTvDesc.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                infoData = mSharingActivities.get(position);
-                //Log.v("TEST SAA 3","onBindViewHolder key: "+infoData.getKey());
-                Activity parentActivity  = sharingActivityListFragment.getActivity();
-                ((IActionReportBack) parentActivity).onAction( new ReportBackAction( ReportBackAction.ActionEnum.ACTION_VIEW_SHARING_ACTIVITY_DETAIL_TABS, infoData.getKey() ));
-                //Toast.makeText( mInflater.getContext(), "entro a onclick", Toast.LENGTH_LONG).show();
-            }
-
-        });
-
-
-        holder.mIvPhoto.setOnLongClickListener(new View.OnLongClickListener(){
+        holder.mItemView.setOnLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(View v){
                 infoData = mSharingActivities.get(position);
-                //Log.v("TEST SAA 4","onBindViewHolder key: "+infoData.getKey());
-                /*int color = Color.parseColor("#A5C9B7");
-                holder.mIvPhoto.setColorFilter(color);*/
+                if(v.isSelected()){
+                    v.setSelected(false);
+                    int color = Color.parseColor("#FFFFFF");
+                    holder.mIvPhoto.setBackgroundColor(color);
+                    holder.mItemView.setBackgroundColor(color);
+                }else{
+                    v.setSelected(true);
+                    int color = Color.parseColor("#AAAAAAAA");
+                    int colorWHITE = Color.parseColor("#FFFFFF");
+                    v.setBackgroundColor(color);
+                    holder.mIvPhoto.setBackgroundColor(color);
+                    holder.mItemView.setBackgroundColor(colorWHITE);
+                    holder.mTvName.setBackgroundColor(colorWHITE);
+                    holder.mTvDesc.setBackgroundColor(colorWHITE);
+                }
                 sharingActivityListFragment.prepareSelection(infoData);
                 return false;
-                //Toast.makeText( mInflater.getContext(), "entro a on LONG click listener", Toast.LENGTH_LONG).show();
-                //return false;
-            }
-        });
-        holder.mTvName.setOnLongClickListener(new View.OnLongClickListener(){
-            public boolean onLongClick(View v){
-                infoData = mSharingActivities.get(position);
-                /*int color = Color.parseColor("#A5C9B7");
-                holder.mIvPhoto.setColorFilter(color);*/
-                //Log.v("TEST SAA 5","onBindViewHolder key: "+infoData.getKey());
-                sharingActivityListFragment.prepareSelection(infoData);
-                return false;
-                //Toast.makeText( mInflater.getContext(), "entro a on LONG click listener", Toast.LENGTH_LONG).show();
-                //return false;
-            }
-        });
-        holder.mTvDesc.setOnLongClickListener(new View.OnLongClickListener(){
-            public boolean onLongClick(View v){
-                infoData = mSharingActivities.get(position);
-                //Log.v("TEST SAA 6","onBindViewHolder key: "+infoData.getKey());
-                /*int color = Color.parseColor("#A5C9B7");
-                holder.mIvPhoto.setColorFilter(color);*/
-                sharingActivityListFragment.prepareSelection(infoData);
-                return false;
-                //Toast.makeText( mInflater.getContext(), "entro a on LONG click listener", Toast.LENGTH_LONG).show();
-                //return false;
             }
         });
     }
@@ -231,10 +220,8 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
     }
 
     public void updateAdapter(final ArrayList<SharingActivity> list) {
-        //Log.v("TEST udateAdapter :","list: "+list.size());
         counter = list.size();
         if(counter!=0) {
-            //Log.v("TEST updateAdapter :","counter!=0 : "+counter);
             AlertDialog.Builder mPopup = new AlertDialog.Builder(((SharingActivitiesListFragment) this.mListener).getActivity());//traer el activity
             mPopup.setIcon(R.drawable.appicon);
             mPopup.setTitle(R.string.lbl_deleteSharingActivity);
@@ -265,11 +252,6 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
             alertDialog.show();
         }
         notifyDataSetChanged();
-        /*
-        ((SharingActivitiesListFragment) this.mListener).getActivity().finish();
-        Intent intent = new Intent(((SharingActivitiesListFragment) this.mListener).getActivity(), it.polito.mad.countonme.CountOnMeActivity.class );
-        intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP );
-        ((SharingActivitiesListFragment) this.mListener).startActivity(intent);*/
     }
 
     public void dimissSharingActivity(int position) {
@@ -279,17 +261,13 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
         }
         mSharingActivities.remove(position);
         this.notifyItemRemoved(position);
-        Toast.makeText( mInflater.getContext(), "entro a dimissSharingActivity", Toast.LENGTH_LONG).show();
     }
 
     private void removeItemShAct(SharingActivity infoData) {
-        Log.v("Test SAA -----","removeItemShAct "+infoData.getKey());
         boolean unicmember = checkunicmember(infoData);//if true means unique user on sharing activity
         DatabaseReference dbRef = DataManager.getsInstance().getSharActExpensesReference(infoData.getKey());
         boolean activityHasExpRelated =false;
         activityHasExpRelated=DataManager.checkExpRelofShaAct(infoData.getKey());
-        //ArrayList<Expense> listExpense = new ArrayList<>();
-        //listExpense=DataManager.checkExpensesRelatedOfSharingActivity(infoData.getKey());
 //TODO: check if exist any expense related to this Sharing Activity
         if(!activityHasExpRelated){//(listExpense==null){
             //TODO: the sharing activity does not have any expense related so delete the user on sharingActivity/users
@@ -310,8 +288,7 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
 
         }else{
             if(unicmember){//only me but many expenses related
-                //for(Expense exp :listExpense){
-                Log.v("Test SAA -----","CASE ONLY ME MANY EXP "+infoData.getKey());
+
                 DataManager.getsInstance().deleteExpenseBySharActivity(infoData.getKey());
                 DataManager.getsInstance().deleteSharingActivity(infoData.getKey());
                 try{
@@ -319,17 +296,9 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-                //    listExpense.remove(exp);
-                //}
-            }else{//many on group with many expenses related
-                Log.v("Test SAA -----","CASE MANY USR MANY EXP "+infoData.getKey());
-                /*ArrayList<Expense> expList = DataManager.getsInstance().checkExpensesRelatedOfSharingActivity(infoData.getKey());
-                boolean anyDividedEvenly=false;
-                for(Expense auxExp : expList){
-                    auxExp.getIsSharedEvenly()==false  and users (me)==null then i can leave
 
-                }*/
-                //DataManager.getsInstance().leaveSharingActivity(infoData.getKey(),mCurrentUser);
+            }else{//many on group with many expenses related
+
                 //POP UP THAT SAYS that if you have expenses envolved you can delete it
 
                 AlertDialog.Builder mPopup = new AlertDialog.Builder(((SharingActivitiesListFragment) this.mListener).getActivity());//traer el activity
@@ -354,12 +323,6 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
             //TODO: but if the sharing activity only have one user (current user) then delete all expenses.
         }
         notifyDataSetChanged();
-        /*
-        ((SharingActivitiesListFragment) this.mListener).getActivity().finish();
-        Intent intent = new Intent(((SharingActivitiesListFragment) this.mListener).getActivity(), it.polito.mad.countonme.CountOnMeActivity.class );
-        intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP );
-        ((SharingActivitiesListFragment) this.mListener).startActivity(intent);*/
-        //Toast.makeText( mInflater.getContext(), "entro a removeItem", Toast.LENGTH_LONG).show();
     }
 
     private boolean checkunicmember(SharingActivity infoData) {
@@ -373,51 +336,13 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
             while(it.hasNext()){
                String key = it.next().toString();
                User u =aux.get(key);
-                //((CountOnMeApp)getActivity().getApplication()).getCurrentUser().getId();
                 if(u.getId().equals(mCurrentUser)){//mListener.getActivity().getApplication().getCurrentUser().getId()) {
                     valuetoReturn = true;
                 }else{
                     valuetoReturn= false;
                 }
             }
-
-             /*
-                    HashMap<String,String> aux2 = aux.get(key);
-                    Iterator it2 = aux2.keySet().iterator();
-                    while(it2.hasNext()){
-                        String key2 = it2.next().toString();
-                        if(key2.equals("id")){
-                            idUser = aux2.get(key2);
-                            Log.d("id of user: ",idUser);
-                        }else if(key2.equals("name")){
-                            nUser = aux2.get(key2);
-                            Log.d("name of user:",nUser);
-                        }else if(key2.equals("email")){
-                            emailUser = aux2.get(key2);
-                            Log.d("name of user:",emailUser);
-                        }else if(key2.equals("url")){
-                            urlUser = aux2.get(key2);
-                            Log.d("name of user:",urlUser);
-                        }
-
-                    }
-                    User userToAdd = new User(idUser,nUser,emailUser,urlUser);
-                    UserMap = new HashMap<String,User> ();
-                    UserMap.put(idUser,userToAdd);
-                }
-             * */
-
         }
         return valuetoReturn;
     }
-    /*
-      public void removeItem(Expense infoData){
-        int currentposition = mExpense.indexOf(infoData);
-        DataManager.getsInstance().deleteExpense(infoData.getParentSharingActivityId(),infoData.getKey());
-        mExpense.remove(currentposition);
-        notifyItemRemoved(currentposition);
-    }
-
-    * */
-
 }

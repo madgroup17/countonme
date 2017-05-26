@@ -81,7 +81,6 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
             selection_list= (ArrayList<Expense>) savedInstanceState.getSerializable(AppConstants.SELECTION_LIST_EXPENSES);
             counter=savedInstanceState.getInt(AppConstants.COUNTER_EXPENSES);
             updateCounter(counter);
-
         }
             args = getArguments();
             if (args != null) setData(args.getString(AppConstants.SHARING_ACTIVITY_KEY));
@@ -91,10 +90,8 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
             mExpensesListLoader.setOnDataListener(new IOnDataListener() {
                 @Override
                 public void onData(Object data) {
-                    Log.v("Test","Wat "+data.toString());
                     mExpensesList = ( ArrayList<Expense> ) data;
-                    Log.v("Test","Wat "+mExpensesList.size());
-                    mExpensesAdapter = new ExpenseAdapter(getActivity().getBaseContext(),mExpensesList,mListener,elf);
+                    mExpensesAdapter = new ExpenseAdapter(getActivity().getBaseContext(),mExpensesList,mListener,elf,selection_list);
                     final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                     mExpensesRv.setLayoutManager(layoutManager);
                     mExpensesRv.setAdapter(mExpensesAdapter);
@@ -102,8 +99,6 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
                     mExpensesAdapter.notifyDataSetChanged();
                 }
             });
-
-        Log.v("Test","Wat "+args.getString( AppConstants.SHARING_ACTIVITY_KEY ));
         try {
             mExpensesListLoader.loadExpensesList(args.getString( AppConstants.SHARING_ACTIVITY_KEY ));
         } catch (DataLoaderException e) {
@@ -115,18 +110,10 @@ public class ExpensesListFragment extends BaseFragment implements  View.OnClickL
         mActionButton.setOnClickListener( this );
         mExpensesRv = (RecyclerView)view.findViewById(R.id.expenses_list);
         mExpensesList = new ArrayList<Expense>();
-        /*mExpensesAdapter = new ExpenseAdapter(getActivity(),mExpensesList,this,this);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mExpensesRv.setLayoutManager(layoutManager);
-        mExpensesRv.setAdapter(mExpensesAdapter);
-        mExpensesRv.addItemDecoration(new SimpleDividerItemDecoration( getActivity() ) );*/
-
         ItemTouchHelper.Callback callback = new SwipeHelperExpenses(mExpensesAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(mExpensesRv);
-
         currentActivity=getActivity();
-        //selection_list=null;
         return view;
     }
 
