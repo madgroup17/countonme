@@ -158,7 +158,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
             String createdBy = String.format(res.getString(R.string.lbl_created_by), activity.getCreatedBy().getName());
             mTvCreatedBy.setText(createdBy);
             mTvDescription.setText(activity.getDescription());
-            mTvCurrency.setText( CurrencyManagment.GetText(Integer.valueOf(activity.getCurrency()),this.getContext() ));
+            mTvCurrency.setText( CurrencyManagment.GetText(Integer.valueOf(activity.getCurrency()),getActivity() ));
             if( activity.getImageUrl() != null )
                 Glide.with( mIvPhoto.getContext()).load( activity.getImageUrl() ).into( mIvPhoto );
 

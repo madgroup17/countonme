@@ -12,41 +12,22 @@ import it.polito.mad.countonme.R;
 
 public  class CurrencyManagment
 {
-    public  enum enumCurrency
-    {
-        Doller(0),Euro(1),Pesos(2);
-        private int value;
-
-        private enumCurrency(int value) {
-            this.value = value;
-        }
-
-        public static enumCurrency GetValue(int index)
-        {
-            switch (index) {
-                case 0:
-                    return Doller;
-                case 1:
-                    return Euro;
-                case 2:
-                    return Pesos;
-                default:
-                    return null;
-            }
-        }
-
+    public enum enumCurrency {
+        DOLLAR,
+        EURO,
+        PESOS
     }
 
-    public static String GetText(int Index, Context context )
+    public static String GetText( int index, Context context )
     {
-        enumCurrency eCurrency = enumCurrency.GetValue(Index);
-        switch (eCurrency)
+        enumCurrency eCurrency = enumCurrency.values()[index];
+        switch ( eCurrency )
         {
-            case Doller:
+            case DOLLAR:
                 return context.getString(R.string.currency_dollar_lbl);
-            case Euro:
+            case EURO:
                 return context.getString(R.string.currency_euro_lbl);
-            case Pesos:
+            case PESOS:
                 return context.getString(R.string.currency_pesetas_lbl);
             default:
                 return "";
