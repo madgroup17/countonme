@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -17,15 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Map;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -171,7 +169,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
         mTvCreatedBy.setText(String.format(getResources().getString(R.string.lbl_created_by), expense.getCreatedBy().getName()));
         mTvName.setText(expense.getName());
         mTvDescription.setText(expense.getDescription());
-        mTvCurrency.setText(CurrencyManagment.GetText(Integer.valueOf(expense.getExpenseCurrency()),this.getContext() ));
+        mTvCurrency.setText(CurrencyManagment.GetText(Integer.valueOf(expense.getExpenseCurrency()), getActivity() ));
         mTvAmount.setText(formatter.format(expense.getAmount()));
         mTvDate.setText(dateFormat.format(expense.getDate()));
         mTvMoneyTransfer.setText(expense.getIsMoneyTransfer() ? R.string.lbl_yes : R.string.lbl_no);
