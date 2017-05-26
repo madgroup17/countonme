@@ -38,11 +38,14 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -89,6 +92,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         private static final String KEY_PAYER = "Payer";
         private static final String KEY_DATE = "Date";
         private static final String KEY_CAPT_IMAGE = "CaptureImageUri";
+        private static final String KEY_SHARES = "Shares";
 
         public Boolean haveData;
         public Boolean isNew;
@@ -100,6 +104,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         public Date expenseDate;
         public String captureImageUri;
         public String mode;
+        public Map<String, Share> shares;
 
         public ExpenseEditingData() {
             haveData = false;
@@ -112,6 +117,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             expenseDate = new Date();
             captureImageUri = null;
             mode = AppConstants.NEW_MODE;
+            shares = new HashMap<String, Share>();
         }
 
         public void saveInstance(Bundle outState) {
@@ -126,6 +132,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             outState.putSerializable(KEY_DATE, expenseDate);
             outState.putString(KEY_CAPT_IMAGE, captureImageUri);
             outState.putString(AppConstants.MODE, mode);
+
+            outState.putSerializable(KEY_SHARES, (Serializable) shares);
         }
 
         public void loadInstance(Bundle inState) {
@@ -140,6 +148,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             expenseDate = (Date) inState.getSerializable(KEY_DATE);
             captureImageUri = inState.getString(KEY_CAPT_IMAGE);
             mode = inState.getString(AppConstants.MODE);
+            shares = (Map<String, Share>) inState.getSerializable(KEY_SHARES);
         }
 
     }
@@ -322,7 +331,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        eeData.haveData = true;
+        SetDataonSaveInstanceState();
+
         eeData.saveInstance(outState);
     }
 
@@ -445,13 +455,36 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         if (eeData.haveData) {
             if (eeData.captureImageUri != null)
                 Glide.with(mImage.getContext()).load(Uri.parse(eeData.captureImageUri)).placeholder(R.drawable.ic_add_a_photo).crossFade().into(mImage);
+
             mSwMoneyTransfer.setChecked(eeData.isMoneyTransfer);
             mSwShareEvenly.setChecked(eeData.isSharedEvenly);
+            mTvDate.setText(mDateFormat.format(eeData.expenseDate));
+
             // select the chosen payer
             String payerId;
             if (eeData.payerId != null) payerId = eeData.payerId;
             else payerId = ((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId();
             selectPayer(payerId);
+
+            fillUsersSharingSection();
+            if (!eeData.isSharedEvenly) {
+                mLlSharingSection.setVisibility(View.VISIBLE);
+
+                for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                    View view = mLlSharingInfo.getChildAt(idx);
+                    User user = (User) view.getTag(R.id.id_user);
+
+                    Map<String, Share> ShareList = eeData.shares;
+                    for (Map.Entry<String, Share> entry : ShareList.entrySet()) {
+                        String key = entry.getKey();
+                        Share value = entry.getValue();
+
+                        if ((value.getUser().getId()).equals(user.getId()))
+                            ((EditText) view.findViewById(R.id.ed_amount)).setText(value.getAmount().toString());
+                    }
+                }
+
+            }
         } else {
             if (eeData.isNew) {
                 clearForm();
@@ -602,7 +635,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mDescription.setText(mExpense.getDescription());
             mAmount.setText("" + mExpense.getAmount());
             // TODO manage the currency
-            mRtvExpenseAmount.setText(mRtvExpenseAmount.getText()+" (" +getCurrency(mExpense.getExpenseCurrency())+")");
+            mRtvExpenseAmount.setText(mRtvExpenseAmount.getText() + " (" + getCurrency(mExpense.getExpenseCurrency()) + ")");
             eeData.payerId = mExpense.getPayer().getId();
             selectPayer(eeData.payerId);
             eeData.expenseDate = mExpense.getDate();
@@ -614,9 +647,9 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mSwShareEvenly.setChecked(mExpense.getIsSharedEvenly());
 
             fillUsersSharingSection();
-            if(!mExpense.getIsSharedEvenly())
-            {
+            if (!mExpense.getIsSharedEvenly()) {
                 mLlSharingSection.setVisibility(View.VISIBLE);
+                eeData.shares = mExpense.getShares();
 
                 for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
                     View view = mLlSharingInfo.getChildAt(idx);
@@ -746,7 +779,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         }
     }
 
-
     private void saveExpenseImage() {
         StorageReference strRef = StorageManager.getInstance().getExpensesStorageReference(mExpKey);
 
@@ -767,20 +799,53 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         });
     }
 
+    private void SetDataonSaveInstanceState()
+    {
+        eeData.haveData = true;
+        getShares();
+        eeData.payerId=((User) mPaidBySpinner.getSelectedItem()).getId();
+        try {
+            eeData.expenseDate = mDateFormat.parse((String) mTvDate.getText());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getShares() {
+        if (eeData.isSharedEvenly == false) {
+
+            Map<String, Share> ShareList = new HashMap<String, Share>();
+            for (int idx = 0; idx < mLlSharingInfo.getChildCount(); idx++) {
+                View view = mLlSharingInfo.getChildAt(idx);
+                Double amount;
+                try {
+                    amount = Double.parseDouble(((EditText) view.findViewById(R.id.ed_amount)).getText().toString());
+                } catch (NumberFormatException e) {
+                    amount = 0.0;
+                }
+                User user = (User) view.getTag(R.id.id_user);
+                Share model = new Share(user, amount);
+                ShareList.put(user.getId(), model);
+            }
+            eeData.shares = ShareList;
+        } else
+            eeData.shares = new HashMap<String, Share>();
+
+    }
+
     private String getCurrency(String Currency) {
 
-        switch (Currency)
-        {
+        switch (Currency) {
             case "U.S. Dollar":
-            case"Dolar":
+            case "Dolar":
             case "Dollari":
                 return getString(R.string.currency_dollar_lbl);
 
             case "Euro":
                 return getString(R.string.currency_euro_lbl);
 
-            case"Pesos":
-            case"":
+            case "Pesos":
+            case "":
                 return getString(R.string.currency_pesetas_lbl);
 
 
