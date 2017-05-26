@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -33,6 +32,8 @@ public class ExpenseMessagingService extends FirebaseMessagingService {
     private static final String SHACT_KEY = "shact_key";
     private static final String EXP_KEY = "exp_key";
 
+    private static int sId = 0;
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if( remoteMessage != null )
@@ -47,8 +48,8 @@ public class ExpenseMessagingService extends FirebaseMessagingService {
             intent.putExtra( AppConstants.FROM_NOTIFICATION, true );
             intent.putExtra( AppConstants.SHARING_ACTIVITY_KEY, data.get(SHACT_KEY) );
             intent.putExtra( AppConstants.EXPENSE_KEY, data.get(EXP_KEY) );
-            intent.addFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP );
-            PendingIntent pendingIntent = PendingIntent.getActivity( this, 0, intent, PendingIntent.FLAG_ONE_SHOT );
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP );
+            PendingIntent pendingIntent = PendingIntent.getActivity( this, sId, intent, PendingIntent.FLAG_ONE_SHOT );
             Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.ic_stat_new_expense )
@@ -60,7 +61,7 @@ public class ExpenseMessagingService extends FirebaseMessagingService {
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            notificationManager.notify(0, notificationBuilder.build());
+            notificationManager.notify( sId++ , notificationBuilder.build());
         }
 
     }
