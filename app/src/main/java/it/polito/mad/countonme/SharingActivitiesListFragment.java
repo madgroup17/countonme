@@ -42,26 +42,6 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     private RecyclerView mSharActsRv;
     private SharingActivitiesAdapter mSharActsAdapter;
     private List<SharingActivity> mSharActsList;
-    public static ArrayList<SharingActivity>selection_list = new ArrayList<>();
-    public static int counter;
-    public String userId;
-
-
-
-    public static int getCounter(){
-        return counter;
-    }
-    public static void setCounter(int counter){
-        SharingActivitiesListFragment.counter=counter;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -116,12 +96,12 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     public void onDataChange(DataSnapshot dataSnapshot) {
         FirebaseMessaging fbMessaging = FirebaseMessaging.getInstance();
         SharingActivity tmp;
-        userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
+        String userId = ((CountOnMeApp )getActivity().getApplication()).getCurrentUser().getId();
         mSharActsList.clear();
         for (DataSnapshot data : dataSnapshot.getChildren()) {
             tmp = (SharingActivity) data.getValue(SharingActivity.class);
             for (Map.Entry<String, User> entry : tmp.getUsers().entrySet()) {
-                if (entry.getKey().equals(getUserId()))//userId ) )
+                if (entry.getKey().equals( userId ) )
                     mSharActsList.add(tmp);
             }
         }
