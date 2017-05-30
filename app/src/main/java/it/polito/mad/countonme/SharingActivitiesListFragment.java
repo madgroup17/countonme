@@ -33,12 +33,9 @@ import it.polito.mad.countonme.interfaces.IActionReportBack;
 import it.polito.mad.countonme.interfaces.IOnDataListener;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
 import it.polito.mad.countonme.lists.SharingActivitiesAdapter;
-import it.polito.mad.countonme.models.Expense;
 import it.polito.mad.countonme.models.ReportBackAction;
 import it.polito.mad.countonme.models.SharingActivity;
 import it.polito.mad.countonme.models.User;
-import it.polito.mad.countonme.swiper.SwipeHelperExpenses;
-import it.polito.mad.countonme.swiper.SwipeHelperSharingActivities;
 
 public class SharingActivitiesListFragment extends BaseFragment implements ValueEventListener, IOnListItemClickListener, View.OnClickListener {
     private FloatingActionButton mActionButton;
@@ -47,7 +44,6 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     private List<SharingActivity> mSharActsList;
     public static ArrayList<SharingActivity>selection_list = new ArrayList<>();
     public static int counter;
-    private SharingActivityListLoader mSharingActivityListLoader;
     public String userId;
 
 
@@ -74,35 +70,16 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args=null;
-        counter=0;
-        final IOnListItemClickListener mListener=this;
-        final SharingActivitiesListFragment shrActlf =this;
-        if(savedInstanceState !=null){
-            //setData(savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));
-            selection_list=(ArrayList<SharingActivity>)savedInstanceState.getSerializable(AppConstants.SELECTION_LIST_SHRACTIVITIES);
-            counter = savedInstanceState.getInt(AppConstants.COUNTER_SHRACTIVITIES);
-            updateCounter(counter);
-        }
-
-        //args=getArguments();
-        if (((CountOnMeApp) getActivity().getApplication()).getCurrentUser() != null) {
-            userId = ((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId();
-        }
-        mSharingActivityListLoader = new SharingActivityListLoader();
-        mSharingActivityListLoader.setOnDataListener(new IOnDataListener() {
-            @Override
-            public void onData(Object data) {
-                mSharActsList = (ArrayList<SharingActivity>)data;
-                mSharActsAdapter = new SharingActivitiesAdapter(getActivity().getBaseContext(),mSharActsList,mListener,userId,shrActlf,selection_list);
-                //(Context context, List<SharingActivity> data, IOnListItemClickListener listener, String currentUser ,SharingActivitiesListFragment sharingActivitiesListFragment)
-                final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                mSharActsRv.setLayoutManager(layoutManager);
-                mSharActsRv.setAdapter(mSharActsAdapter);
-                mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
-                mSharActsAdapter.notifyDataSetChanged();
-            }
-        });
+        View view = inflater.inflate(R.layout.sharing_activities_list_fragment, container, false);
+        mActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+        mActionButton.setOnClickListener(this);
+        mSharActsRv = (RecyclerView) view.findViewById(R.id.sharing_activities_list);
+        mSharActsList = new ArrayList<SharingActivity>();
+        mSharActsAdapter = new SharingActivitiesAdapter(getActivity().getBaseContext(),mSharActsList, this );
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mSharActsRv.setLayoutManager(layoutManager);
+        mSharActsRv.setAdapter(mSharActsAdapter);
+        mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
 
         Intent intentback = getActivity().getIntent();
         if (intentback.getData() != null) {
@@ -111,43 +88,19 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
                 ((IActionReportBack) parentActivity).onAction(new ReportBackAction(ReportBackAction.ActionEnum.ACCEPT_REJECT_SA_FRAGMENT, intentback.getData()));
             }
         }
-        View view = inflater.inflate(R.layout.sharing_activities_list_fragment, container, false);
-        mActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
-        mActionButton.setOnClickListener(this);
-        mSharActsRv = (RecyclerView) view.findViewById(R.id.sharing_activities_list);
-        mSharActsList = new ArrayList<SharingActivity>();
-        mSharActsAdapter = new SharingActivitiesAdapter(getActivity().getBaseContext(),mSharActsList,mListener,userId,shrActlf,selection_list);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mSharActsRv.setLayoutManager(layoutManager);
-        mSharActsRv.setAdapter(mSharActsAdapter);
-        mSharActsRv.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
-       // mSharActsAdapter = new SharingActivitiesAdapter(getActivity(), mSharActsList, this, userId,this);
-        //layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-
-        ItemTouchHelper.Callback callback = new SwipeHelperSharingActivities(mSharActsAdapter);
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(mSharActsRv);
         return view;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
-        outState.putInt(AppConstants.COUNTER_SHRACTIVITIES,counter);
-        outState.putSerializable(AppConstants.SELECTION_LIST_SHRACTIVITIES,selection_list);
-        Log.v("Test SALF","onSaveinstance");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateCounter(counter);
-        if(counter==0){
-            selection_list.clear();
-        }
-        Bundle args = getArguments();
-        //adjustActionBar();->esta no la tiene expeseslistfragment
+        adjustActionBar();
         DataManager.getsInstance().getSharingActivitiesReference().addValueEventListener( this );
         ((it.polito.mad.countonme.CountOnMeActivity) getActivity() ).showLoadingDialog();
     }
@@ -205,78 +158,14 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
         super.onPause();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.sharing_activity_list_menu, menu);
+    }
+
     private void adjustActionBar() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.sharing_activities_title);
         setHasOptionsMenu( true );
     }
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.sharing_activity_menu_list, menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.delete_sharing_activity:
-                Log.v("Test SALF","onoptionsItemSelected "+selection_list.size());
-                mSharActsAdapter.updateAdapter(selection_list);
-                Log.v("Test SALF","calling adjustActionbar "+selection_list.size());
-                adjustActionBar();
-                Log.v("Test SALF","setting counter=0 "+counter);
-                counter=0;
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /******************************************************************************************/
-
-    public void prepareSelection(SharingActivity infoData){
-        Log.v("Test SALF","prepareSelection "+infoData.getKey());
-        boolean exist = checkexistence(infoData,selection_list);
-        if(!exist){
-            selection_list.add(infoData);
-            counter++;
-            updateCounter(counter);
-        }else{
-            if(counter==1) {
-                selection_list.remove(infoData);
-                selection_list.clear();
-                counter--;
-                adjustActionBar();
-            }else{
-                selection_list.remove(infoData);
-                counter--;
-                updateCounter(counter);
-            }
-        }
-    }
-
-    private boolean checkexistence(SharingActivity infoData, ArrayList<SharingActivity> selection_list) {
-        boolean foundit=false;
-        for(SharingActivity aux:selection_list){
-            String ToPrint = aux.getKey()+"-"+aux.getDescription()+"-"+aux.getName()+"-"+aux.getCurrency();
-            Log.v("test: ",ToPrint);
-        }
-        if(infoData!=null && selection_list!=null) {
-            for (SharingActivity shrAct : selection_list) {
-                if (shrAct.getKey()!=null) {
-                    if (shrAct.getKey().equals(infoData.getKey())) {
-                        foundit = true;
-                    }
-                }
-            }
-        }
-        return foundit;
-    }
-
-    public void updateCounter(int counter){
-        if(counter==0) {
-            adjustActionBar();
-        }else{
-            //String sToShow = String.format("" + counter + " " + R.string.lbl_item_selected); //gets a number ....
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(counter + " item selected");// sToShow );
-        }
-    }
 }

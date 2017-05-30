@@ -106,9 +106,14 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        setHasOptionsMenu( false );
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
-        //setHasOptionsMenu(false);
     }
 
 
@@ -149,7 +154,6 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
         setHasOptionsMenu(true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void fillUi(SharingActivity activity ) {
         if( activity == null ) return;
         try {
