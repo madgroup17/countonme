@@ -36,6 +36,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import it.polito.mad.countonme.CountOnMeApp;
+import it.polito.mad.countonme.Graphics.CircleTransform;
 import it.polito.mad.countonme.R;
 import it.polito.mad.countonme.SharingActivitiesListFragment;
 import it.polito.mad.countonme.business.ImageManagement;
@@ -70,25 +71,16 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
         }
 
         public void setData(final SharingActivity activity, final IOnListItemClickListener listener ) {
-            String namePhoto;
-            StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
             String imgUrl = activity.getImageUrl();
 
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                namePhoto = StorageManager.STORAGE_SHAREACTS_FOLDER + "/" + activity.getKey();
-                StorageReference newstoragereference = mStorageRef.child(namePhoto);
-
-                Glide.with(mIvPhoto.getContext()).using(new ImageManagement()).load(newstoragereference).asBitmap().centerCrop().into(new BitmapImageViewTarget(mIvPhoto) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(mIvPhoto.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        mIvPhoto.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
-            }else
-                mIvPhoto.setImageResource( R.drawable.img_sharing_default );
+                Glide.with( mIvPhoto.getContext() )
+                        .load( Uri.parse( imgUrl ) ).placeholder(R.drawable.img_sharing_default)
+                        .transform( new CircleTransform( mIvPhoto.getContext() ) )
+                        .into( mIvPhoto );
+            } else {
+                mIvPhoto.setImageResource(R.drawable.img_sharing_default);
+            }
 
             mTvName.setText( activity.getName() );
             mTvDesc.setText( activity.getDescription() );

@@ -2,6 +2,7 @@ package it.polito.mad.countonme.lists;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polito.mad.countonme.Graphics.CircleTransform;
 import it.polito.mad.countonme.R;
 import it.polito.mad.countonme.business.ImageManagement;
 import it.polito.mad.countonme.interfaces.IOnListItemClickListener;
@@ -51,25 +53,16 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpViewH
         }
 
         public void setData(final Expense expense, final IOnListItemClickListener listener ) {
-            String namePhoto;
-            StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
             String imgUrl = expense.getImageUrl();
 
             if( imgUrl != null && imgUrl.length() > 0 ) {
-                namePhoto = StorageManager.STORAGE_EXPENSES_FOLDER + "/" + expense.getKey();
-                StorageReference newstoragereference = mStorageRef.child(namePhoto);
-
-                Glide.with(mImgView.getContext()).using(new ImageManagement()).load(newstoragereference).asBitmap().centerCrop().into(new BitmapImageViewTarget(mImgView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(mImgView.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        mImgView.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
-            }else
-                mImgView.setImageResource( R.drawable.img_sharing_default );
+                Glide.with( mImgView.getContext() )
+                        .load( Uri.parse( imgUrl ) ).placeholder(R.drawable.img_sharing_default)
+                        .transform( new CircleTransform( mImgView.getContext() ) )
+                        .into( mImgView );
+            } else {
+                mImgView.setImageResource(R.drawable.img_sharing_default);
+            }
 
             mTvName.setText( expense.getName() );
             mTvAmount.setText( mFormatter.format( expense.getAmount() ) + "" );
