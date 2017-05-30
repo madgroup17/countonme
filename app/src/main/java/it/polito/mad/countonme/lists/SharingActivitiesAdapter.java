@@ -59,8 +59,6 @@ import it.polito.mad.countonme.storage.StorageManager;
 
 public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivitiesAdapter.ShActViewHolder> {
 
-    private int counter;
-
     public static class ShActViewHolder extends RecyclerView.ViewHolder {
         @BindView( R.id.sharing_activity_img ) ImageView mIvPhoto;
         @BindView( R.id.sharing_activity_name) TextView mTvName;
@@ -110,7 +108,6 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
     private List<SharingActivity> mSharingActivities;
     private LayoutInflater mInflater;
     public IOnListItemClickListener mListener;
-    private SharingActivity infoData;
 
     public SharingActivitiesAdapter(Context context, List<SharingActivity> data, IOnListItemClickListener listener ){
         mSharingActivities = data;
@@ -126,7 +123,6 @@ public class SharingActivitiesAdapter extends RecyclerView.Adapter<SharingActivi
 
     @Override
     public void onBindViewHolder(final ShActViewHolder holder, final int position) {
-        SharingActivity sa = mSharingActivities.get(position);
         holder.setData( mSharingActivities.get( position ), mListener  );
     }
 

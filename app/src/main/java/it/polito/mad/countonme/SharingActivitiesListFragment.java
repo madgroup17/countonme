@@ -73,11 +73,6 @@ public class SharingActivitiesListFragment extends BaseFragment implements Value
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         adjustActionBar();
