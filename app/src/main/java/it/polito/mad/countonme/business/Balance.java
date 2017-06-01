@@ -119,7 +119,7 @@ public class Balance {
         for (Iterator<Expense> i = ExpenseList.iterator(); i.hasNext(); ) {
             Expense item = i.next();
 
-            if (!item.getIsSurvey())
+            if (!item.getIsSurvey() && !item.getIsMoneyTransfer())
                     Amount += item.getAmount();
         }
 
