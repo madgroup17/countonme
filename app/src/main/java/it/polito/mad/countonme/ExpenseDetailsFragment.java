@@ -94,7 +94,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
     public void onData(Object data) {
         if (data instanceof Expense) {
             model = (Expense) data;
-            fillUi(model);
+            fillUi( model );
         }
         ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).hideLoadingDialog();
     }
@@ -158,7 +158,6 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void fillUi(Expense expense) {
         if (expense == null) return;
 

@@ -107,6 +107,7 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener
         } else {
             mExpenseList = ( ArrayList<Expense> ) data;
             FillChart();
+            ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).hideLoadingDialog();
         }
     }
 
@@ -120,6 +121,7 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener
     public void onResume() {
         super.onResume();
         adjustActionBar();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).showLoadingDialog();
         try {
             mSharingActivityLoader.loadSharingActivity( (String) getData() );
         } catch (DataLoaderException e) {
@@ -130,6 +132,7 @@ public class BalanceFragment extends BaseFragment implements IOnDataListener
     @Override
     public void onStop() {
         super.onStop();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).hideLoadingDialog();
     }
 
     private void adjustActionBar() {

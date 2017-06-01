@@ -86,6 +86,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
         if( data instanceof SharingActivity) {
             fillUi( ( SharingActivity ) data );
         }
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).hideLoadingDialog();
     }
 
     @Override
@@ -98,6 +99,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
     public void onResume() {
         super.onResume();
         adjustActionBar();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).showLoadingDialog();
         try {
             mSharingActivityLoader.loadSharingActivity( (String) getData() );
         } catch (DataLoaderException e) {
@@ -114,6 +116,7 @@ public class SharingActivityDetailsFragment extends BaseFragment implements IOnD
     @Override
     public void onStop() {
         super.onStop();
+        ((it.polito.mad.countonme.CountOnMeActivity) getActivity()).hideLoadingDialog();
     }
 
 
