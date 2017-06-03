@@ -311,7 +311,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         clearForm();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onData(Object data) {
         if (data instanceof SharingActivity) {
@@ -440,8 +439,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         }
 
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    
     @Override
     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
         mProgressDialog.dismiss();
@@ -460,8 +458,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
      *              PRIVATE METHODS                      *
      *****************************************************/
 
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void fillUserInterface() {
         if (eeData.haveData) {
             if (eeData.captureImageUri != null)
@@ -636,8 +632,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void fillFormWithData() {
         try {
             eeData.captureImageUri = mExpense.getImageUrl();
