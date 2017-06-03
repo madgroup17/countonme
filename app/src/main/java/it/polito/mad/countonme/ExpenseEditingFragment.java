@@ -139,7 +139,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             outState.putString(KEY_CAPT_IMAGE, captureImageUri);
             outState.putString(AppConstants.MODE, mode);
             outState.putString(KEY_CURRENCY, currency);
-
             outState.putSerializable(KEY_SHARES, (Serializable) shares);
         }
 
@@ -439,7 +438,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         }
 
     }
-    
+
     @Override
     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
         mProgressDialog.dismiss();
@@ -600,17 +599,16 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
 
 
     private void clearForm() {
+        mImage.setImageResource( R.drawable.ic_add_a_photo );
         mName.setText("");
         mDescription.setText("");
         mAmount.setText("");
-        // Set the currency to the sharing activity one
         mRtvExpenseAmount.setText(mRtvExpenseAmount.getText() + " (" + CurrencyManagment.GetText(Integer.valueOf((eeData.currency)), getActivity()) + ")");
-        //mCurrency.setSelection(0);
-        //mCurrency.getSelectedItemPosition()
         selectPayer(((CountOnMeApp) getActivity().getApplication()).getCurrentUser().getId());
         mTvDate.setText(mDateFormat.format(new Date()));
         mSwMoneyTransfer.setChecked(false);
         mSwShareEvenly.setChecked(true);
+        eeData.captureImageUri = null;
     }
 
     private void adjustActionBar() {
