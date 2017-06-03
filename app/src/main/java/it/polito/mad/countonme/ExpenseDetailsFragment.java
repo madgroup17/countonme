@@ -67,6 +67,7 @@ public class ExpenseDetailsFragment extends BaseFragment implements IOnDataListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.expense_details_fragment, container, false);
         mUnbinder = ButterKnife.bind(this, view);
+        setRetainInstance( true );
 
         if (savedInstanceState != null) {
             setData(AppConstants.SHARING_ACTIVITY_KEY, savedInstanceState.getString(AppConstants.SHARING_ACTIVITY_KEY));

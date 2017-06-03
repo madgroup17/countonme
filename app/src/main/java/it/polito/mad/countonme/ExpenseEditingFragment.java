@@ -602,7 +602,7 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
         return dataProvided;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     private void clearForm() {
         mName.setText("");
         mDescription.setText("");
