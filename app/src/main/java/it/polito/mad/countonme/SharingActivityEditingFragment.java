@@ -64,15 +64,24 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
         private static final String KEY_KEY = "Key";
         private static final String KEY_NEW = "Is_new";
         private static final String KEY_IMAGE = "Image";
+        private static final String KEY_NAME = "Name";
+        private static final String KEY_DESC = "Description";
+        private static final String KEY_CURR = "Currency";
 
 
         public Boolean isNew;
         public String key;
+        public String name;
+        public String description;
+        public int currency;
         public String imageUri;
 
         public SharingActEditingData() {
             isNew = true;
             key = null;
+            name = null;
+            description = null;
+            currency = 0;
             imageUri = null;
         }
 
@@ -80,6 +89,9 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
             if( outState == null ) return;
             outState.putBoolean( KEY_NEW, isNew );
             outState.putString( KEY_KEY, key);
+            outState.putString( KEY_NAME, name );
+            outState.putString( KEY_DESC, description );
+            outState.putInt( KEY_CURR, currency);
             outState.putString( KEY_IMAGE, imageUri );
         }
 
@@ -87,11 +99,17 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
             if (inState == null) return;
             isNew = inState.getBoolean(KEY_NEW);
             key = inState.getString( KEY_KEY );
+            name = inState.getString( KEY_NAME );
+            description = inState.getString( KEY_DESC );
+            currency = inState.getInt( KEY_CURR, 0);
             imageUri = inState.getString(KEY_IMAGE);
         }
 
         public void reset() {
             key = null;
+            name = null;
+            description = null;
+            currency = 0;
             imageUri = null;
         }
     } // end of class SharingActEditingData
@@ -130,6 +148,7 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
     {
         View view = inflater.inflate(R.layout.sharing_activity_editing_fragment, container, false);
         mUnbinder = ButterKnife.bind( this, view );
+
         if( savedInstanceState != null ) {
            saeData.loadInstance( savedInstanceState );
         }
@@ -176,6 +195,9 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        saeData.name = mEdName.getText().toString();
+        saeData.description = mEdDescription.getText().toString();
+        saeData.currency = mSpnCurrency.getSelectedItemPosition();
         saeData.saveInstance( outState );
     }
 
@@ -287,6 +309,11 @@ public class SharingActivityEditingFragment extends BaseFragment implements IOnD
         // restore image
         if (saeData.imageUri != null)
             Glide.with(mIvPhoto.getContext()).load(Uri.parse(saeData.imageUri)).into(mIvPhoto);
+        if( saeData.name != null )
+            mEdName.setText( saeData.name );
+        if( saeData.description != null )
+            mEdDescription.setText( saeData.description );
+        mSpnCurrency.setSelection( saeData.currency );
     }
 
 
