@@ -465,7 +465,8 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mSwMoneyTransfer.setChecked(eeData.isMoneyTransfer);
             mSwShareEvenly.setChecked(eeData.isSharedEvenly);
             mTvDate.setText(mDateFormat.format(eeData.expenseDate));
-            mRtvExpenseAmount.setText(mRtvExpenseAmount.getText() + " (" + CurrencyManagment.GetText(Integer.valueOf((eeData.currency)), getActivity()) + ")");
+
+            mRtvExpenseAmount.setText(String.format(getResources().getString(R.string.lbl_amount_param), CurrencyManagment.GetText(Integer.valueOf((eeData.currency)), getActivity() ) ) );
             // select the chosen payer
             String payerId;
             if (eeData.payerId != null) payerId = eeData.payerId;
@@ -640,7 +641,6 @@ public class ExpenseEditingFragment extends BaseFragment implements DatabaseRefe
             mName.setText(mExpense.getName());
             mDescription.setText(mExpense.getDescription());
             mAmount.setText("" + mExpense.getAmount());
-            // TODO manage the currency
             mRtvExpenseAmount.setText(mRtvExpenseAmount.getText() + " (" + CurrencyManagment.GetText(Integer.valueOf((eeData.currency)), getActivity()) + ")");
             eeData.currency = mExpense.getExpenseCurrency();
             eeData.payerId = mExpense.getPayer().getId();

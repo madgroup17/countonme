@@ -29,6 +29,7 @@
     <string name="lbl_description">Description</string>
     <string name="lbl_name">Name</string>
     <string name="lbl_amount">Amount</string>
+    <string name="lbl_amount_param">Amount (%1$s)</string>
     <string name="lbl_currency">Currency</string>
     <string name="lbl_date">Date</string>
     <string name="lbl_money_transfer">Money tranfer</string>

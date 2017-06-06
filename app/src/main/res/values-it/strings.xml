@@ -102,5 +102,6 @@
     <string name="lbl_confirmationdeleteSharingActivity">Stai securo che voi lasciare l\'attività condivisa</string>
     <string name="lbl_new_expense_notification_title">Una nuova spesa è stata creata</string>
     <string name="expense_edit_title">Modifica spesa</string>
+    <string name="lbl_amount_param">"Ammontare (%1$s) "</string>
 
 </resources>

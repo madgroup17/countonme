@@ -8,7 +8,7 @@
     <string name="expense_add_new_title">Nuevo gasto</string>
     <string name="expense_details_title">Detalle del gasto</string>
     <string name="expenses_title">Gastos</string>
-    <string name="lbl_amount">Cantidad</string>
+    <string name="lbl_amount">Cantidad (%1$s)</string>
     <string name="lbl_currency">Moneda</string>
     <string name="lbl_date">Fecha</string>
     <string name="lbl_description">Descripción</string>
@@ -100,5 +100,6 @@
     <string name="lbl_saving_sharing_activity">Guardando la actividad a compartir</string>
     <string name="lbl_select_picture">Selecciona una imagen</string>
     <string name="sharing_activity_edit_title">Modifica la actividad a compartir</string>
+    <string name="lbl_amount_param">Cantidad (%1$s)</string>
 
 </resources>
